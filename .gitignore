@@ -1,0 +1,13 @@
+# don't wanna include the javascript, only the typescript
+app/js
+
+# Sass cache
+.sass-cache
+
+# Local databases
+/db/*.sqlite3
+
+# NodeJs modules
+node_modules
+
+.idea

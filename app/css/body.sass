@@ -1,0 +1,20 @@
+@import "app/css/common"
+
+body
+  padding: 0 !important
+
+button
+  font-family: ETBembo, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif
+  background: $colour-background
+  border-radius: 1px
+  cursor: pointer
+  outline: 0
+  transition: 0.1s
+
+  &:hover
+    background: $colour-foreground
+    color: $colour-background
+    border-color: $colour-background !important
+
+  &:active
+    transform: scale(1.03)

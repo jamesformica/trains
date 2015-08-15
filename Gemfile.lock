@@ -1,0 +1,108 @@
+GIT
+  remote: git://github.com/sinatra/sinatra.git
+  revision: f9446dfc0234f2bcc9f046599ce2a977a049eaa2
+  specs:
+    sinatra (1.4.6)
+      rack (~> 1.5, >= 1.5.4, < 1.6)
+      rack-protection (~> 1.4)
+      tilt (>= 1.3, < 3)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    active_model_serializers (0.9.3)
+      activemodel (>= 3.2)
+    activemodel (4.2.3)
+      activesupport (= 4.2.3)
+      builder (~> 3.1)
+    activerecord (4.2.3)
+      activemodel (= 4.2.3)
+      activesupport (= 4.2.3)
+      arel (~> 6.0)
+    activesupport (4.2.3)
+      i18n (~> 0.7)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.3, >= 0.3.4)
+      tzinfo (~> 1.1)
+    arel (6.0.3)
+    backports (3.6.6)
+    builder (3.2.2)
+    colorize (0.7.7)
+    database_cleaner (1.4.1)
+    diff-lcs (1.2.5)
+    i18n (0.7.0)
+    jsmin (1.0.1)
+    json (1.8.3)
+    minitest (5.8.0)
+    multi_json (1.11.2)
+    pg (0.18.1)
+    rack (1.5.5)
+    rack-protection (1.5.3)
+      rack
+    rack-test (0.6.3)
+      rack (>= 1.0)
+    rake (10.4.2)
+    rspec (3.2.0)
+      rspec-core (~> 3.2.0)
+      rspec-expectations (~> 3.2.0)
+      rspec-mocks (~> 3.2.0)
+    rspec-core (3.2.3)
+      rspec-support (~> 3.2.0)
+    rspec-expectations (3.2.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.2.0)
+    rspec-mocks (3.2.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.2.0)
+    rspec-support (3.2.2)
+    sass (3.4.13)
+    sinatra-active-model-serializers (0.0.2)
+      active_model_serializers (= 0.9.3)
+    sinatra-activerecord (2.0.4)
+      activerecord (>= 3.2)
+      sinatra (~> 1.0)
+    sinatra-assetpack (0.3.3)
+      jsmin
+      rack-test
+      sinatra
+      tilt (>= 1.3.0, < 2.0)
+    sinatra-contrib (1.4.2)
+      backports (>= 2.0)
+      multi_json
+      rack-protection
+      rack-test
+      sinatra (~> 1.4.0)
+      tilt (~> 1.3)
+    slim (3.0.3)
+      temple (~> 0.7.3)
+      tilt (>= 1.3.3, < 2.1)
+    sqlite3 (1.3.10)
+    temple (0.7.6)
+    thread_safe (0.3.5)
+    tilt (1.4.1)
+    typescript-node (1.4.1)
+      typescript-src (~> 1.4.1)
+    typescript-src (1.4.1.3)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  colorize (= 0.7.7)
+  database_cleaner (= 1.4.1)
+  pg (= 0.18.1)
+  rack-test (= 0.6.3)
+  rake (= 10.4.2)
+  rspec (= 3.2.0)
+  sass (= 3.4.13)
+  sinatra (= 1.4.6)!
+  sinatra-active-model-serializers (= 0.0.2)
+  sinatra-activerecord (= 2.0.4)
+  sinatra-assetpack (= 0.3.3)
+  sinatra-contrib (= 1.4.2)
+  slim (= 3.0.3)
+  sqlite3 (= 1.3.10)
+  typescript-node (= 1.4.1)

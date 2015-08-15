@@ -1,0 +1,15 @@
+- id = SecureRandom.uuid
+
+div id="#{id}"
+    == yield
+
+javascript:
+    $(function () {
+        if (#{@js_function}) {
+            var $container = $("#" + "#{id}");
+            #{@js_function}
+            ($container);
+        } else {
+            alert("#{@js_function}: not found");
+        }
+    });
