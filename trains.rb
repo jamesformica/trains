@@ -52,4 +52,8 @@ class Trains < Sinatra::Base
     slim :index
   end
 
+  get '/play' do
+    slim :play
+  end
+
 end
