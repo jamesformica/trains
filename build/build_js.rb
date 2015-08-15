@@ -7,14 +7,13 @@ class TypescriptBuilder
 
     puts "\n### Building Typescript files ###\n".magenta
 
-# make sure node exists
+    # make sure node exists
     TypeScript::Node.check_node
 
-# clean out the js folder
+    # clean out the js folder
     FileUtils.rm_rf(Dir.glob('./app/js/*'))
 
-# generate the js for each ts file
-
+    # generate the js for each ts file
     error = false
     Dir.glob(File.dirname(__FILE__) + '/../app/ts/*.ts') do |tsFile|
       result = TypeScript::Node.compile_file(tsFile, '--target', 'ES5')
