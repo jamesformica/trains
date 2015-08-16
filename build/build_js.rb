@@ -1,4 +1,5 @@
-require 'typescript-node'
+require 'typescript-src'
+require 'open3'
 require 'colorize'
 
 class TypescriptBuilder
@@ -7,21 +8,14 @@ class TypescriptBuilder
 
     puts "\n### Building Typescript files ###\n".magenta
 
-    # make sure node exists
-    TypeScript::Node.check_node
-
     # clean out the js folder
     FileUtils.rm_rf(Dir.glob('./app/js/*'))
 
     # generate the js for each ts file
     error = false
     Dir.glob(File.dirname(__FILE__) + '/../app/ts/*.ts') do |tsFile|
-      result = TypeScript::Node.compile_file(tsFile, '--target', 'ES5')
+      result = compile_file(tsFile, File.dirname(__FILE__) + '/../app/js')
       if result.success?
-        js_file_name = tsFile.gsub!('ts', 'js')
-        out_file = File.new(js_file_name, 'w')
-        out_file.puts(result.js)
-        out_file.close
         puts "- #{tsFile} \t\t" + 'done'.green
       else
         puts result.stdout.red
@@ -36,4 +30,36 @@ class TypescriptBuilder
       system 'clear'
     end
   end
+
+  def self.compile_file(source_file, output_dir)
+    stdout, stderr, exit_status = tsc('--outDir', output_dir, source_file)
+    CompileResult.new(exit_status, stdout, stderr)
+  end
+
+  def self.tsc(*args)
+    cmd = [node, TypeScript::Src.tsc_path.to_s, *args]
+    Open3.capture3(*cmd)
+  end
+
+  def self.node
+    ENV['TS_NODE'] || 'node'
+  end
 end
+
+class CompileResult
+
+  def initialize(exit_status, stdout, stderr)
+    @exit_status = exit_status
+    @stdout = stdout
+    @stderr = stderr
+  end
+
+  attr_reader :exit_status, :stdout, :stderr
+
+  def success?
+    @exit_status == 0
+  end
+
+end
+
+

@@ -42,6 +42,8 @@ class Trains < Sinatra::Base
                    '/css/vendor/**/*.css'
                ]
 
+    ignore '/css/vendor/font-awesome.min.css'
+
   end
 
   # Helpers #

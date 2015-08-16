@@ -23,7 +23,7 @@ gem 'sinatra-active-model-serializers', '0.0.2'
 
 gem 'rake', '10.4.2'
 
-gem 'typescript-node', '1.4.1'
+gem 'typescript-src', '~> 1.4.1'
 
 gem 'colorize', '0.7.7'
 
