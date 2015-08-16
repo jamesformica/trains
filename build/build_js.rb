@@ -18,11 +18,11 @@ class TypescriptBuilder
     Dir.glob(File.dirname(__FILE__) + '/../app/ts/*.ts') do |tsFile|
       result = TypeScript::Node.compile_file(tsFile, '--target', 'ES5')
       if result.success?
-        js_file_name = tsFile.gsub!("ts", "js")
-        out_file = File.new(js_file_name, "w")
+        js_file_name = tsFile.gsub!('ts', 'js')
+        out_file = File.new(js_file_name, 'w')
         out_file.puts(result.js)
         out_file.close
-        puts "- #{tsFile} \t" + "done".green
+        puts "- #{tsFile} \t\t" + 'done'.green
       else
         puts result.stdout.red
         error = true

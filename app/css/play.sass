@@ -1,6 +1,13 @@
 @import "app/css/common"
 
-canvas.trains-canvas
-    border: $border-double
+canvas.train-canvas, canvas.grid-canvas
+    position: absolute
     display: block
     margin: 0 auto
+
+canvas.train-canvas
+    border: $border-double
+    border-color: transparent
+
+canvas.grid-canvas
+    border: $border-double
