@@ -13,15 +13,15 @@ module trains.play {
         private $canvases: JQuery;
 
         private trainCanvas: HTMLCanvasElement;
-        private trainContext: CanvasRenderingContext2D;
+        public trainContext: CanvasRenderingContext2D;
         private gridCanvas: HTMLCanvasElement;
         private gridContext: CanvasRenderingContext2D;
 
         private canvasWidth: number;
         private canvasHeight: number;
 
-        private cells: BoardCells = {};
-        private tool: Tool = Tool.Track;
+        private cells: trains.play.BoardCells = {};
+        private tool: Tool = trains.play.Tool.Track;
 
         constructor(private $trainCanvas: JQuery, private $gridCanvas: JQuery) {
 
@@ -49,7 +49,7 @@ module trains.play {
         }
 
 
-        drawGrid(): void {
+        private drawGrid(): void {
 
             this.gridContext.beginPath();
 
@@ -69,7 +69,7 @@ module trains.play {
 
         }
 
-        redrawCells(): void {
+        private redrawCells(): void {
             this.clearCells();
 
             for (var id in this.cells) {
@@ -81,15 +81,17 @@ module trains.play {
             }
         }
 
-        clearCells(): void {
+        private clearCells(): void {
+            this.trainContext.beginPath();
             this.trainContext.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+            this.trainContext.closePath();
         }
 
         setTool(tool: Tool): void {
             this.tool = tool;
         }
 
-        cellClick(event: MouseEvent): void {
+        private cellClick(event: MouseEvent): void {
 
             var column = this.getGridCoord(event.pageX - this.trainCanvas.offsetLeft);
             var row = this.getGridCoord(event.pageY - this.trainCanvas.offsetTop);
@@ -108,17 +110,20 @@ module trains.play {
             }
         }
 
-        newTrack(column: number, row: number): void {
+        private newTrack(column: number, row: number): void {
             var cellID = this.getCellID(column, row);
 
             if (this.cells[cellID] === undefined) {
-                var newCell = new trains.play.Cell(cellID, trains.play.Direction.Right, column, row, this.trainContext);
+                var newCell = new trains.play.Cell(this, cellID, column, row);
                 this.cells[newCell.id] = newCell;
+
+                newCell.neighbourlyUpdateTime(this.getNeighbouringCells(column, row), []);
+
                 this.redrawCells();
             }
         }
 
-        eraseTrack(column: number, row: number): void {
+        private eraseTrack(column: number, row: number): void {
             var cellID = this.getCellID(column, row);
 
             if (this.cells[cellID] !== undefined) {
@@ -127,21 +132,46 @@ module trains.play {
             }
         }
 
-        roundToNearestGridSize(value: number): number {
+        private roundToNearestGridSize(value: number): number {
             return Math.round(value / gridSize) * gridSize;
         }
 
-        getGridCoord(value: number): number {
+        private getGridCoord(value: number): number {
             return Math.floor(value / gridSize);
         }
 
         getCellID(column: number, row: number): number {
             return Number(column.toString() + row.toString());
         }
+
+        getNeighbouringCells(column: number, row: number): trains.play.NeighbouringCells {
+
+            var up = this.cells[this.getCellID(column, row - 1)];
+            var right = this.cells[this.getCellID(column + 1, row)];
+            var down = this.cells[this.getCellID(column, row + 1)];
+            var left = this.cells[this.getCellID(column - 1, row)];
+            var aliveNeighbours = [up, right, down, left].filter(n => n !== undefined);
+
+            return {
+                up: up,
+                right: right,
+                down: down,
+                left: left,
+                aliveNeighbours: aliveNeighbours
+            };
+        }
     }
 
-    interface BoardCells {
-        [position: number]: trains.play.Cell
+    export interface BoardCells {
+        [position: number]: trains.play.Cell;
+    }
+
+    export interface NeighbouringCells {
+        up: trains.play.Cell;
+        right: trains.play.Cell;
+        down: trains.play.Cell;
+        left: trains.play.Cell;
+        aliveNeighbours: Array<trains.play.Cell>;
     }
 
     export enum Tool {
@@ -150,16 +180,10 @@ module trains.play {
     }
 
     export enum Direction {
-        Up,
-        Right,
-        Down,
-        Left,
-        UpRight,
-        UpLeft,
+        Vertical,
+        Horizontal,
         RightUp,
         RightDown,
-        DownLeft,
-        DownRight,
         LeftDown,
         LeftUp
     }

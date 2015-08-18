@@ -6,7 +6,7 @@ class TypescriptBuilder
 
   def self.build
 
-    puts "\n### Building Typescript files ###\n".magenta
+    puts "\nBuilding Typescript files\n".magenta
 
     # clean out the js folder
     FileUtils.rm_rf(Dir.glob('./app/js/*'))
@@ -16,7 +16,7 @@ class TypescriptBuilder
     Dir.glob(File.dirname(__FILE__) + '/../app/ts/*.ts') do |tsFile|
       result = compile_file(tsFile, File.dirname(__FILE__) + '/../app/js')
       if result.success?
-        puts "- #{tsFile} \t\t" + 'done'.green
+        printf("- %-40s %10s\n", File.basename(tsFile), 'done'.green)
       else
         puts result.stdout.red
         error = true
