@@ -2,8 +2,8 @@
 
 module trains.play.CellRenderer {
 
-    var plankColour = "#3E0F08";
-    var trackColour = "#84837B";
+    var plankColour = "#382E1C";
+    var trackColour = "#6E7587";
 
     export function drawStraightTrack(context: CanvasRenderingContext2D): void {
 
