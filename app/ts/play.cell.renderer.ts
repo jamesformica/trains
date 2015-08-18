@@ -2,12 +2,16 @@
 
 module trains.play.CellRenderer {
 
+    var plankColour = "#3E0F08";
+    var trackColour = "#84837B";
+
     export function drawStraightTrack(context: CanvasRenderingContext2D): void {
 
         var thirdGridSize = trains.play.gridSize / 3;
 
         // draw the track planks
         context.lineWidth = trackWidth;
+        context.strokeStyle = plankColour;
         for (var i = 1; i <= 3; i++) {
             var xPosition = (thirdGridSize * i) - (thirdGridSize / 2);
             var yPosition = firstTrackPosY - trackWidth;
@@ -25,6 +29,7 @@ module trains.play.CellRenderer {
 
         // draw the outline on the track
         context.lineWidth = 1;
+        context.strokeStyle = trackColour;
         context.beginPath();
 
         context.moveTo(0, firstTrackPosY);
@@ -43,25 +48,28 @@ module trains.play.CellRenderer {
     export function drawCurvedTrack(context: CanvasRenderingContext2D): void {
 
         drawCurvedPlank(context, 20 * Math.PI / 180);
-        drawCurvedPlank(context, 70 * Math.PI / 180);
         drawCurvedPlank(context, 45 * Math.PI / 180);
+        drawCurvedPlank(context, 70 * Math.PI / 180);
 
         context.lineWidth = 1;
+        context.strokeStyle = trackColour;
+
+        var finishAngle = Math.PI / 2;
 
         context.beginPath();
-        context.arc(0, 0, firstTrackPosY, 0, Math.PI / 2, false);
+        context.arc(0, 0, firstTrackPosY, 0, finishAngle, false);
         context.stroke();
 
         context.beginPath();
-        context.arc(0, 0, firstTrackPosY + trackWidth, 0, Math.PI / 2, false);
+        context.arc(0, 0, firstTrackPosY + trackWidth, 0, finishAngle, false);
         context.stroke();
 
         context.beginPath();
-        context.arc(0, 0, secondTrackPosY - trackWidth, 0, Math.PI / 2, false);
+        context.arc(0, 0, secondTrackPosY - trackWidth, 0, finishAngle, false);
         context.stroke();
 
         context.beginPath();
-        context.arc(0, 0, secondTrackPosY, 0, Math.PI / 2, false);
+        context.arc(0, 0, secondTrackPosY, 0, finishAngle, false);
         context.stroke();
 
     }
@@ -72,6 +80,7 @@ module trains.play.CellRenderer {
         var sin = Math.sin(basePos);
 
         context.lineWidth = trackWidth;
+        context.strokeStyle = plankColour;
 
         context.beginPath();
         context.moveTo((firstTrackPosY - trackWidth) * cos, (firstTrackPosY - trackWidth) * sin);
