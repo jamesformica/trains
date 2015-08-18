@@ -1,11 +1,16 @@
 /// <reference path="../types/jquery.d.ts" />
 /// <reference path="play.cell.ts" />
+/// <reference path="play.board.renderer.ts" />
 
 module trains.play {
 
     export var gridSize: number = 40;
+    export var gridColour: string = "#ddd";
 
-    var gridColour: string = "#ddd";
+    export var trackWidth = 4;
+    export var trackPadding = 10;
+    export var firstTrackPosY = trackPadding;
+    export var secondTrackPosY = trains.play.gridSize - trackPadding;
 
     export class Board {
 
@@ -45,46 +50,7 @@ module trains.play {
 
             this.trainCanvas.addEventListener('click', (event: MouseEvent) => this.cellClick(event));
 
-            this.drawGrid();
-        }
-
-
-        private drawGrid(): void {
-
-            this.gridContext.beginPath();
-
-            for (var x = gridSize; x < this.canvasWidth; x += gridSize) {
-                this.gridContext.moveTo(x, 0);
-                this.gridContext.lineTo(x, this.canvasHeight);
-            }
-
-            for (var y = gridSize; y < this.canvasHeight; y += gridSize) {
-                this.gridContext.moveTo(0, y);
-                this.gridContext.lineTo(this.canvasWidth, y);
-            }
-
-            this.gridContext.strokeStyle = gridColour;
-            this.gridContext.stroke();
-            this.gridContext.closePath();
-
-        }
-
-        private redrawCells(): void {
-            this.clearCells();
-
-            for (var id in this.cells) {
-                if (this.cells.hasOwnProperty(id)) {
-                    if (!isNaN(id)) {
-                        this.cells[id].draw();
-                    }
-                }
-            }
-        }
-
-        private clearCells(): void {
-            this.trainContext.beginPath();
-            this.trainContext.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-            this.trainContext.closePath();
+            trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
         }
 
         setTool(tool: Tool): void {
@@ -119,7 +85,7 @@ module trains.play {
 
                 newCell.neighbourlyUpdateTime(this.getNeighbouringCells(column, row), []);
 
-                this.redrawCells();
+                trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
             }
         }
 
@@ -128,7 +94,7 @@ module trains.play {
 
             if (this.cells[cellID] !== undefined) {
                 delete this.cells[cellID];
-                this.redrawCells();
+                trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
             }
         }
 

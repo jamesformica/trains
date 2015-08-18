@@ -1,4 +1,5 @@
 /// <reference path="play.board.ts" />
+/// <reference path="play.cell.renderer.ts" />
 
 module trains.play {
 
@@ -9,12 +10,6 @@ module trains.play {
         private y: number;
         private direction: trains.play.Direction;
 
-        private trackWidth = 4;
-        private trackPadding = 10;
-
-        private firstTrackPosY = this.trackPadding;
-        private secondTrackPosY = trains.play.gridSize - this.trackPadding;
-
         constructor(private board: trains.play.Board, public id: number, public column: number, public row: number) {
             this.locked = false;
             this.x = this.column * trains.play.gridSize;
@@ -22,121 +17,53 @@ module trains.play {
             this.direction = trains.play.Direction.Horizontal;
         }
 
-        draw(): void {
-            this.board.trainContext.save();
+        draw(context: CanvasRenderingContext2D): void {
+            context.save();
 
-            this.board.trainContext.translate(this.x + 0.5, this.y + 0.5);
+            context.translate(this.x + 0.5, this.y + 0.5);
 
             switch (this.direction) {
                 case trains.play.Direction.Horizontal:
                 {
-                    this.drawStraightTrack();
+                    trains.play.CellRenderer.drawStraightTrack(context);
                     break;
                 }
                 case trains.play.Direction.Vertical:
                 {
-                    this.board.trainContext.translate(trains.play.gridSize, 0);
-                    this.board.trainContext.rotate(Math.PI / 2);
-                    this.drawStraightTrack();
+                    context.translate(trains.play.gridSize, 0);
+                    context.rotate(Math.PI / 2);
+                    trains.play.CellRenderer.drawStraightTrack(context);
                     break;
                 }
                 case trains.play.Direction.LeftUp:
                 {
-                    this.drawCurvedTrack();
-                    break;
-                }
-                case trains.play.Direction.RightDown:
-                {
-                    this.board.trainContext.translate(trains.play.gridSize, trains.play.gridSize);
-                    this.board.trainContext.rotate(Math.PI);
-                    this.drawCurvedTrack();
+                    trains.play.CellRenderer.drawCurvedTrack(context);
                     break;
                 }
                 case trains.play.Direction.LeftDown:
                 {
-                    this.board.trainContext.translate(0, trains.play.gridSize);
-                    this.board.trainContext.rotate(Math.PI * 1.5);
-                    this.drawCurvedTrack();
+                    context.translate(0, trains.play.gridSize);
+                    context.rotate(Math.PI * 1.5);
+                    trains.play.CellRenderer.drawCurvedTrack(context);
                     break;
                 }
                 case trains.play.Direction.RightUp:
                 {
-                    this.board.trainContext.translate(trains.play.gridSize, 0);
-                    this.board.trainContext.rotate(Math.PI / 2);
-                    this.drawCurvedTrack();
+                    context.translate(trains.play.gridSize, 0);
+                    context.rotate(Math.PI / 2);
+                    trains.play.CellRenderer.drawCurvedTrack(context);
                     break;
                 }
-                default:
+                case trains.play.Direction.RightDown:
                 {
-                    this.board.trainContext.rect(0, 0, trains.play.gridSize, trains.play.gridSize);
-                    this.board.trainContext.fillStyle = "blue";
-                    this.board.trainContext.fill();
+                    context.translate(trains.play.gridSize, trains.play.gridSize);
+                    context.rotate(Math.PI);
+                    trains.play.CellRenderer.drawCurvedTrack(context);
+                    break;
                 }
             }
 
-            this.board.trainContext.restore();
-        }
-
-        private drawStraightTrack(): void {
-            var context = this.board.trainContext;
-
-            var thirdGridSize = trains.play.gridSize / 3;
-
-            // draw the track planks
-            context.lineWidth = this.trackWidth;
-            for (var i = 1; i <= 3; i++) {
-                var xPosition = (thirdGridSize * i) - (thirdGridSize / 2);
-                var yPosition = this.firstTrackPosY - this.trackWidth;
-
-                context.beginPath();
-                context.moveTo(xPosition, yPosition);
-                context.lineTo(xPosition, this.secondTrackPosY + this.trackWidth);
-                context.stroke();
-            }
-
-            // draw the white part of the track
-            context.beginPath();
-            context.clearRect(0, this.firstTrackPosY, trains.play.gridSize, this.trackWidth);
-            context.clearRect(0, this.secondTrackPosY - this.trackWidth, trains.play.gridSize, this.trackWidth);
-
-            // draw the outline on the track
-            context.beginPath();
-            context.lineWidth = 1;
-
-            context.moveTo(0, this.firstTrackPosY);
-            context.lineTo(trains.play.gridSize, this.firstTrackPosY);
-            context.moveTo(0, this.firstTrackPosY + this.trackWidth);
-            context.lineTo(trains.play.gridSize, this.firstTrackPosY + this.trackWidth);
-
-            context.moveTo(0, this.secondTrackPosY - this.trackWidth);
-            context.lineTo(trains.play.gridSize, this.secondTrackPosY - this.trackWidth);
-            context.moveTo(0, this.secondTrackPosY);
-            context.lineTo(trains.play.gridSize, this.secondTrackPosY);
-
-            context.stroke();
-        }
-
-        drawCurvedTrack(): void {
-            var context = this.board.trainContext;
-
-            context.lineWidth = 1;
-
-            context.beginPath();
-            context.arc(0, 0, this.firstTrackPosY, 0, Math.PI / 2, false);
-            context.stroke();
-
-            context.beginPath();
-            context.arc(0, 0, this.firstTrackPosY + this.trackWidth, 0, Math.PI / 2, false);
-            context.stroke();
-
-            context.beginPath();
-            context.arc(0, 0, this.secondTrackPosY - this.trackWidth, 0, Math.PI / 2, false);
-            context.stroke();
-
-            context.beginPath();
-            context.arc(0, 0, this.secondTrackPosY, 0, Math.PI / 2, false);
-            context.stroke();
-
+            context.restore();
         }
 
         neighbourlyUpdateTime(neighbours: trains.play.NeighbouringCells, previouslyUpdatedCells: Array<number>): void {
