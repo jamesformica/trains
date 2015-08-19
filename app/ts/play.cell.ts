@@ -8,7 +8,7 @@ module trains.play {
         private happy: boolean;
         private x: number;
         private y: number;
-        private direction: trains.play.Direction;
+        public direction: trains.play.Direction;
 
         constructor(private board: trains.play.Board, public id: number, public column: number, public row: number) {
             this.happy = false;

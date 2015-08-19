@@ -65,7 +65,11 @@ module trains.play {
             switch (this.tool) {
                 case Tool.Track:
                 {
-                    this.newTrack(column, row);
+                    if (event.shiftKey) {
+                        this.rotateTrack(column, row);
+                    } else {
+                        this.newTrack(column, row);
+                    }
                     break;
                 }
                 case Tool.Eraser:
@@ -73,6 +77,19 @@ module trains.play {
                     this.eraseTrack(column, row);
                     break;
                 }
+            }
+        }
+        
+        private rotateTrack(column: number, row: number): void {
+            var cellID = this.getCellID(column, row);
+            var cell = this.cells[cellID];
+            if (cell !== undefined) {
+                if (cell.direction === trains.play.Direction.LeftUp) {
+                    cell.direction = trains.play.Direction.Vertical;
+                } else {
+                    cell.direction = cell.direction + 1;
+                }
+                trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
             }
         }
 
