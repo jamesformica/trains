@@ -49,12 +49,19 @@ module trains.play {
             this.$canvases.css('left', (this.$window.width() - this.canvasWidth) / 2);
 
             this.trainCanvas.addEventListener('click', (event: MouseEvent) => this.cellClick(event));
+            this.trainCanvas.addEventListener('mousemove', (event: MouseEvent) => this.cellMoveOver(event));
 
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
         }
 
         setTool(tool: Tool): void {
             this.tool = tool;
+        }
+        
+        private cellMoveOver(event: MouseEvent): void {
+            if (event.buttons === 1) {
+                this.cellClick(event);
+            }
         }
 
         private cellClick(event: MouseEvent): void {
@@ -135,6 +142,12 @@ module trains.play {
             var left = this.cells[this.getCellID(column - 1, row)];
             var aliveNeighbours = [up, right, down, left].filter(n => n !== undefined);
 
+            // if any of the neighbours are happy, and not happy with us, then we need to ignore them
+            if (up !== undefined && up.isHappy() && !up.isConnectedDown()) up = undefined;
+            if (right !== undefined && right.isHappy() && !right.isConnectedLeft()) right = undefined;
+            if (down !== undefined && down.isHappy() && !down.isConnectedUp()) down = undefined;
+            if (left !== undefined && left.isHappy() && !left.isConnectedRight()) left = undefined;
+            
             return {
                 up: up,
                 right: right,
