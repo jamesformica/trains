@@ -159,7 +159,8 @@ module trains.play {
 
     export enum Tool {
         Track,
-        Eraser
+        Eraser,
+        Rotate
     }
 
     export enum Direction {
