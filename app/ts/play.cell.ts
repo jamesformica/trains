@@ -67,12 +67,9 @@ module trains.play {
         }
 
         neighbourlyUpdateTime(neighbours: trains.play.NeighbouringCells, previouslyUpdatedCells: Array<number>): void {
-
             var changed = this.determineDirection(neighbours);
 
-            if (neighbours.aliveNeighbours.length > 1) {
-                this.happy = this.canIBeHappyNow(neighbours);
-            }
+            this.happy = (neighbours.aliveNeighbours.length > 1);
 
             if (changed) {
                 previouslyUpdatedCells.push(this.id);
@@ -84,62 +81,50 @@ module trains.play {
             }
         }
 
-        private determineDirection(neighbours: trains.play.NeighbouringCells): boolean {
 
+
+        isHappy(): boolean {
+            return this.happy;
+        }
+
+        determineDirection(neighbours: trains.play.NeighbouringCells): boolean {
             var newDirection: trains.play.Direction;
             if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.up !== undefined) {
+
                 if (!this.happy) {
-                    
-                    if ((!neighbours.left.happy || this.isFacingRight(neighbours.left.direction)) && (!neighbours.up.happy || this.isFacingDown(neighbours.up.direction))) {
-                        newDirection = trains.play.Direction.LeftUp;
-                    }
+                    newDirection = trains.play.Direction.LeftUp;
                 }
             }
 
-            if (newDirection === undefined) {
-                if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.down !== undefined) {
-                    if (!this.happy) {
-                        
-                        if ((!neighbours.left.happy || this.isFacingRight(neighbours.left.direction)) && (!neighbours.down.happy || this.isFacingUp(neighbours.down.direction))) {
-                            newDirection = trains.play.Direction.LeftDown;
-                        }
-                    }
+            else if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.down !== undefined) {
+                if (!this.happy) {
+                    newDirection = trains.play.Direction.LeftDown;
                 }
             }
 
-            if (newDirection === undefined) {
-                if (neighbours.left === undefined && neighbours.right !== undefined && neighbours.up !== undefined) {
-                    if (!this.happy) {
-                        
-                        if ((!neighbours.right.happy || this.isFacingLeft(neighbours.right.direction)) && (!neighbours.up.happy || this.isFacingDown(neighbours.up.direction))) {
-                            newDirection = trains.play.Direction.RightUp;
-                        }
-                    }
+            else if (neighbours.left === undefined && neighbours.right !== undefined && neighbours.up !== undefined) {
+                if (!this.happy) {
+                    newDirection = trains.play.Direction.RightUp;
                 }
             }
 
-            if (newDirection === undefined) {
-                if (neighbours.left === undefined && neighbours.right !== undefined && neighbours.down !== undefined) {
-                    if (!this.happy) {
-                        
-                        if ((!neighbours.right.happy || this.isFacingLeft(neighbours.right.direction)) && (!neighbours.down.happy || this.isFacingUp(neighbours.down.direction))) {
-                            newDirection = trains.play.Direction.RightDown;
-                        }
-                    }
+            else if (neighbours.left === undefined && neighbours.right !== undefined && neighbours.down !== undefined) {
+                if (!this.happy) {
+                    newDirection = trains.play.Direction.RightDown;
                 }
             }
 
             if (newDirection === undefined && !this.happy) {
 
-                if ((neighbours.up !== undefined && (!neighbours.up.happy || this.isFacingDown(neighbours.up.direction))) || (neighbours.down !== undefined && (!neighbours.down.happy || this.isFacingUp(neighbours.down.direction)))) {
+                if (neighbours.up !== undefined || neighbours.down !== undefined) {
                     newDirection = trains.play.Direction.Vertical;
                 }
 
-                else if ((neighbours.left !== undefined && (!neighbours.left.happy || this.isFacingRight(neighbours.left.direction))) || (neighbours.right !== undefined && (!neighbours.right.happy || this.isFacingLeft(neighbours.right.direction)))) {
+                else if (neighbours.left !== undefined || neighbours.right !== undefined) {
                     newDirection = trains.play.Direction.Horizontal;
                 }
 
-                else if (this.direction === trains.play.Direction.None) {
+                else {
                     newDirection = trains.play.Direction.Horizontal;
                 }
             }
@@ -152,63 +137,28 @@ module trains.play {
             return false;
         }
         
-        private canIBeHappyNow(neighbours: trains.play.NeighbouringCells): boolean {
-            switch (this.direction) {
-                case trains.play.Direction.Horizontal: {
-                    if (neighbours.left !== undefined && neighbours.right !== undefined) return true;
-                    break;
-                }
-                case trains.play.Direction.Vertical: {
-                    if (neighbours.up !== undefined && neighbours.down !== undefined) return true;
-                    break;
-                }
-                case trains.play.Direction.LeftUp: {
-                    if (neighbours.left !== undefined && neighbours.up !== undefined) return true;
-                    break;
-                }
-                case trains.play.Direction.LeftDown: {
-                    if (neighbours.left !== undefined && neighbours.down !== undefined) return true;
-                    break;
-                }
-                case trains.play.Direction.RightUp: {
-                    if (neighbours.right !== undefined && neighbours.up !== undefined) return true;
-                    break;
-                }
-                case trains.play.Direction.RightDown: {
-                    if (neighbours.right !== undefined && neighbours.down !== undefined) return true;
-                    break;
-                }
-            }
-            
-            return false;
+        isConnectedUp(): boolean {
+            return this.direction === Direction.Vertical ||
+                this.direction === Direction.LeftUp ||
+                this.direction === Direction.RightUp;
         }
-        
-        private isFacingRight(direction: trains.play.Direction): boolean {
-            if (direction === trains.play.Direction.Horizontal) return true;
-            if (direction === trains.play.Direction.RightDown) return true;
-            if (direction === trains.play.Direction.RightUp) return true;
-            return false;
+
+        isConnectedDown(): boolean {
+            return this.direction === Direction.Vertical ||
+                this.direction === Direction.LeftDown ||
+                this.direction === Direction.RightDown;
         }
-        
-        private isFacingDown(direction: trains.play.Direction): boolean {
-            if (direction === trains.play.Direction.Vertical) return true;
-            if (direction === trains.play.Direction.LeftDown) return true;
-            if (direction === trains.play.Direction.RightDown) return true;
-            return false;
+
+        isConnectedLeft(): boolean {
+            return this.direction === Direction.Horizontal ||
+                this.direction === Direction.LeftUp ||
+                this.direction === Direction.LeftDown;
         }
-        
-        private isFacingUp(direction: trains.play.Direction): boolean {
-            if (direction === trains.play.Direction.Vertical) return true;
-            if (direction === trains.play.Direction.LeftUp) return true;
-            if (direction === trains.play.Direction.RightUp) return true;
-            return false;
-        }
-        
-        private isFacingLeft(direction: trains.play.Direction): boolean {
-            if (direction === trains.play.Direction.Horizontal) return true;
-            if (direction === trains.play.Direction.LeftDown) return true;
-            if (direction === trains.play.Direction.LeftUp) return true;
-            return false;
+
+        isConnectedRight(): boolean {
+            return this.direction === Direction.Horizontal ||
+                this.direction === Direction.RightDown ||
+                this.direction === Direction.RightUp;
         }
     }
 }
