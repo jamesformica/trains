@@ -1,10 +1,17 @@
 == container "trains.play.InitialisePlay" do
 
-    button class="ui-pencil"
-        i class="fa fa-pencil"
+    div class="play-tools ui-play-tools animated fadeIn"
 
-    button class="ui-eraser"
-        i class="fa fa-eraser"
+        span class="ui-tools-title tools-title" &nbsp;
+
+        button class="ui-pencil" data-title="draw tracks"
+            i class="fa fa-pencil"
+    
+        button class="ui-eraser" data-title="erase tracks"
+            i class="fa fa-eraser"
+
+        button class="ui-rotate" data-title="rotate tracks"
+            i class="fa fa-refresh"
 
     canvas class="ui-grid-canvas grid-canvas"
     canvas class="ui-train-canvas train-canvas"
