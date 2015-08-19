@@ -5,16 +5,16 @@ module trains.play {
 
     export class Cell {
 
-        private locked: boolean;
+        private happy: boolean;
         private x: number;
         private y: number;
         private direction: trains.play.Direction;
 
         constructor(private board: trains.play.Board, public id: number, public column: number, public row: number) {
-            this.locked = false;
+            this.happy = false;
             this.x = this.column * trains.play.gridSize;
             this.y = this.row * trains.play.gridSize;
-            this.direction = trains.play.Direction.Horizontal;
+            this.direction = trains.play.Direction.None;
         }
 
         draw(context: CanvasRenderingContext2D): void {
@@ -67,19 +67,15 @@ module trains.play {
         }
 
         neighbourlyUpdateTime(neighbours: trains.play.NeighbouringCells, previouslyUpdatedCells: Array<number>): void {
-            var changed: boolean = false;
 
-            if (!this.locked) {
-                changed = this.determineDirection(neighbours);
-            } else {
-                // only try and re-update if it has 1 or 2 neighbours
-                if (neighbours.aliveNeighbours.length <= 2) {
-                    changed = this.determineDirection(neighbours);
-                }
+            var changed = this.determineDirection(neighbours);
+
+            // this needs to be smarts to check if actually connected to something
+            if (neighbours.aliveNeighbours.length > 1) {
+                this.happy = true;
             }
 
             if (changed) {
-                this.locked = true;
                 previouslyUpdatedCells.push(this.id);
                 neighbours.aliveNeighbours.forEach((neighbour) => {
                     if (previouslyUpdatedCells.indexOf(neighbour.id) === -1) {
@@ -89,45 +85,76 @@ module trains.play {
             }
         }
 
+        private onlyOneNeighbourOrTwoIncludingMe(neighbourOne: trains.play.Cell, neighbourTwo: trains.play.Cell): boolean {
+
+            var onesNeighbours = this.board.getNeighbouringCells(neighbourOne.column, neighbourOne.row);
+            var twosNeighbours = this.board.getNeighbouringCells(neighbourTwo.column, neighbourTwo.row);
+
+            if (onesNeighbours.aliveNeighbours.length === 1 || twosNeighbours.aliveNeighbours.length === 1) {
+                return true;
+            }
+
+            // if they both have two neighbours
+            if (onesNeighbours.aliveNeighbours.length === 2 && twosNeighbours.aliveNeighbours.length === 2) {
+
+                // if one of them is this cell
+                if ((onesNeighbours.aliveNeighbours[0].id === this.id || onesNeighbours.aliveNeighbours[1].id === this.id) || (twosNeighbours.aliveNeighbours[0].id === this.id || twosNeighbours.aliveNeighbours[1].id === this.id)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private determineDirection(neighbours: trains.play.NeighbouringCells): boolean {
 
-            var changed = false;
+            var newDirection: trains.play.Direction;
             if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.up !== undefined) {
-                // IF the guy on the left only has 1 neighbour
-                this.direction = trains.play.Direction.LeftUp;
-                changed = true;
+
+                if (!this.happy) {
+                    newDirection = trains.play.Direction.LeftUp;
+                }
             }
 
             else if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.down !== undefined) {
-                this.direction = trains.play.Direction.LeftDown;
-                changed = true;
+                if (!this.happy) {
+                    newDirection = trains.play.Direction.LeftDown;
+                }
             }
 
             else if (neighbours.left === undefined && neighbours.right !== undefined && neighbours.up !== undefined) {
-                this.direction = trains.play.Direction.RightUp;
-                changed = true;
+                if (!this.happy) {
+                    newDirection = trains.play.Direction.RightUp;
+                }
             }
 
             else if (neighbours.left === undefined && neighbours.right !== undefined && neighbours.down !== undefined) {
-                this.direction = trains.play.Direction.RightDown;
-                changed = true;
+                if (!this.happy) {
+                    newDirection = trains.play.Direction.RightDown;
+                }
             }
 
-            if (!changed) {
+            if (newDirection === undefined && !this.happy) {
 
                 if (neighbours.up !== undefined || neighbours.down !== undefined) {
-                    this.direction = trains.play.Direction.Vertical;
-                    changed = true;
+                    newDirection = trains.play.Direction.Vertical;
                 }
 
                 else if (neighbours.left !== undefined || neighbours.right !== undefined) {
-                    this.direction = trains.play.Direction.Horizontal;
-                    changed = true;
+                    newDirection = trains.play.Direction.Horizontal;
+                }
+
+                else {
+                    newDirection = trains.play.Direction.Horizontal;
                 }
             }
 
-            return changed;
+            if (newDirection !== undefined && newDirection !== this.direction) {
+                this.direction = newDirection;
+                return true;
+            }
+
+            return false;
         }
     }
-
 }

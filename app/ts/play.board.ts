@@ -5,7 +5,7 @@
 module trains.play {
 
     export var gridSize: number = 40;
-    export var gridColour: string = "#ddd";
+    export var gridColour: string = "#eee";
 
     export var trackWidth = 4;
     export var trackPadding = 10;
@@ -146,6 +146,7 @@ module trains.play {
     }
 
     export enum Direction {
+        None,
         Vertical,
         Horizontal,
         RightUp,
