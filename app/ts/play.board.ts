@@ -140,13 +140,14 @@ module trains.play {
             var right = this.cells[this.getCellID(column + 1, row)];
             var down = this.cells[this.getCellID(column, row + 1)];
             var left = this.cells[this.getCellID(column - 1, row)];
-            var aliveNeighbours = [up, right, down, left].filter(n => n !== undefined);
 
             // if any of the neighbours are happy, and not happy with us, then we need to ignore them
             if (up !== undefined && up.isHappy() && !up.isConnectedDown()) up = undefined;
             if (right !== undefined && right.isHappy() && !right.isConnectedLeft()) right = undefined;
             if (down !== undefined && down.isHappy() && !down.isConnectedUp()) down = undefined;
             if (left !== undefined && left.isHappy() && !left.isConnectedRight()) left = undefined;
+
+            var aliveNeighbours = [up, right, down, left].filter(n => n !== undefined);
             
             return {
                 up: up,
