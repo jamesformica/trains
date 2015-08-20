@@ -152,6 +152,11 @@ module trains.play {
         destroy(): JQueryDeferred<{}> {
             var def = $.Deferred();
             this.destroyLoop(def, 0);
+            
+            def.done(() => {
+                this.board.trainContext.clearRect(this.x, this.y, trains.play.gridSize, trains.play.gridSize);
+            });
+            
             return def;
         }
         

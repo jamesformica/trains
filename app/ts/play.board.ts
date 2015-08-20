@@ -163,10 +163,7 @@ module trains.play {
                     if (neighbours.left !== undefined && neighbours.left.happy && neighbours.left.isConnectedRight()) neighbours.left.happy = false;
                     if (neighbours.right !== undefined && neighbours.right.happy && neighbours.right.isConnectedLeft()) neighbours.right.happy = false;
                     
-                    neighbours.all.forEach(n => n.checkYourself());
-                    
-                    
-                    trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight); 
+                    neighbours.all.forEach(n => n.checkYourself()); 
                 });
             }
         }
