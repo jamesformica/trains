@@ -24,45 +24,45 @@ module trains.play {
 
             switch (this.direction) {
                 case trains.play.Direction.Horizontal:
-                {
-                    var neighbours = this.board.getNeighbouringCells(this.column, this.row);    
-                    trains.play.CellRenderer.drawStraightTrack(context, neighbours.left === undefined, neighbours.right === undefined);
-                    break;
-                }
+                    {
+                        var neighbours = this.board.getNeighbouringCells(this.column, this.row);
+                        trains.play.CellRenderer.drawStraightTrack(context, neighbours.left === undefined, neighbours.right === undefined);
+                        break;
+                    }
                 case trains.play.Direction.Vertical:
-                {
-                    var neighbours = this.board.getNeighbouringCells(this.column, this.row);    
-                    context.translate(trains.play.gridSize, 0);
-                    context.rotate(Math.PI / 2);
-                    trains.play.CellRenderer.drawStraightTrack(context, neighbours.up === undefined, neighbours.down === undefined);
-                    break;
-                }
+                    {
+                        var neighbours = this.board.getNeighbouringCells(this.column, this.row);
+                        context.translate(trains.play.gridSize, 0);
+                        context.rotate(Math.PI / 2);
+                        trains.play.CellRenderer.drawStraightTrack(context, neighbours.up === undefined, neighbours.down === undefined);
+                        break;
+                    }
                 case trains.play.Direction.LeftUp:
-                {
-                    trains.play.CellRenderer.drawCurvedTrack(context);
-                    break;
-                }
+                    {
+                        trains.play.CellRenderer.drawCurvedTrack(context);
+                        break;
+                    }
                 case trains.play.Direction.LeftDown:
-                {
-                    context.translate(0, trains.play.gridSize);
-                    context.rotate(Math.PI * 1.5);
-                    trains.play.CellRenderer.drawCurvedTrack(context);
-                    break;
-                }
+                    {
+                        context.translate(0, trains.play.gridSize);
+                        context.rotate(Math.PI * 1.5);
+                        trains.play.CellRenderer.drawCurvedTrack(context);
+                        break;
+                    }
                 case trains.play.Direction.RightUp:
-                {
-                    context.translate(trains.play.gridSize, 0);
-                    context.rotate(Math.PI / 2);
-                    trains.play.CellRenderer.drawCurvedTrack(context);
-                    break;
-                }
+                    {
+                        context.translate(trains.play.gridSize, 0);
+                        context.rotate(Math.PI / 2);
+                        trains.play.CellRenderer.drawCurvedTrack(context);
+                        break;
+                    }
                 case trains.play.Direction.RightDown:
-                {
-                    context.translate(trains.play.gridSize, trains.play.gridSize);
-                    context.rotate(Math.PI);
-                    trains.play.CellRenderer.drawCurvedTrack(context);
-                    break;
-                }
+                    {
+                        context.translate(trains.play.gridSize, trains.play.gridSize);
+                        context.rotate(Math.PI);
+                        trains.play.CellRenderer.drawCurvedTrack(context);
+                        break;
+                    }
             }
 
             context.restore();
@@ -70,10 +70,10 @@ module trains.play {
 
         checkYourself(): void {
             var neighbours = this.board.getNeighbouringCells(this.column, this.row);
-            
+
             var changed = this.determineDirection(neighbours);
             this.happy = (neighbours.all.length > 1);
-            
+
             if (changed) {
                 var neighbours = this.board.getNeighbouringCells(this.column, this.row);
                 neighbours.all.forEach(n => n.checkYourself());
@@ -82,7 +82,7 @@ module trains.play {
 
         determineDirection(neighbours: trains.play.NeighbouringCells): boolean {
             if (this.happy) return false;
-            
+
             var newDirection: trains.play.Direction;
             if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.up !== undefined) {
                 newDirection = trains.play.Direction.LeftUp;
@@ -124,7 +124,7 @@ module trains.play {
 
             return false;
         }
-        
+
         isConnectedUp(): boolean {
             return this.direction === Direction.Vertical ||
                 this.direction === Direction.LeftUp ||
@@ -147,6 +147,27 @@ module trains.play {
             return this.direction === Direction.Horizontal ||
                 this.direction === Direction.RightDown ||
                 this.direction === Direction.RightUp;
+        }
+
+        destroy(): JQueryDeferred<{}> {
+            var def = $.Deferred();
+            this.destroyLoop(def, 0);
+            return def;
+        }
+        
+        destroyLoop(deferred: JQueryDeferred<{}>,  counter: number): void {
+             setTimeout(() => {
+                    var x = Math.floor(Math.random() * trains.play.gridSize);
+                    var y = Math.floor(Math.random() * trains.play.gridSize);
+
+                    this.board.trainContext.clearRect(this.x + x, this.y + y, 10, 10);
+                    counter++;
+                    if (counter < 20) {
+                        this.destroyLoop(deferred, counter);
+                    } else {
+                        deferred.resolve();
+                    }
+                }, 20);
         }
     }
 }

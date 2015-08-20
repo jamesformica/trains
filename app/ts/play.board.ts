@@ -106,8 +106,20 @@ module trains.play {
         }
         
         public destroyTrack(): void {
-            trains.play.BoardRenderer.clearCells(this.trainContext, this.canvasWidth, this.canvasHeight);
-            this.cells = [];
+            
+            var deferreds = new Array<JQueryDeferred<{}>>();
+            for (var id in this.cells) {
+                if (this.cells.hasOwnProperty(id)) {
+                    if (!isNaN(id)) {
+                        deferreds.push(this.cells[id].destroy());
+                    }
+                }
+            }
+
+            $.when.apply($, deferreds).done(() => {
+                trains.play.BoardRenderer.clearCells(this.trainContext, this.canvasWidth, this.canvasHeight);
+                this.cells = [];
+            });
         }
         
         private rotateTrack(column: number, row: number): void {
@@ -140,18 +152,22 @@ module trains.play {
             var cellID = this.getCellID(column, row);
 
             if (this.cells[cellID] !== undefined) {
-                delete this.cells[cellID];
-                var neighbours = this.getNeighbouringCells(column, row, true);
+                
+                this.cells[cellID].destroy().done(() => {
+                    delete this.cells[cellID];
+                    var neighbours = this.getNeighbouringCells(column, row, true);
 
-                // some of my neighbours may need to be less happy now
-                if (neighbours.up !== undefined && neighbours.up.happy && neighbours.up.isConnectedDown()) neighbours.up.happy = false;
-                if (neighbours.down !== undefined && neighbours.down.happy && neighbours.down.isConnectedUp()) neighbours.down.happy = false;
-                if (neighbours.left !== undefined && neighbours.left.happy && neighbours.left.isConnectedRight()) neighbours.left.happy = false;
-                if (neighbours.right !== undefined && neighbours.right.happy && neighbours.right.isConnectedLeft()) neighbours.right.happy = false;
-                
-                neighbours.all.forEach(n => n.checkYourself());
-                
-                trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
+                    // some of my neighbours may need to be less happy now
+                    if (neighbours.up !== undefined && neighbours.up.happy && neighbours.up.isConnectedDown()) neighbours.up.happy = false;
+                    if (neighbours.down !== undefined && neighbours.down.happy && neighbours.down.isConnectedUp()) neighbours.down.happy = false;
+                    if (neighbours.left !== undefined && neighbours.left.happy && neighbours.left.isConnectedRight()) neighbours.left.happy = false;
+                    if (neighbours.right !== undefined && neighbours.right.happy && neighbours.right.isConnectedLeft()) neighbours.right.happy = false;
+                    
+                    neighbours.all.forEach(n => n.checkYourself());
+                    
+                    
+                    trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight); 
+                });
             }
         }
 
