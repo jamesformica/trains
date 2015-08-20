@@ -10,11 +10,11 @@ module trains.play {
 
         playComponents.$hintText.css("right", trains.play.gridSize);
 
-        playComponents.$canvases.click(() => {
+        playComponents.$canvases.mousedown(() => {
             closeToolsContainer();
         });
 
-        playComponents.tools.$toolsContainer.click(() => {
+        playComponents.tools.$toolsContainer.mousedown(() => {
             closeToolsContainer();
         });
 
@@ -47,7 +47,7 @@ module trains.play {
                         clearTimeout(timer);
                         timer = undefined;
                         playComponents.tools.$toolsContainer.fadeIn(400);
-                    }, 500);
+                    }, 300);
                 }
             }
         });
