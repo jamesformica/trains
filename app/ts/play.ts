@@ -32,16 +32,29 @@ module trains.play {
             playComponents.tools.$title.text($target.data("title"));
         });
 
-        playComponents.tools.$pencil.click(() => {
-            board.setTool(trains.play.Tool.Track);
-        });
-
-        playComponents.tools.$eraser.click(() => {
-            board.setTool(trains.play.Tool.Eraser);
-        });
-
-        playComponents.tools.$rotate.click(() => {
-            board.setTool(trains.play.Tool.Rotate);
+        playComponents.tools.$tools.click((event) => {
+            var $option = $(event.currentTarget);
+            switch($option.data("action").toLowerCase()) {
+                case "pencil": {
+                    board.setTool(trains.play.Tool.Track);
+                    break;
+                }
+                case "eraser": {
+                    board.setTool(trains.play.Tool.Eraser);
+                    break;
+                }
+                case "rotate": {
+                    board.setTool(trains.play.Tool.Rotate);
+                    break;
+                }
+                case "bomb": {
+                    var response = confirm("Are you sure buddy?");
+                    if (response) {
+                        board.destroyTrack();
+                    }
+                    break;
+                }
+            }
         });
 
         var timer;
@@ -78,9 +91,6 @@ module trains.play {
         var $gridCanvas = $container.find('.ui-grid-canvas');
 
         var $toolsContainer = $container.find('.ui-play-tools');
-        var $pencil = $toolsContainer.find('.ui-pencil');
-        var $eraser = $toolsContainer.find('.ui-eraser');
-        var $rotate = $toolsContainer.find('.ui-rotate');
 
         return {
             $trainCanvas: $trainCanvas,
@@ -91,10 +101,7 @@ module trains.play {
             tools: {
                 $toolsContainer: $toolsContainer,
                 $title: $toolsContainer.find('.ui-tools-title'),
-                $pencil: $pencil,
-                $eraser: $eraser,
-                $rotate: $rotate,
-                $tools: $().add($pencil).add($eraser).add($rotate)
+                $tools: $toolsContainer.find('.ui-tool-option')
             }
         };
     }
@@ -111,9 +118,6 @@ module trains.play {
     export interface ToolsComponents {
         $toolsContainer: JQuery;
         $title: JQuery;
-        $pencil: JQuery;
-        $eraser: JQuery;
-        $rotate: JQuery;
         $tools: JQuery;
     }
 

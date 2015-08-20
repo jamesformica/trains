@@ -101,8 +101,13 @@ module trains.play {
                 case Tool.Rotate:
                 {
                     this.rotateTrack(column, row);
+                }
             }
         }
+        
+        public destroyTrack(): void {
+            trains.play.BoardRenderer.clearCells(this.trainContext, this.canvasWidth, this.canvasHeight);
+            this.cells = [];
         }
         
         private rotateTrack(column: number, row: number): void {
