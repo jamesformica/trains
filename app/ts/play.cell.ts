@@ -5,7 +5,7 @@ module trains.play {
 
     export class Cell {
 
-        private happy: boolean;
+        public happy: boolean;
         private x: number;
         private y: number;
         public direction: trains.play.Direction;
@@ -66,67 +66,53 @@ module trains.play {
             context.restore();
         }
 
-        neighbourlyUpdateTime(neighbours: trains.play.NeighbouringCells, previouslyUpdatedCells: Array<number>): void {
+        checkYourself(): void {
+            var neighbours = this.board.getNeighbouringCells(this.column, this.row);
+            
             var changed = this.determineDirection(neighbours);
-
-            this.happy = (neighbours.aliveNeighbours.length > 1);
-
+            this.happy = (neighbours.all.length > 1);
+            
             if (changed) {
-                previouslyUpdatedCells.push(this.id);
-                neighbours.aliveNeighbours.forEach((neighbour) => {
-                    if (previouslyUpdatedCells.indexOf(neighbour.id) === -1) {
-                        neighbour.neighbourlyUpdateTime(this.board.getNeighbouringCells(neighbour.column, neighbour.row), previouslyUpdatedCells);
-                    }
-                });
+                var neighbours = this.board.getNeighbouringCells(this.column, this.row);
+                neighbours.all.forEach(n => n.checkYourself());
             }
-        }
-
-
-
-        isHappy(): boolean {
-            return this.happy;
         }
 
         determineDirection(neighbours: trains.play.NeighbouringCells): boolean {
+            if (this.happy) return false;
+            
             var newDirection: trains.play.Direction;
             if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.up !== undefined) {
-
-                if (!this.happy) {
-                    newDirection = trains.play.Direction.LeftUp;
-                }
+                newDirection = trains.play.Direction.LeftUp;
             }
 
             else if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.down !== undefined) {
-                if (!this.happy) {
-                    newDirection = trains.play.Direction.LeftDown;
-                }
+                newDirection = trains.play.Direction.LeftDown;
             }
 
             else if (neighbours.left === undefined && neighbours.right !== undefined && neighbours.up !== undefined) {
-                if (!this.happy) {
-                    newDirection = trains.play.Direction.RightUp;
-                }
+                newDirection = trains.play.Direction.RightUp;
             }
 
             else if (neighbours.left === undefined && neighbours.right !== undefined && neighbours.down !== undefined) {
-                if (!this.happy) {
-                    newDirection = trains.play.Direction.RightDown;
-                }
+                newDirection = trains.play.Direction.RightDown;
             }
-
-            if (newDirection === undefined && !this.happy) {
-
-                if (neighbours.up !== undefined || neighbours.down !== undefined) {
-                    newDirection = trains.play.Direction.Vertical;
-                }
-
-                else if (neighbours.left !== undefined || neighbours.right !== undefined) {
-                    newDirection = trains.play.Direction.Horizontal;
-                }
-
-                else {
-                    newDirection = trains.play.Direction.Horizontal;
-                }
+            // greedy vertical and horizontal joins    
+            else if (neighbours.up !== undefined && neighbours.down !== undefined) {
+                newDirection = trains.play.Direction.Vertical;
+            }
+            else if (neighbours.left !== undefined && neighbours.right !== undefined) {
+                newDirection = trains.play.Direction.Horizontal;
+            }
+            // now less fussy vertical and horizontal joins    
+            else if (neighbours.up !== undefined || neighbours.down !== undefined) {
+                newDirection = trains.play.Direction.Vertical;
+            }
+            else if (neighbours.left !== undefined || neighbours.right !== undefined) {
+                newDirection = trains.play.Direction.Horizontal;
+            }
+            else {
+                newDirection = trains.play.Direction.Horizontal;
             }
 
             if (newDirection !== undefined && newDirection !== this.direction) {
