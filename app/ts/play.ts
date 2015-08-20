@@ -23,16 +23,16 @@ module trains.play {
             closeToolsContainer();
         });
 
-        playComponents.tools.$tools.click(() => {
+        playComponents.tools.$options.click(() => {
             closeToolsContainer();
         });
 
-        playComponents.tools.$tools.mouseover((event) => {
+        playComponents.tools.$options.mouseover((event) => {
             var $target = $(event.currentTarget);
             playComponents.tools.$title.text($target.data("title"));
         });
 
-        playComponents.tools.$tools.click((event) => {
+        playComponents.tools.$options.click((event) => {
             var $option = $(event.currentTarget);
             switch ($option.data("action").toLowerCase()) {
                 case "pencil": {
@@ -101,7 +101,7 @@ module trains.play {
             tools: {
                 $toolsContainer: $toolsContainer,
                 $title: $toolsContainer.find('.ui-tools-title'),
-                $tools: $toolsContainer.find('.ui-tool-option')
+                $options: $toolsContainer.find('.ui-tool-option')
             }
         };
     }
@@ -118,6 +118,6 @@ module trains.play {
     export interface ToolsComponents {
         $toolsContainer: JQuery;
         $title: JQuery;
-        $tools: JQuery;
+        $options: JQuery;
     }
 }

@@ -160,14 +160,14 @@ module trains.play {
                     var x = Math.floor(Math.random() * trains.play.gridSize);
                     var y = Math.floor(Math.random() * trains.play.gridSize);
 
-                    this.board.trainContext.clearRect(this.x + x, this.y + y, 10, 10);
+                    this.board.trainContext.clearRect(this.x + x, this.y + y, 5, 5);
                     counter++;
-                    if (counter < 20) {
+                    if (counter < 40) {
                         this.destroyLoop(deferred, counter);
                     } else {
                         deferred.resolve();
                     }
-                }, 20);
+                }, 10);
         }
     }
 }
