@@ -50,7 +50,11 @@ module trains.play {
 
             this.trainCanvas.addEventListener('click', (event: MouseEvent) => this.cellClick(event));
             this.trainCanvas.addEventListener('mousemove', (event: MouseEvent) => this.cellMoveOver(event));
-
+            this.trainCanvas.addEventListener('contextmenu', (ev) => {
+                this.cellRightClick(ev);
+                ev.preventDefault();
+                return false; }, false);
+            
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
         }
         
@@ -68,6 +72,12 @@ module trains.play {
             }
         }
 
+        private cellRightClick(event: MouseEvent): void {
+            var column = this.getGridCoord(event.pageX - this.trainCanvas.offsetLeft);
+            var row = this.getGridCoord(event.pageY - this.trainCanvas.offsetTop);
+            this.eraseTrack(column, row);
+        }
+        
         private cellClick(event: MouseEvent): void {
 
             var column = this.getGridCoord(event.pageX - this.trainCanvas.offsetLeft);
