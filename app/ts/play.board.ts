@@ -27,7 +27,7 @@ module trains.play {
 
         private cells: trains.play.BoardCells = {};
         private tool: Tool = trains.play.Tool.Track;
-
+        
         constructor(private $trainCanvas: JQuery, private $gridCanvas: JQuery) {
 
             this.$window = $(window);
@@ -53,11 +53,15 @@ module trains.play {
 
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
         }
+        
+        redraw(): void {
+            trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
+        }            
 
         setTool(tool: Tool): void {
             this.tool = tool;
         }
-
+        
         private cellMoveOver(event: MouseEvent): void {
             if (event.buttons === 1) {
                 this.cellClick(event);
@@ -87,10 +91,10 @@ module trains.play {
                 case Tool.Rotate:
                 {
                     this.rotateTrack(column, row);
-                }
             }
         }
-
+        }
+        
         private rotateTrack(column: number, row: number): void {
             var cellID = this.getCellID(column, row);
             var cell = this.cells[cellID];
@@ -111,7 +115,7 @@ module trains.play {
                 var newCell = new trains.play.Cell(this, cellID, column, row);
                 this.cells[newCell.id] = newCell;
 
-                newCell.neighbourlyUpdateTime(this.getNeighbouringCells(column, row), []);
+                newCell.checkYourself();
 
                 trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
             }
@@ -122,6 +126,16 @@ module trains.play {
 
             if (this.cells[cellID] !== undefined) {
                 delete this.cells[cellID];
+                var neighbours = this.getNeighbouringCells(column, row, true);
+
+                // some of my neighbours may need to be less happy now
+                if (neighbours.up !== undefined && neighbours.up.happy && neighbours.up.isConnectedDown()) neighbours.up.happy = false;
+                if (neighbours.down !== undefined && neighbours.down.happy && neighbours.down.isConnectedUp()) neighbours.down.happy = false;
+                if (neighbours.left !== undefined && neighbours.left.happy && neighbours.left.isConnectedRight()) neighbours.left.happy = false;
+                if (neighbours.right !== undefined && neighbours.right.happy && neighbours.right.isConnectedLeft()) neighbours.right.happy = false;
+                
+                neighbours.all.forEach(n => n.checkYourself());
+                
                 trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
             }
         }
@@ -138,27 +152,28 @@ module trains.play {
             return Number(column.toString() + row.toString());
         }
 
-        getNeighbouringCells(column: number, row: number): trains.play.NeighbouringCells {
-
+        getNeighbouringCells(column: number, row: number, includeHappyNeighbours: boolean = false): trains.play.NeighbouringCells {
             var up = this.cells[this.getCellID(column, row - 1)];
             var right = this.cells[this.getCellID(column + 1, row)];
             var down = this.cells[this.getCellID(column, row + 1)];
             var left = this.cells[this.getCellID(column - 1, row)];
 
             // if any of the neighbours are happy, and not happy with us, then we need to ignore them
-            if (up !== undefined && up.isHappy() && !up.isConnectedDown()) up = undefined;
-            if (right !== undefined && right.isHappy() && !right.isConnectedLeft()) right = undefined;
-            if (down !== undefined && down.isHappy() && !down.isConnectedUp()) down = undefined;
-            if (left !== undefined && left.isHappy() && !left.isConnectedRight()) left = undefined;
-
-            var aliveNeighbours = [up, right, down, left].filter(n => n !== undefined);
-
+            if (!includeHappyNeighbours) {
+                if (up !== undefined && up.happy && !up.isConnectedDown()) up = undefined;
+                if (right !== undefined && right.happy && !right.isConnectedLeft()) right = undefined;
+                if (down !== undefined && down.happy && !down.isConnectedUp()) down = undefined;
+                if (left !== undefined && left.happy && !left.isConnectedRight()) left = undefined;
+            }
+            
+            var all = [up, right, down, left].filter(n => n !== undefined);
+            
             return {
                 up: up,
                 right: right,
                 down: down,
                 left: left,
-                aliveNeighbours: aliveNeighbours
+                all: all
             };
         }
     }
@@ -172,7 +187,7 @@ module trains.play {
         right: trains.play.Cell;
         down: trains.play.Cell;
         left: trains.play.Cell;
-        aliveNeighbours: Array<trains.play.Cell>;
+        all: Array<trains.play.Cell>;
     }
 
     export enum Tool {
