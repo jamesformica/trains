@@ -9,6 +9,11 @@ module trains.play {
         var board = new trains.play.Board(playComponents.$trainCanvas, playComponents.$gridCanvas);
 
         playComponents.$hintText.css("right", trains.play.gridSize);
+        playComponents.$toolsButton.css("left", trains.play.gridSize / 2);
+
+        playComponents.$toolsButton.click(() => {
+            showToolsContainer();
+        });
 
         playComponents.$canvases.mousedown(() => {
             closeToolsContainer();
@@ -46,7 +51,7 @@ module trains.play {
                     timer = setTimeout(() => {
                         clearTimeout(timer);
                         timer = undefined;
-                        playComponents.tools.$toolsContainer.fadeIn(400);
+                        showToolsContainer();
                     }, 300);
                 }
             }
@@ -56,6 +61,10 @@ module trains.play {
             clearTimeout(timer);
             timer = undefined;
         });
+
+        function showToolsContainer(): void {
+            playComponents.tools.$toolsContainer.fadeIn(400);
+        }
 
         function closeToolsContainer(): void {
             playComponents.tools.$title.text("");
@@ -68,9 +77,7 @@ module trains.play {
         var $trainCanvas = $container.find('.ui-train-canvas');
         var $gridCanvas = $container.find('.ui-grid-canvas');
 
-        var $hintText = $container.find('.ui-hint-text');
         var $toolsContainer = $container.find('.ui-play-tools');
-        var $toolsTitle = $toolsContainer.find('.ui-tools-title');
         var $pencil = $toolsContainer.find('.ui-pencil');
         var $eraser = $toolsContainer.find('.ui-eraser');
         var $rotate = $toolsContainer.find('.ui-rotate');
@@ -79,10 +86,11 @@ module trains.play {
             $trainCanvas: $trainCanvas,
             $gridCanvas: $gridCanvas,
             $canvases: $().add($trainCanvas).add($gridCanvas),
-            $hintText: $hintText,
+            $hintText: $container.find('.ui-hint-text'),
+            $toolsButton: $container.find('.ui-tools'),
             tools: {
                 $toolsContainer: $toolsContainer,
-                $title: $toolsTitle,
+                $title: $toolsContainer.find('.ui-tools-title'),
                 $pencil: $pencil,
                 $eraser: $eraser,
                 $rotate: $rotate,
@@ -96,6 +104,7 @@ module trains.play {
         $gridCanvas: JQuery;
         $canvases: JQuery;
         $hintText: JQuery;
+        $toolsButton: JQuery;
         tools: trains.play.ToolsComponents;
     }
 
