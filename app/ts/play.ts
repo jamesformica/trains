@@ -34,7 +34,7 @@ module trains.play {
 
         playComponents.tools.$tools.click((event) => {
             var $option = $(event.currentTarget);
-            switch($option.data("action").toLowerCase()) {
+            switch ($option.data("action").toLowerCase()) {
                 case "pencil": {
                     board.setTool(trains.play.Tool.Track);
                     break;
@@ -120,6 +120,4 @@ module trains.play {
         $title: JQuery;
         $tools: JQuery;
     }
-
-
 }
