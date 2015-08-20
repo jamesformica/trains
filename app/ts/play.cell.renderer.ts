@@ -5,7 +5,7 @@ module trains.play.CellRenderer {
     var plankColour = "#382E1C";
     var trackColour = "#6E7587";
 
-    export function drawStraightTrack(context: CanvasRenderingContext2D): void {
+    export function drawStraightTrack(context: CanvasRenderingContext2D, cutOffTop: boolean, cutOffBottom: boolean): void {
 
         var thirdGridSize = trains.play.gridSize / 3;
 
@@ -22,25 +22,38 @@ module trains.play.CellRenderer {
             context.stroke();
         }
 
+        var start = cutOffTop ? thirdGridSize - trackWidth : 0;
+        var end = trains.play.gridSize - (cutOffBottom ? thirdGridSize - trackWidth : 0);
+        
+        // this kinda makes sense
+        if (cutOffBottom && cutOffTop) {
+            end = end - start;
+        }
+        
         // draw the white part of the track
         context.beginPath();
-        context.clearRect(0, firstTrackPosY, trains.play.gridSize, trackWidth);
-        context.clearRect(0, secondTrackPosY - trackWidth, trains.play.gridSize, trackWidth);
+        context.clearRect(start, firstTrackPosY, end, trackWidth);
+        context.clearRect(start, secondTrackPosY - trackWidth, end, trackWidth);
 
+        // I have no idea what I'm doing        
+        if (cutOffBottom && cutOffTop) {
+            end = end + start;
+        }
+        
         // draw the outline on the track
         context.lineWidth = 1;
         context.strokeStyle = trackColour;
         context.beginPath();
 
-        context.moveTo(0, firstTrackPosY);
-        context.lineTo(trains.play.gridSize, firstTrackPosY);
-        context.moveTo(0, firstTrackPosY + trackWidth);
-        context.lineTo(trains.play.gridSize, firstTrackPosY + trackWidth);
+        context.moveTo(start, firstTrackPosY);
+        context.lineTo(end, firstTrackPosY);
+        context.moveTo(start, firstTrackPosY + trackWidth);
+        context.lineTo(end, firstTrackPosY + trackWidth);
 
-        context.moveTo(0, secondTrackPosY - trackWidth);
-        context.lineTo(trains.play.gridSize, secondTrackPosY - trackWidth);
-        context.moveTo(0, secondTrackPosY);
-        context.lineTo(trains.play.gridSize, secondTrackPosY);
+        context.moveTo(start, secondTrackPosY - trackWidth);
+        context.lineTo(end, secondTrackPosY - trackWidth);
+        context.moveTo(start, secondTrackPosY);
+        context.lineTo(end, secondTrackPosY);
 
         context.stroke();
     }

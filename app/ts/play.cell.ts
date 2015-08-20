@@ -25,14 +25,16 @@ module trains.play {
             switch (this.direction) {
                 case trains.play.Direction.Horizontal:
                 {
-                    trains.play.CellRenderer.drawStraightTrack(context);
+                    var neighbours = this.board.getNeighbouringCells(this.column, this.row);    
+                    trains.play.CellRenderer.drawStraightTrack(context, neighbours.left === undefined, neighbours.right === undefined);
                     break;
                 }
                 case trains.play.Direction.Vertical:
                 {
+                    var neighbours = this.board.getNeighbouringCells(this.column, this.row);    
                     context.translate(trains.play.gridSize, 0);
                     context.rotate(Math.PI / 2);
-                    trains.play.CellRenderer.drawStraightTrack(context);
+                    trains.play.CellRenderer.drawStraightTrack(context, neighbours.up === undefined, neighbours.down === undefined);
                     break;
                 }
                 case trains.play.Direction.LeftUp:
