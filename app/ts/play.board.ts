@@ -57,7 +57,7 @@ module trains.play {
         setTool(tool: Tool): void {
             this.tool = tool;
         }
-        
+
         private cellMoveOver(event: MouseEvent): void {
             if (event.buttons === 1) {
                 this.cellClick(event);
@@ -84,9 +84,13 @@ module trains.play {
                     this.eraseTrack(column, row);
                     break;
                 }
+                case Tool.Rotate:
+                {
+                    this.rotateTrack(column, row);
+                }
             }
         }
-        
+
         private rotateTrack(column: number, row: number): void {
             var cellID = this.getCellID(column, row);
             var cell = this.cells[cellID];
@@ -148,7 +152,7 @@ module trains.play {
             if (left !== undefined && left.isHappy() && !left.isConnectedRight()) left = undefined;
 
             var aliveNeighbours = [up, right, down, left].filter(n => n !== undefined);
-            
+
             return {
                 up: up,
                 right: right,

@@ -3,60 +3,109 @@
 
 module trains.play {
 
-    export function InitialisePlay($container:JQuery):void {
+    export function InitialisePlay($container: JQuery): void {
+
+        var playComponents = GetPlayComponent($container);
+        var board = new trains.play.Board(playComponents.$trainCanvas, playComponents.$gridCanvas);
+
+        playComponents.$hintText.css("right", trains.play.gridSize);
+
+        playComponents.$canvases.click(() => {
+            closeToolsContainer();
+        });
+
+        playComponents.tools.$toolsContainer.click(() => {
+            closeToolsContainer();
+        });
+
+        playComponents.tools.$tools.click(() => {
+            closeToolsContainer();
+        });
+
+        playComponents.tools.$tools.mouseover((event) => {
+            var $target = $(event.currentTarget);
+            playComponents.tools.$title.text($target.data("title"));
+        });
+
+        playComponents.tools.$pencil.click(() => {
+            board.setTool(trains.play.Tool.Track);
+        });
+
+        playComponents.tools.$eraser.click(() => {
+            board.setTool(trains.play.Tool.Eraser);
+        });
+
+        playComponents.tools.$rotate.click(() => {
+            board.setTool(trains.play.Tool.Rotate);
+        });
+
+        var timer;
+        $(window).keydown((event) => {
+            if (event.ctrlKey && !event.shiftKey && event.keyCode === 17) {
+                if (timer === undefined) {
+                    timer = setTimeout(() => {
+                        clearTimeout(timer);
+                        timer = undefined;
+                        playComponents.tools.$toolsContainer.fadeIn(400);
+                    }, 500);
+                }
+            }
+        });
+
+        $(window).keyup(() => {
+            clearTimeout(timer);
+            timer = undefined;
+        });
+
+        function closeToolsContainer(): void {
+            playComponents.tools.$title.text("");
+            playComponents.tools.$toolsContainer.fadeOut(400);
+        }
+    }
+
+    export function GetPlayComponent($container: JQuery): trains.play.PlayComponents {
 
         var $trainCanvas = $container.find('.ui-train-canvas');
         var $gridCanvas = $container.find('.ui-grid-canvas');
 
-        var board = new trains.play.Board($trainCanvas, $gridCanvas);
-
+        var $hintText = $container.find('.ui-hint-text');
         var $toolsContainer = $container.find('.ui-play-tools');
         var $toolsTitle = $toolsContainer.find('.ui-tools-title');
         var $pencil = $toolsContainer.find('.ui-pencil');
         var $eraser = $toolsContainer.find('.ui-eraser');
         var $rotate = $toolsContainer.find('.ui-rotate');
-        var $tools = $().add($pencil).add($eraser).add($rotate);
 
-        $tools.on({
-            mouseover: (event: JQueryEventObject) => {
-                var $target = $(event.currentTarget);
-                $toolsTitle.text($target.data("title"));
+        return {
+            $trainCanvas: $trainCanvas,
+            $gridCanvas: $gridCanvas,
+            $canvases: $().add($trainCanvas).add($gridCanvas),
+            $hintText: $hintText,
+            tools: {
+                $toolsContainer: $toolsContainer,
+                $title: $toolsTitle,
+                $pencil: $pencil,
+                $eraser: $eraser,
+                $rotate: $rotate,
+                $tools: $().add($pencil).add($eraser).add($rotate)
             }
-        });
+        };
+    }
 
+    export interface PlayComponents {
+        $trainCanvas: JQuery;
+        $gridCanvas: JQuery;
+        $canvases: JQuery;
+        $hintText: JQuery;
+        tools: trains.play.ToolsComponents;
+    }
 
-        $pencil.click(() => {
-            board.setTool(trains.play.Tool.Track);
-        });
-
-        $eraser.click(() => {
-            board.setTool(trains.play.Tool.Eraser);
-        });
-
-        $rotate.click(() => {
-            board.setTool(trains.play.Tool.Rotate);
-        });
-        
-        var timer;
-        $(window).on({
-            keydown: (event) => {
-                if (event.ctrlKey && !event.shiftKey && event.keyCode === 17) {
-                    if (timer === undefined) {
-                        timer = setTimeout(() => {
-                            clearTimeout(timer);
-                            timer = undefined;
-                            $toolsContainer.show();
-                        }, 1000);
-                    }
-                }
-            },
-            keyup: () => {
-                clearTimeout(timer);
-                timer = undefined;
-            }
-        });
-
-
+    export interface ToolsComponents {
+        $toolsContainer: JQuery;
+        $title: JQuery;
+        $pencil: JQuery;
+        $eraser: JQuery;
+        $rotate: JQuery;
+        $tools: JQuery;
     }
 
 

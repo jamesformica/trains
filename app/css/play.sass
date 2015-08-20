@@ -1,32 +1,39 @@
 @import "app/css/common"
 
+$tools-padding: 20px
+$tool-button-height: 60px
+$tools-height: $tools-padding * 2 + $tool-button-height
+
+.hint-text
+    position: absolute
+    top: 5px
+
 .play-tools
     position: absolute
-    width: 90%
-    height: auto
-    max-width: 600px
+    width: 100%
     display: none
     margin: 0 auto
-    top: 20%
+    top: calc(50% - #{$tools-height})
     left: 0
     right: 0
-    background-color: fade_out($colour-foreground, 0.2)
-    border: $border-double-invert
-    border-radius: $border-radius
+    background-color: fade_out($colour-foreground, 0.8)
     padding: 0 20px 20px 20px
     z-index: 1000
     text-align: center
 
     > .tools-title
         display: block
-        margin: 5px 0
+        height: $tools-padding
+        line-height: $tools-padding
 
     > button
-        width: 60px
-        height: 60px
-        line-height: 60px
-        font-size: 30px
+        width: $tool-button-height
+        height: $tool-button-height
+        line-height: $tool-button-height
+        font-size: $tool-button-height / 2
         margin-right: 10px
+        padding-top: 0
+        padding-bottom: 0
 
     &:last-child
         margin-right: 0px
