@@ -17,6 +17,7 @@ class TypescriptBuilder
     # generate the js for each ts file
     error = false
     Dir.glob(File.dirname(__FILE__) + '/../app/ts/*.ts') do |tsFile|
+      puts "gonna do: "  + tsFile
       result = compile_file(tsFile, File.dirname(__FILE__) + '/../app/js')
       if result.success?
         printf("- %-40s %10s\n", File.basename(tsFile), 'done'.green)
