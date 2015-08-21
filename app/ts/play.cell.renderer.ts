@@ -5,6 +5,10 @@ module trains.play.CellRenderer {
     var plankColour = "#382E1C";
     var trackColour = "#6E7587";
 
+    export function clearCell(context: CanvasRenderingContext2D): void {
+        context.clearRect(0, 0, play.gridSize, play.gridSize);
+    }
+    
     export function drawStraightTrack(context: CanvasRenderingContext2D, cutOffTop: boolean, cutOffBottom: boolean): void {
 
         var thirdGridSize = trains.play.gridSize / 3;

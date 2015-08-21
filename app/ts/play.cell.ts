@@ -21,6 +21,7 @@ module trains.play {
             context.save();
 
             context.translate(this.x + 0.5, this.y + 0.5);
+            context.clearRect(0, 0, play.gridSize, play.gridSize);
 
             switch (this.direction) {
                 case trains.play.Direction.Horizontal:
@@ -73,6 +74,7 @@ module trains.play {
 
             var changed = this.determineDirection(neighbours);
             this.happy = (neighbours.all.length > 1);
+            this.draw(this.board.trainContext);
 
             if (changed) {
                 var neighbours = this.board.getNeighbouringCells(this.column, this.row);

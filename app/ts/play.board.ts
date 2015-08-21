@@ -131,7 +131,7 @@ module trains.play {
                 } else {
                     cell.direction = cell.direction + 1;
                 }
-                trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
+                cell.draw(this.trainContext);
             }
         }
 
@@ -143,8 +143,6 @@ module trains.play {
                 this.cells[newCell.id] = newCell;
 
                 newCell.checkYourself();
-
-                trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
             }
         }
 
