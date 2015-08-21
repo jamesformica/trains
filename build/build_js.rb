@@ -11,6 +11,9 @@ class TypescriptBuilder
     # clean out the js folder
     FileUtils.rm_rf(Dir.glob('./app/js/*'))
 
+    puts "ts dir: " + File.dirname(__FILE__) + '/../app/ts/*.ts'
+    puts "js dir: " + File.dirname(__FILE__) + '/../app/js'
+
     # generate the js for each ts file
     error = false
     Dir.glob(File.dirname(__FILE__) + '/../app/ts/*.ts') do |tsFile|
