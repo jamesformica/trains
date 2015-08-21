@@ -52,7 +52,11 @@ module trains.play {
             this.trainCanvas.addEventListener('click', (event: MouseEvent) => this.cellClick(event));
             this.trainCanvas.addEventListener('mousemove', (event: MouseEvent) => this.cellMoveOver(event));
             this.trainCanvas.addEventListener('touchstart', (event: any) => false);
-            this.trainCanvas.addEventListener('touchmove', (event: any) => this.cellTouch(event));
+            this.trainCanvas.addEventListener('touchmove', (event: any) => {
+                this.cellTouch(event);
+                event.preventDefault();
+                return false;
+            });
             this.trainCanvas.addEventListener('contextmenu', (ev) => {
                 this.cellRightClick(ev);
                 ev.preventDefault();
