@@ -1,4 +1,5 @@
 /// <reference path="../types/jquery.d.ts" />
+/// <reference path="../types/awesomeCursor.d.ts" />
 /// <reference path="play.cell.ts" />
 /// <reference path="play.board.renderer.ts" />
 
@@ -26,7 +27,7 @@ module trains.play {
         public canvasHeight: number;
 
         private cells: trains.play.BoardCells = {};
-        private tool: Tool = trains.play.Tool.Track;
+        private tool: Tool;
         
         constructor(private $trainCanvas: JQuery, private $gridCanvas: JQuery) {
 
@@ -54,6 +55,8 @@ module trains.play {
                 this.cellRightClick(ev);
                 ev.preventDefault();
                 return false; }, false);
+                
+            this.setTool(trains.play.Tool.Track);
             
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
         }
@@ -63,7 +66,30 @@ module trains.play {
         }            
 
         setTool(tool: Tool): void {
-            this.tool = tool;
+            if (tool !== this.tool) {
+                this.tool = tool;
+                
+                var cursorName;
+                switch (tool) {
+                    case trains.play.Tool.Track: {
+                        cursorName = "pencil";
+                        break;
+                    }
+                    case trains.play.Tool.Eraser: {
+                        cursorName = "eraser";
+                        break;
+                    }
+                    case trains.play.Tool.Rotate: {
+                        cursorName = "recycle";
+                        break;
+                    }
+                }
+                
+                $('body').css('cursor', '');
+                $('body').awesomeCursor(cursorName, {
+                    hotspot: 'bottom left'
+                })
+            }
         }
         
         private cellMoveOver(event: MouseEvent): void {
