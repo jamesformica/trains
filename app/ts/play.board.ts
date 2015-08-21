@@ -51,6 +51,7 @@ module trains.play {
 
             this.trainCanvas.addEventListener('click', (event: MouseEvent) => this.cellClick(event));
             this.trainCanvas.addEventListener('mousemove', (event: MouseEvent) => this.cellMoveOver(event));
+            this.trainCanvas.addEventListener('touchmove', (event: any) => this.cellTouch(event));
             this.trainCanvas.addEventListener('contextmenu', (ev) => {
                 this.cellRightClick(ev);
                 ev.preventDefault();
@@ -98,6 +99,13 @@ module trains.play {
             }
         }
 
+
+        private cellTouch(event: any): void {
+            var column = this.getGridCoord(event.touches[0].pageX - this.trainCanvas.offsetLeft);
+            var row = this.getGridCoord(event.touches[0].pageY - this.trainCanvas.offsetTop);
+            this.doTool(column, row, event.shiftKey);
+        }
+        
         private cellRightClick(event: MouseEvent): void {
             var column = this.getGridCoord(event.pageX - this.trainCanvas.offsetLeft);
             var row = this.getGridCoord(event.pageY - this.trainCanvas.offsetTop);
@@ -105,14 +113,17 @@ module trains.play {
         }
         
         private cellClick(event: MouseEvent): void {
-
             var column = this.getGridCoord(event.pageX - this.trainCanvas.offsetLeft);
             var row = this.getGridCoord(event.pageY - this.trainCanvas.offsetTop);
 
+            this.doTool(column, row, event.shiftKey);
+        }
+        
+        private doTool(column: number, row: number, shift: boolean): void {
             switch (this.tool) {
                 case Tool.Track:
                 {
-                    if (event.shiftKey) {
+                    if (shift) {
                         this.rotateTrack(column, row);
                     } else {
                         this.newTrack(column, row);
