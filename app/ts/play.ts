@@ -9,7 +9,8 @@ module trains.play {
         var board = new trains.play.Board(playComponents.$trainCanvas, playComponents.$gridCanvas);
 
         playComponents.$hintText.css("right", trains.play.gridSize);
-        playComponents.$toolsButton.css("left", trains.play.gridSize - (playComponents.$toolsButton.width() / 2));
+        playComponents.$toolsButton.css("top", (($(window).height() - board.canvasHeight) / 2) - (playComponents.$toolsButton.outerHeight() / 2));
+        playComponents.$toolsButton.css("left", (($(window).width() - board.canvasWidth) / 2) - (playComponents.$toolsButton.outerWidth() / 2));
 
         playComponents.$toolsButton.click(() => {
             showToolsContainer();

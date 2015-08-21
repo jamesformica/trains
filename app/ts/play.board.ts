@@ -22,8 +22,8 @@ module trains.play {
         private gridCanvas: HTMLCanvasElement;
         private gridContext: CanvasRenderingContext2D;
 
-        private canvasWidth: number;
-        private canvasHeight: number;
+        public canvasWidth: number;
+        public canvasHeight: number;
 
         private cells: trains.play.BoardCells = {};
         private tool: Tool = trains.play.Tool.Track;
