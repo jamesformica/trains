@@ -131,7 +131,7 @@ module trains.play {
                 } else {
                     cell.direction = cell.direction + 1;
                 }
-                trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
+                cell.draw(this.trainContext);
             }
         }
 
@@ -143,8 +143,6 @@ module trains.play {
                 this.cells[newCell.id] = newCell;
 
                 newCell.checkYourself();
-
-                trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
             }
         }
 
@@ -152,9 +150,8 @@ module trains.play {
             var cellID = this.getCellID(column, row);
 
             if (this.cells[cellID] !== undefined) {
-                
+                delete this.cells[cellID];
                 this.cells[cellID].destroy().done(() => {
-                    delete this.cells[cellID];
                     var neighbours = this.getNeighbouringCells(column, row, true);
 
                     // some of my neighbours may need to be less happy now
