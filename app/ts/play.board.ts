@@ -150,9 +150,8 @@ module trains.play {
             var cellID = this.getCellID(column, row);
 
             if (this.cells[cellID] !== undefined) {
-                
+                delete this.cells[cellID];
                 this.cells[cellID].destroy().done(() => {
-                    delete this.cells[cellID];
                     var neighbours = this.getNeighbouringCells(column, row, true);
 
                     // some of my neighbours may need to be less happy now

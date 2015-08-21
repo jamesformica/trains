@@ -21,7 +21,7 @@ module trains.play {
             context.save();
 
             context.translate(this.x + 0.5, this.y + 0.5);
-            context.clearRect(0, 0, play.gridSize, play.gridSize);
+            trains.play.CellRenderer.clearCell(context);
 
             switch (this.direction) {
                 case trains.play.Direction.Horizontal:
