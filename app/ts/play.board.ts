@@ -51,6 +51,7 @@ module trains.play {
 
             this.trainCanvas.addEventListener('click', (event: MouseEvent) => this.cellClick(event));
             this.trainCanvas.addEventListener('mousemove', (event: MouseEvent) => this.cellMoveOver(event));
+            this.trainCanvas.addEventListener('touchstart', (event: any) => false);
             this.trainCanvas.addEventListener('touchmove', (event: any) => this.cellTouch(event));
             this.trainCanvas.addEventListener('contextmenu', (ev) => {
                 this.cellRightClick(ev);
@@ -211,8 +212,8 @@ module trains.play {
             return Math.floor(value / gridSize);
         }
 
-        getCellID(column: number, row: number): number {
-            return Number(column.toString() + row.toString());
+        getCellID(column: number, row: number): string {
+            return column.toString() + ':' + row.toString();
         }
 
         getNeighbouringCells(column: number, row: number, includeHappyNeighbours: boolean = false): trains.play.NeighbouringCells {

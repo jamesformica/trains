@@ -10,7 +10,7 @@ module trains.play {
         private y: number;
         public direction: trains.play.Direction;
 
-        constructor(private board: trains.play.Board, public id: number, public column: number, public row: number) {
+        constructor(private board: trains.play.Board, public id: string, public column: number, public row: number) {
             this.happy = false;
             this.x = this.column * trains.play.gridSize;
             this.y = this.row * trains.play.gridSize;
