@@ -149,9 +149,10 @@ module trains.play {
         private eraseTrack(column: number, row: number): void {
             var cellID = this.getCellID(column, row);
 
-            if (this.cells[cellID] !== undefined) {
+            var cell = this.cells[cellID];            
+            if (cell !== undefined) {
                 delete this.cells[cellID];
-                this.cells[cellID].destroy().done(() => {
+                cell.destroy().done(() => {
                     var neighbours = this.getNeighbouringCells(column, row, true);
 
                     // some of my neighbours may need to be less happy now
