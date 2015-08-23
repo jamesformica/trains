@@ -6,7 +6,7 @@ module trains.play {
     export function InitialisePlay($container: JQuery): void {
 
         var playComponents = GetPlayComponent($container);
-        var board = new trains.play.Board(playComponents.$trainCanvas, playComponents.$gridCanvas);
+        var board = new trains.play.Board(playComponents.$trackCanvas, playComponents.$gridCanvas);
 
         playComponents.$hintText.css("right", trains.play.gridSize);
         playComponents.$toolsButton.css("top", (($(window).height() - board.canvasHeight) / 2) - (playComponents.$toolsButton.outerHeight() / 2));
@@ -88,13 +88,13 @@ module trains.play {
 
     export function GetPlayComponent($container: JQuery): trains.play.PlayComponents {
 
-        var $trainCanvas = $container.find('.ui-train-canvas');
+        var $trainCanvas = $container.find('.ui-track-canvas');
         var $gridCanvas = $container.find('.ui-grid-canvas');
 
         var $toolsContainer = $container.find('.ui-play-tools');
 
         return {
-            $trainCanvas: $trainCanvas,
+            $trackCanvas: $trainCanvas,
             $gridCanvas: $gridCanvas,
             $canvases: $().add($trainCanvas).add($gridCanvas),
             $hintText: $container.find('.ui-hint-text'),
@@ -108,7 +108,7 @@ module trains.play {
     }
 
     export interface PlayComponents {
-        $trainCanvas: JQuery;
+        $trackCanvas: JQuery;
         $gridCanvas: JQuery;
         $canvases: JQuery;
         $hintText: JQuery;
