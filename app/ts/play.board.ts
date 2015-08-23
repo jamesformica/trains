@@ -18,8 +18,8 @@ module trains.play {
         private $window: JQuery;
         private $canvases: JQuery;
 
-        private trainCanvas: HTMLCanvasElement;
-        public trainContext: CanvasRenderingContext2D;
+        private trackCanvas: HTMLCanvasElement;
+        public trackContext: CanvasRenderingContext2D;
         private gridCanvas: HTMLCanvasElement;
         private gridContext: CanvasRenderingContext2D;
 
@@ -34,8 +34,8 @@ module trains.play {
             this.$window = $(window);
             this.$canvases = $().add($trainCanvas).add($gridCanvas);
 
-            this.trainCanvas = <HTMLCanvasElement>this.$trainCanvas.get(0);
-            this.trainContext = this.trainCanvas.getContext("2d");
+            this.trackCanvas = <HTMLCanvasElement>this.$trainCanvas.get(0);
+            this.trackContext = this.trackCanvas.getContext("2d");
 
             this.gridCanvas = <HTMLCanvasElement>this.$gridCanvas.get(0);
             this.gridContext = this.gridCanvas.getContext("2d");
@@ -49,15 +49,15 @@ module trains.play {
             this.$canvases.css('top', (this.$window.height() - this.canvasHeight) / 2);
             this.$canvases.css('left', (this.$window.width() - this.canvasWidth) / 2);
 
-            this.trainCanvas.addEventListener('click', (event: MouseEvent) => this.cellClick(event));
-            this.trainCanvas.addEventListener('mousemove', (event: MouseEvent) => this.cellMoveOver(event));
-            this.trainCanvas.addEventListener('touchstart', (event: any) => false);
-            this.trainCanvas.addEventListener('touchmove', (event: any) => {
+            this.trackCanvas.addEventListener('click', (event: MouseEvent) => this.cellClick(event));
+            this.trackCanvas.addEventListener('mousemove', (event: MouseEvent) => this.cellMoveOver(event));
+            this.trackCanvas.addEventListener('touchstart', (event: any) => false);
+            this.trackCanvas.addEventListener('touchmove', (event: any) => {
                 this.cellTouch(event);
                 event.preventDefault();
                 return false;
             });
-            this.trainCanvas.addEventListener('contextmenu', (ev) => {
+            this.trackCanvas.addEventListener('contextmenu', (ev) => {
                 this.cellRightClick(ev);
                 ev.preventDefault();
                 return false; }, false);
@@ -68,7 +68,7 @@ module trains.play {
         }
         
         redraw(): void {
-            trains.play.BoardRenderer.redrawCells(this.cells, this.trainContext, this.canvasWidth, this.canvasHeight);
+            trains.play.BoardRenderer.redrawCells(this.cells, this.trackContext, this.canvasWidth, this.canvasHeight);
         }            
 
         setTool(tool: Tool): void {
@@ -106,20 +106,20 @@ module trains.play {
 
 
         private cellTouch(event: any): void {
-            var column = this.getGridCoord(event.touches[0].pageX - this.trainCanvas.offsetLeft);
-            var row = this.getGridCoord(event.touches[0].pageY - this.trainCanvas.offsetTop);
+            var column = this.getGridCoord(event.touches[0].pageX - this.trackCanvas.offsetLeft);
+            var row = this.getGridCoord(event.touches[0].pageY - this.trackCanvas.offsetTop);
             this.doTool(column, row, event.shiftKey);
         }
         
         private cellRightClick(event: MouseEvent): void {
-            var column = this.getGridCoord(event.pageX - this.trainCanvas.offsetLeft);
-            var row = this.getGridCoord(event.pageY - this.trainCanvas.offsetTop);
+            var column = this.getGridCoord(event.pageX - this.trackCanvas.offsetLeft);
+            var row = this.getGridCoord(event.pageY - this.trackCanvas.offsetTop);
             this.eraseTrack(column, row);
         }
         
         private cellClick(event: MouseEvent): void {
-            var column = this.getGridCoord(event.pageX - this.trainCanvas.offsetLeft);
-            var row = this.getGridCoord(event.pageY - this.trainCanvas.offsetTop);
+            var column = this.getGridCoord(event.pageX - this.trackCanvas.offsetLeft);
+            var row = this.getGridCoord(event.pageY - this.trackCanvas.offsetTop);
 
             this.doTool(column, row, event.shiftKey);
         }
@@ -159,7 +159,7 @@ module trains.play {
             }
 
             $.when.apply($, deferreds).done(() => {
-                trains.play.BoardRenderer.clearCells(this.trainContext, this.canvasWidth, this.canvasHeight);
+                trains.play.BoardRenderer.clearCells(this.trackContext, this.canvasWidth, this.canvasHeight);
                 this.cells = [];
             });
         }
@@ -173,7 +173,7 @@ module trains.play {
                 } else {
                     cell.direction = cell.direction + 1;
                 }
-                cell.draw(this.trainContext);
+                cell.draw(this.trackContext);
             }
         }
 

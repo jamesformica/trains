@@ -74,7 +74,7 @@ module trains.play {
 
             var changed = this.determineDirection(neighbours);
             this.happy = (neighbours.all.length > 1);
-            this.draw(this.board.trainContext);
+            this.draw(this.board.trackContext);
 
             if (changed) {
                 var neighbours = this.board.getNeighbouringCells(this.column, this.row);
@@ -156,7 +156,7 @@ module trains.play {
             this.destroyLoop(def, 0);
             
             def.done(() => {
-                this.board.trainContext.clearRect(this.x, this.y, trains.play.gridSize, trains.play.gridSize);
+                this.board.trackContext.clearRect(this.x, this.y, trains.play.gridSize, trains.play.gridSize);
             });
             
             return def;
@@ -167,7 +167,7 @@ module trains.play {
                     var x = Math.floor(Math.random() * trains.play.gridSize);
                     var y = Math.floor(Math.random() * trains.play.gridSize);
 
-                    this.board.trainContext.clearRect(this.x + x, this.y + y, 5, 5);
+                    this.board.trackContext.clearRect(this.x + x, this.y + y, 5, 5);
                     counter++;
                     if (counter < 40) {
                         this.destroyLoop(deferred, counter);
