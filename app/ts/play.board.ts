@@ -173,6 +173,8 @@ module trains.play {
         
         public destroyTrack(): void {
             
+            this.trains.forEach(t=> t.stop());
+            this.trains = new Array<Train>();
             var deferreds = new Array<JQueryDeferred<{}>>();
             for (var id in this.cells) {
                 if (this.cells.hasOwnProperty(id)) {
