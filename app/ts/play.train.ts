@@ -35,11 +35,11 @@ module trains.play {
 					
 					var cell = this.board.getCell(column, row);
 					
-					this.coords = cell.getNewCoordsForTrain(this.coords,5)
+					this.coords = cell.getNewCoordsForTrain(this.coords,1.25)
 					
 					this.draw();
 					
-				}, 50);
+				}, 15);
 			}
 		}
 		
