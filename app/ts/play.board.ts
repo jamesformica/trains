@@ -226,7 +226,7 @@ module trains.play {
         }
 
         private roundToNearestGridSize(value: number): number {
-            return Math.round(value / gridSize) * gridSize;
+            return Math.floor(value / gridSize) * gridSize;
         }
 
         getGridCoord(value: number): number {

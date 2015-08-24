@@ -1,19 +1,49 @@
 == container "trains.play.InitialisePlay" do
 
-    button class="ui-play"
-        i class="fa fa-play"
+    div class="track-buttons ui-track-buttons"
+        ul class="vertical-icon-buttons"
+            li
+                button data-title="draw tracks" data-action="pencil"
+                    i class="fa fa-pencil"
+            li
+                button data-title="erase tracks" data-action="eraser"
+                    i class="fa fa-eraser"
+            li
+                button data-title="rotate tracks" data-action="rotate"
+                    i class="fa fa-refresh"
+            li
+                button data-title="destroy track!" data-action="bomb"
+                    i class="fa fa-bomb"
+      
+    div class="train-buttons ui-train-buttons"          
+        ul class="horizontal-icon-buttons"
+            li
+                button data-action="fast-backward"
+                    i class="fa fa-fast-backward"
+            li
+                button data-action="backward"
+                    i class="fa fa-backward"
+                    
+            li
+                button data-action="play"
+                    i class="fa fa-play"
+    
+            li
+                button data-action="stop"
+                    i class="fa fa-stop"
+            
+            li
+                button data-action="forward"
+                    i class="fa fa-forward"
+            
+            li
+                button data-action="fast-forward"
+                    i class="fa fa-fast-forward"
 
-    button class="ui-tools tools-button"
-        i class="fa fa-wrench"
-
-    span class="hint-text ui-hint-text"
-        strong
-            i Hint:&nbsp;
-        | Hold control (ctrl) to bring up the tool selection panel...
+    span class="ui-tools-title tools-title"
 
     div class="play-tools ui-play-tools"
 
-        span class="ui-tools-title tools-title" &nbsp;
 
         button class="ui-tool-option" data-title="draw tracks" data-action="pencil"
             i class="fa fa-pencil"
