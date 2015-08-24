@@ -56,19 +56,20 @@ module trains.play {
             this.playComponents.$canvases.css('top', (this.$window.height() - this.canvasHeight) / 2);
             this.playComponents.$canvases.css('left', (this.$window.width() - this.canvasWidth) / 2);
 
-            this.trackCanvas.addEventListener('click', (event: MouseEvent) => this.cellClick(event));
-            this.trackCanvas.addEventListener('mousemove', (event: MouseEvent) => this.cellMoveOver(event));
-            this.trackCanvas.addEventListener('touchstart', (event: any) => false);
-            this.trackCanvas.addEventListener('touchmove', (event: any) => {
-                this.cellTouch(event);
-                event.preventDefault();
-                return false;
+            [this.trackCanvas, this.trainCanvas].forEach(el => {            
+                el.addEventListener('click', (event: MouseEvent) => this.cellClick(event));
+                el.addEventListener('mousemove', (event: MouseEvent) => this.cellMoveOver(event));
+                el.addEventListener('touchstart', (event: any) => false);
+                el.addEventListener('touchmove', (event: any) => {
+                    this.cellTouch(event);
+                    event.preventDefault();
+                    return false;
+                });
+                el.addEventListener('contextmenu', (ev) => {
+                    this.cellRightClick(ev);
+                    ev.preventDefault();
+                    return false; }, false);
             });
-            this.trackCanvas.addEventListener('contextmenu', (ev) => {
-                this.cellRightClick(ev);
-                ev.preventDefault();
-                return false; }, false);
-                
             this.setTool(trains.play.Tool.Track);
             
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
