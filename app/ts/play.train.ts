@@ -37,25 +37,28 @@ module trains.play {
 					
 					this.coords = cell.getNewCoordsForTrain(this.coords,5)
 					
-					this.draw(this.coords.currentX, this.coords.currentY);
+					this.draw();
 					
 				}, 50);
 			}
 		}
 		
-		private draw(x, y): void {
-			
+		private draw(): void {
+
+			var x = this.coords.currentX;
+			var y = this.coords.currentY;
+			var angle = Math.atan2(this.coords.previousX - x, this.coords.previousY - y);
+
 			trains.play.BoardRenderer.clearCells(this.board.trainContext, this.board.canvasWidth, this.board.canvasHeight);
-			
-			var negativeHalfGrid = trains.play.gridSize / -2;
 			
 			var context = this.board.trainContext;
 			
 			context.save();
 			
-			context.translate(x + 0.5, y + 0.5);
+			context.translate(x,y);
+			context.rotate(angle * -1);
 			context.fillStyle = "blue";
-			context.fillRect(negativeHalfGrid, negativeHalfGrid, trains.play.gridSize, trains.play.gridSize);
+			context.fillRect(trains.play.gridSize/-4, trains.play.gridSize / -2, trains.play.gridSize/2, trains.play.gridSize);
 			
 			context.restore();
 		}
