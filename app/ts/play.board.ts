@@ -241,7 +241,7 @@ module trains.play {
         }
         
         showChooChoo(): void {
-            this.train.doChooChoo();
+            this.train.doChooChoo(this.firstCell);
         }
         
         stopChooChoo(): void {
