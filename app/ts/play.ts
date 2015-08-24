@@ -32,7 +32,11 @@ module trains.play {
                         this.playComponents.$trainCanvas.show();
                         this.board.showChooChoo();
                         break;
-                    }   
+                    }
+                    case "stop": {
+                        this.playComponents.$trainCanvas.hide();
+                        this.board.stopChooChoo();
+                    }
                 }
             });
 
@@ -55,6 +59,7 @@ module trains.play {
                         var response = confirm("Are you sure buddy?");
                         if (response) {
                             this.board.destroyTrack();
+                            this.board.setTool(trains.play.Tool.Track);
                         }
                         break;
                     }

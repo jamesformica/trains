@@ -32,6 +32,8 @@ module trains.play {
         private cells: trains.play.BoardCells = {};
         private tool: Tool;
         
+        private train: trains.play.Train;
+        
         public firstCell: trains.play.Cell;
         
         constructor(public playComponents: trains.play.PlayComponents) {
@@ -73,6 +75,8 @@ module trains.play {
             this.setTool(trains.play.Tool.Track);
             
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
+            
+            this.train  = new trains.play.Train(this);
         }
         
         redraw(): void {
@@ -94,7 +98,7 @@ module trains.play {
                         break;
                     }
                     case trains.play.Tool.Rotate: {
-                        cursorName = "recycle";
+                        cursorName = "refresh";
                         break;
                     }
                 }
@@ -222,8 +226,11 @@ module trains.play {
         }
         
         showChooChoo(): void {
-            var train = new trains.play.Train(this);
-            train.doChooChoo();
+            this.train.doChooChoo();
+        }
+        
+        stopChooChoo(): void {
+            this.train.stop();
         }
 
         private roundToNearestGridSize(value: number): number {

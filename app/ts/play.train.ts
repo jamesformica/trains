@@ -9,6 +9,8 @@ module trains.play {
 		private coords: trains.play.TrainCoords;
 
 		private rotation: number;
+		
+		private timer: number;
 
 		constructor(private board: trains.play.Board) {
 
@@ -28,7 +30,7 @@ module trains.play {
 					previousY: currentCell.y-1 //Cos we never want to be the centre of attention
 				}
 				
-				var timer = setInterval(() => {
+				 this.timer = setInterval(() => {
 					
 					var column = this.board.getGridCoord(this.coords.currentX);
 					var row = this.board.getGridCoord(this.coords.currentY);
@@ -41,6 +43,10 @@ module trains.play {
 					
 				}, 15);
 			}
+		}
+		
+		public stop(): void {
+			clearInterval(this.timer);
 		}
 		
 		private draw(): void {

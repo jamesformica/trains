@@ -13,52 +13,6 @@ $tools-height: $tools-padding * 2 + $tool-button-height
     width: 100%
     text-align: center
 
-.tools-button
-    position: absolute
-    width: 50px
-    height: 50px
-    font-size: 20px
-    border-radius: 50%
-    text-align: center
-    z-index: 100
-
-.hint-text
-    position: absolute
-    top: 5px
-
-.play-tools
-    position: absolute
-    width: 100%
-    display: none
-    margin: 0 auto
-    top: calc(50% - #{$tools-height})
-    left: 0
-    right: 0
-    background-color: fade_out($colour-foreground, 0.8)
-    padding: 0 20px 20px 20px
-    z-index: 1000
-    text-align: center
-
-    > .tools-title
-        display: block
-        height: $tools-padding
-        line-height: $tools-padding
-        text-shadow: 1px 1px $colour-background, -1px 1px $colour-background, 1px -1px $colour-background, -1px -1px $colour-background 
-
-    > button
-        width: $tool-button-height
-        height: $tool-button-height
-        line-height: $tool-button-height
-        font-size: $tool-button-height / 2
-        margin-right: 10px
-        padding-top: 0
-        padding-bottom: 0
-
-    &:last-child
-        margin-right: 0px
-    
-
-
 canvas.track-canvas, canvas.grid-canvas, canvas.train-canvas
     position: absolute
     display: block
