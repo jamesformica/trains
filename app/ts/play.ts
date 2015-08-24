@@ -15,27 +15,29 @@ module trains.play {
         constructor(private $container: JQuery) {
             this.playComponents = GetPlayComponent($container);
             this.board = new trains.play.Board(this.playComponents);
-            
+
             var top = ($(window).height() - this.board.canvasHeight) / 2;
             this.playComponents.$trackButtons.css("top", top);
             this.playComponents.$trainButtons.css("line-height", top + "px");
-            
+
             this.AttachEvents();
         }
 
         private AttachEvents(): void {
-            
+
+            $(window).keypress((e) => {
+                if (e.which === 32) {
+                    this.TogglePlayStop(this.playComponents.$trainButtons.find('.ui-play-stop'));
+                }
+            });
+
             this.playComponents.$trainButtons.find('button').click((event) => {
                 var $option = $(event.currentTarget);
+
                 switch ($option.data("action").toLowerCase()) {
                     case "play": {
-                        //this.playComponents.$trainCanvas.show();
-                        this.board.showChooChoo();
+                        this.TogglePlayStop($option);
                         break;
-                    }
-                    case "stop": {
-                        this.playComponents.$trainCanvas.hide();
-                        this.board.stopChooChoo();
                     }
                 }
             });
@@ -69,6 +71,17 @@ module trains.play {
                     }
                 }
             });
+        }
+
+        TogglePlayStop($button: JQuery): void {
+            var $icon = $button.find('i:first');
+            if ($icon.hasClass("fa-play")) {
+                this.board.showChooChoo();
+                $icon.removeClass("fa-play").addClass("fa-stop");
+            } else {
+                this.board.stopChooChoo();
+                $icon.removeClass("fa-stop").addClass("fa-play");
+            }
         }
     }
 
