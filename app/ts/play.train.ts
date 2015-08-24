@@ -40,7 +40,7 @@ module trains.play {
 					
 					var cell = this.board.getCell(column, row);
 					
-					this.coords = cell.getNewCoordsForTrain(this.coords)
+					this.coords = cell.getNewCoordsForTrain(this.coords,5)
 					
 					this.draw(this.coords.currentX, this.coords.currentY);
 					

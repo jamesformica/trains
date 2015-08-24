@@ -183,13 +183,13 @@ module trains.play {
             return 1;
         }
 
-        getNewCoordsForTrain(coords: trains.play.TrainCoords): trains.play.TrainCoords {
+        getNewCoordsForTrain(coords: trains.play.TrainCoords, speed: number): trains.play.TrainCoords {
 
             if(this.direction === trains.play.Direction.Vertical)
             {
                 return {
                     currentX: this.x + (trains.play.gridSize/2),
-                    currentY: coords.currentY + (10 * this.magicBullshitCompareTo(coords.previousY, coords.currentY)),
+                    currentY: coords.currentY + (speed * this.magicBullshitCompareTo(coords.previousY, coords.currentY)),
                     previousX: coords.currentX,
                     previousY: coords.currentY
                 };
@@ -197,50 +197,33 @@ module trains.play {
             else if(this.direction === trains.play.Direction.Horizontal)
             {
                 return {
-                    currentX: coords.currentX + (10 * this.magicBullshitCompareTo(coords.previousX, coords.currentX)),
+                    currentX: coords.currentX + (speed * this.magicBullshitCompareTo(coords.previousX, coords.currentX)),
                     currentY: this.y + (trains.play.gridSize/2),
                     previousX: coords.currentX,
                     previousY: coords.currentY
                 };
             }
 
-            var yFlip = 1;
-            if(this.direction === trains.play.Direction.RightDown || this.direction === trains.play.Direction.LeftDown)
-            {
-                yFlip = -1;
-            }
+            var yOffset = (this.direction === trains.play.Direction.LeftDown || this.direction === trains.play.Direction.RightDown)?yOffset = trains.play.gridSize:0;
+            var xOffset = (this.direction === trains.play.Direction.RightUp || this.direction === trains.play.Direction.RightDown)?xOffset = trains.play.gridSize:0;
+            var xOffsetFromGrid = (coords.currentX - this.x) - xOffset;
+            if(xOffsetFromGrid===0) xOffsetFromGrid+=0.001;
+            var yOffsetFromGrid = (coords.currentY - this.y) - yOffset;
+            if(yOffsetFromGrid===0) yOffsetFromGrid+=0.001;
+            var xOffsetFromGridLast = (coords.previousX - this.x) - xOffset;
+            if(xOffsetFromGridLast===0) xOffsetFromGridLast+=0.001;
+            var yOffsetFromGridLast = (coords.previousY - this.y) - yOffset;
+            if(yOffsetFromGridLast===0) yOffsetFromGridLast+=0.001;
 
-            var xFlip =-1;
-            if(this.direction === trains.play.Direction.RightUp || this.direction === trains.play.Direction.LeftUp)
-            {
-                xFlip = 1;
-            }
+            var angle = Math.atan2(xOffsetFromGrid,yOffsetFromGrid);
+            var angleLast = Math.atan2(xOffsetFromGridLast,yOffsetFromGridLast);
+            var direction = this.magicBullshitCompareTo(angleLast,angle) * ((Math.abs(angleLast-angle) > Math.PI)?-1:1);
+            var angleSpeed = speed/(trains.play.gridSize/2);
+            var newAngle = (Math.PI/2)-(angle + (angleSpeed * direction));
 
-            var xOffsetFromGrid = (coords.currentX - this.x) * xFlip;
-            var yOffsetFromGrid = (coords.currentY - this.y) * yFlip;
+            var xOffsetFromGridNew = ((trains.play.gridSize/2)*Math.cos(newAngle)) + xOffset;
+            var yOffsetFromGridNew = ((trains.play.gridSize/2)*Math.sin(newAngle)) + yOffset;
 
-            var yFlipLast = 1;
-            if(this.direction === trains.play.Direction.RightDown || this.direction === trains.play.Direction.LeftDown)
-            {
-                yFlipLast = -1;
-            }
-
-            var xFlipLast = -1;
-            if(this.direction === trains.play.Direction.RightUp || this.direction === trains.play.Direction.RightDown)
-            {
-                xFlipLast = 1;
-            }
-
-            var xOffsetFromGridLast = (coords.previousX - this.x) * xFlipLast;
-            var yOffsetFromGridLast = (coords.previousY - this.y) * yFlipLast;
-
-            var angle = Math.atan2(yOffsetFromGrid,xOffsetFromGrid);
-            var angleLast = Math.atan2(yOffsetFromGridLast,xOffsetFromGridLast);
-            var newAngle = (Math.PI/90) * this.magicBullshitCompareTo(angleLast,angle);
-
-            var xOffsetFromGridNew = ((trains.play.gridSize/2)*Math.cos(newAngle)) * xFlip;
-            var yOffsetFromGridNew = ((trains.play.gridSize/2)*Math.sin(newAngle)) * yFlip;
-            window.console.log("Step: "+xOffsetFromGrid+","+yOffsetFromGrid+" "+angle+" "+newAngle+" flipy:"+yFlip+" flipx:"+xFlip);
             return {
                 currentX: this.x + xOffsetFromGridNew,
                 currentY: this.y + yOffsetFromGridNew,
