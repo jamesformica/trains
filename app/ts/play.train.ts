@@ -22,16 +22,11 @@ module trains.play {
 				var currentCell = this.board.firstCell;
 				
 				this.coords = {
-					currentX: currentCell.x,
+					currentX: currentCell.x + (trains.play.gridSize / 2),
 					currentY: currentCell.y + (trains.play.gridSize / 2),
-					previousX: -1, 
-					previousY: -1
+					previousX: currentCell.x,
+					previousY: currentCell.y-1 //Cos we never want to be the centre of attention
 				}
-				
-				this.coords.previousX = this.coords.currentX - trains.play.gridSize;
-				this.coords.previousY = this.coords.currentY;
-				
-				this.draw(this.coords.currentX, this.coords.currentY);
 				
 				var timer = setInterval(() => {
 					
