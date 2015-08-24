@@ -16,12 +16,16 @@ module trains.play {
             this.playComponents = GetPlayComponent($container);
             this.board = new trains.play.Board(this.playComponents);
             
+            var top = ($(window).height() - this.board.canvasHeight) / 2;
+            this.playComponents.$trackButtons.css("top", top);
+            this.playComponents.$trainButtons.css("line-height", top + "px");
+            
             this.AttachEvents();
         }
 
         private AttachEvents(): void {
             
-            this.playComponents.$trainButtons.click((event) => {
+            this.playComponents.$trainButtons.find('button').click((event) => {
                 var $option = $(event.currentTarget);
                 switch ($option.data("action").toLowerCase()) {
                     case "play": {
@@ -32,7 +36,7 @@ module trains.play {
                 }
             });
 
-            this.playComponents.$trackButtons.click((event) => {
+            this.playComponents.$trackButtons.find('button').click((event) => {
                 var $option = $(event.currentTarget);
                 switch ($option.data("action").toLowerCase()) {
                     case "pencil": {
@@ -70,8 +74,8 @@ module trains.play {
             $trackCanvas: $trackCanvas,
             $gridCanvas: $gridCanvas,
             $canvases: $().add($trainCanvas).add($trackCanvas).add($gridCanvas),
-            $trackButtons: $container.find('.ui-track-buttons').find('button'),
-            $trainButtons: $container.find('.ui-train-buttons').find('button')
+            $trackButtons: $container.find('.ui-track-buttons'),
+            $trainButtons: $container.find('.ui-train-buttons')
         };
     }
 
