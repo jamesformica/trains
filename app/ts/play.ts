@@ -29,7 +29,7 @@ module trains.play {
                 var $option = $(event.currentTarget);
                 switch ($option.data("action").toLowerCase()) {
                     case "play": {
-                        this.playComponents.$trainCanvas.show();
+                        //this.playComponents.$trainCanvas.show();
                         this.board.showChooChoo();
                         break;
                     }
@@ -43,6 +43,10 @@ module trains.play {
             this.playComponents.$trackButtons.find('button').click((event) => {
                 var $option = $(event.currentTarget);
                 switch ($option.data("action").toLowerCase()) {
+                    case "train": {
+                        this.board.setTool(trains.play.Tool.Train);
+                        break;
+                    }
                     case "pencil": {
                         this.board.setTool(trains.play.Tool.Track);
                         break;
