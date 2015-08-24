@@ -8,56 +8,53 @@ module trains.play.CellRenderer {
     export function clearCell(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, play.gridSize, play.gridSize);
     }
-    
+
     export function drawStraightTrack(context: CanvasRenderingContext2D, cutOffTop: boolean, cutOffBottom: boolean): void {
 
+        var numPlanks = 3;
+        var startX = 0;
+        var endX = trains.play.gridSize;
         var thirdGridSize = trains.play.gridSize / 3;
 
         // draw the track planks
         context.lineWidth = trackWidth;
         context.strokeStyle = plankColour;
-        for (var i = 1; i <= 3; i++) {
+        context.beginPath();
+        for (var i = 1; i <= numPlanks; i++) {
             var xPosition = (thirdGridSize * i) - (thirdGridSize / 2);
             var yPosition = firstTrackPosY - trackWidth;
 
-            context.beginPath();
             context.moveTo(xPosition, yPosition);
             context.lineTo(xPosition, secondTrackPosY + trackWidth);
-            context.stroke();
-        }
 
-        var start = cutOffTop ? thirdGridSize - trackWidth : 0;
-        var end = trains.play.gridSize - (cutOffBottom ? thirdGridSize - trackWidth : 0);
-        
-        // this kinda makes sense
-        if (cutOffBottom && cutOffTop) {
-            end = end - start;
+            if (cutOffTop && i === 1) {
+                startX = xPosition + trackWidth - 1;        // why -1? cause canvas thats why
+            } else if (cutOffBottom && i === numPlanks) {
+                endX = xPosition - 1;                       // why -1? cause canvas thats why
+            }
         }
+        context.stroke();
         
         // draw the white part of the track
+        var endWidth = endX - startX;
         context.beginPath();
-        context.clearRect(start, firstTrackPosY, end, trackWidth);
-        context.clearRect(start, secondTrackPosY - trackWidth, end, trackWidth);
-
-        // I have no idea what I'm doing        
-        if (cutOffBottom && cutOffTop) {
-            end = end + start;
-        }
+        context.clearRect(startX, firstTrackPosY, endWidth, trackWidth);
+        context.clearRect(startX, secondTrackPosY - trackWidth, endWidth, trackWidth);
         
         // draw the outline on the track
         context.lineWidth = 1;
         context.strokeStyle = trackColour;
         context.beginPath();
 
-        context.moveTo(start, firstTrackPosY);
-        context.lineTo(end, firstTrackPosY);
-        context.moveTo(start, firstTrackPosY + trackWidth);
-        context.lineTo(end, firstTrackPosY + trackWidth);
+        context.moveTo(startX, firstTrackPosY);
+        context.lineTo(endX, firstTrackPosY);
+        context.moveTo(startX, firstTrackPosY + trackWidth);
+        context.lineTo(endX, firstTrackPosY + trackWidth);
 
-        context.moveTo(start, secondTrackPosY - trackWidth);
-        context.lineTo(end, secondTrackPosY - trackWidth);
-        context.moveTo(start, secondTrackPosY);
-        context.lineTo(end, secondTrackPosY);
+        context.moveTo(startX, secondTrackPosY - trackWidth);
+        context.lineTo(endX, secondTrackPosY - trackWidth);
+        context.moveTo(startX, secondTrackPosY);
+        context.lineTo(endX, secondTrackPosY);
 
         context.stroke();
     }
