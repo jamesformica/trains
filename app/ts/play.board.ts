@@ -93,6 +93,10 @@ module trains.play {
                         cursorName = "pencil";
                         break;
                     }
+                    case trains.play.Tool.Train: {
+                        cursorName = "train";
+                        break;
+                    }
                     case trains.play.Tool.Eraser: {
                         cursorName = "eraser";
                         break;
@@ -154,7 +158,18 @@ module trains.play {
                 case Tool.Rotate:
                 {
                     this.rotateTrack(column, row);
+                    break;    
                 }
+                case Tool.Train:
+                {
+                    var cellID = this.getCellID(column, row);
+
+                    if (this.cells[cellID] !== undefined) {
+                        var t = new Train(this);
+                        t.doChooChoo(this.cells[cellID]);
+                    }
+                    break;    
+                }        
             }
         }
         
@@ -226,7 +241,7 @@ module trains.play {
         }
         
         showChooChoo(): void {
-            this.train.doChooChoo();
+            this.train.doChooChoo(this.firstCell);
         }
         
         stopChooChoo(): void {
@@ -290,7 +305,8 @@ module trains.play {
     export enum Tool {
         Track,
         Eraser,
-        Rotate
+        Rotate,
+        Train
     }
 
     export enum Direction {
