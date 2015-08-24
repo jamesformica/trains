@@ -193,7 +193,7 @@ module trains.play {
         
         private rotateTrack(column: number, row: number): void {
             var cellID = this.getCellID(column, row);
-            var cell = this.cells[cellID];
+            var cell: trains.play.Cell = this.cells[cellID];
             if (cell !== undefined) {
                 if (cell.direction === trains.play.Direction.Cross) {
                     cell.direction = trains.play.Direction.Vertical;
@@ -201,6 +201,10 @@ module trains.play {
                     cell.direction = cell.direction + 1;
                 }
                 cell.draw(this.trackContext);
+                var neighbours = this.getNeighbouringCells(cell.column, cell.row);
+                neighbours.all.forEach((neighbour) => {
+                    neighbour.draw(this.trackContext);
+                });
             }
         }
 
