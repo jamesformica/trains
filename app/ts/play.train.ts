@@ -13,15 +13,8 @@ module trains.play {
 		
 		private timer: number;
 
-		constructor(private board: trains.play.Board) {
-
-		}
-
-		doChooChoo(currentCell: Cell): void {
-			if (this.board.firstCell !== undefined) {
-
-				this.board.playComponents.$trainCanvas.scroll();
-				
+		constructor(private board: trains.play.Board, currentCell: Cell) {
+			if (currentCell !== undefined) {
 				this.coords = {
 					currentX: currentCell.x + (trains.play.gridSize / 2),
 					currentY: currentCell.y + (trains.play.gridSize / 2),
@@ -29,23 +22,30 @@ module trains.play {
 					previousY: currentCell.y-1 //Cos we never want to be the centre of attention
 				}
 				
-				 this.timer = setInterval(() => {
-					
-					var column = this.board.getGridCoord(this.coords.currentX);
-					var row = this.board.getGridCoord(this.coords.currentY);
-					
-					var cell = this.board.getCell(column, row);
-					
-					this.coords = cell.getNewCoordsForTrain(this.coords,1.25)
-					
-					this.draw();
-					
-				}, 15);
+				this.start();
 			}
+		}
+		
+		public chooChooMotherFucker(): void {
+			var column = this.board.getGridCoord(this.coords.currentX);
+			var row = this.board.getGridCoord(this.coords.currentY);
+			
+			var cell = this.board.getCell(column, row);
+			
+			this.coords = cell.getNewCoordsForTrain(this.coords,1.25)
+			
+			this.draw();
+		}
+		
+		public start(): void {
+			if (this.timer === undefined) {
+				this.timer = setInterval(() => { this.chooChooMotherFucker(); }, 15);
+			}    
 		}
 		
 		public stop(): void {
 			clearInterval(this.timer);
+			this.timer = undefined;
 		}
 		
 		private draw(): void {

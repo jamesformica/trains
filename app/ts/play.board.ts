@@ -32,7 +32,7 @@ module trains.play {
         private cells: trains.play.BoardCells = {};
         private tool: Tool;
         
-        private train: trains.play.Train;
+        private trains = new Array<trains.play.Train>();
         
         public firstCell: trains.play.Cell;
         
@@ -75,8 +75,6 @@ module trains.play {
             this.setTool(trains.play.Tool.Track);
             
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
-            
-            this.train  = new trains.play.Train(this);
         }
         
         redraw(): void {
@@ -165,8 +163,8 @@ module trains.play {
                     var cellID = this.getCellID(column, row);
 
                     if (this.cells[cellID] !== undefined) {
-                        var t = new Train(this);
-                        t.doChooChoo(this.cells[cellID]);
+                        var t = new Train(this, this.cells[cellID]);
+                        this.trains.push(t);
                     }
                     break;    
                 }        
@@ -186,6 +184,7 @@ module trains.play {
 
             $.when.apply($, deferreds).done(() => {
                 trains.play.BoardRenderer.clearCells(this.trackContext, this.canvasWidth, this.canvasHeight);
+                trains.play.BoardRenderer.clearCells(this.trainContext, this.canvasWidth, this.canvasHeight);
                 this.cells = [];
             });
         }
@@ -241,11 +240,11 @@ module trains.play {
         }
         
         showChooChoo(): void {
-            this.train.doChooChoo(this.firstCell);
+            this.trains.forEach(t=>t.start());
         }
         
         stopChooChoo(): void {
-            this.train.stop();
+            this.trains.forEach(t=>t.stop());
         }
 
         private roundToNearestGridSize(value: number): number {
