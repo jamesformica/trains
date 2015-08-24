@@ -8,6 +8,7 @@ module trains.play {
 
 		private coords: trains.play.TrainCoords;
 
+		private previousAngle: number;        
 		private rotation: number;
 		
 		private timer: number;
@@ -16,12 +17,10 @@ module trains.play {
 
 		}
 
-		doChooChoo(): void {
+		doChooChoo(currentCell: Cell): void {
 			if (this.board.firstCell !== undefined) {
 
 				this.board.playComponents.$trainCanvas.scroll();
-				
-				var currentCell = this.board.firstCell;
 				
 				this.coords = {
 					currentX: currentCell.x + (trains.play.gridSize / 2),
@@ -50,15 +49,22 @@ module trains.play {
 		}
 		
 		private draw(): void {
-
 			var x = this.coords.currentX;
 			var y = this.coords.currentY;
 			var angle = Math.atan2(this.coords.previousX - x, this.coords.previousY - y);
-
-			trains.play.BoardRenderer.clearCells(this.board.trainContext, this.board.canvasWidth, this.board.canvasHeight);
 			
 			var context = this.board.trainContext;
 			
+
+			if (this.previousAngle !== undefined) {
+				context.save();
+				context.translate(this.coords.previousX, this.coords.previousY);
+				context.rotate(this.previousAngle * -1);
+				context.clearRect(trains.play.gridSize / -4, trains.play.gridSize / -2, trains.play.gridSize / 2, trains.play.gridSize);	
+				context.restore();
+			}
+			
+			this.previousAngle = angle;
 			context.save();
 			
 			context.translate(x,y);
