@@ -6,8 +6,8 @@ module trains.play {
     export class Cell {
 
         public happy: boolean;
-        private x: number;
-        private y: number;
+        public x: number;
+        public y: number;
         public direction: trains.play.Direction;
 
         constructor(private board: trains.play.Board, public id: string, public column: number, public row: number) {
@@ -154,27 +154,63 @@ module trains.play {
         destroy(): JQueryDeferred<{}> {
             var def = $.Deferred();
             this.destroyLoop(def, 0);
-            
+
             def.done(() => {
                 this.board.trackContext.clearRect(this.x, this.y, trains.play.gridSize, trains.play.gridSize);
             });
-            
+
             return def;
         }
-        
-        destroyLoop(deferred: JQueryDeferred<{}>,  counter: number): void {
-             setTimeout(() => {
-                    var x = Math.floor(Math.random() * trains.play.gridSize);
-                    var y = Math.floor(Math.random() * trains.play.gridSize);
 
-                    this.board.trackContext.clearRect(this.x + x, this.y + y, 5, 5);
-                    counter++;
-                    if (counter < 40) {
-                        this.destroyLoop(deferred, counter);
-                    } else {
-                        deferred.resolve();
-                    }
-                }, 10);
+        destroyLoop(deferred: JQueryDeferred<{}>, counter: number): void {
+            setTimeout(() => {
+                var x = Math.floor(Math.random() * trains.play.gridSize);
+                var y = Math.floor(Math.random() * trains.play.gridSize);
+
+                this.board.trackContext.clearRect(this.x + x, this.y + y, 5, 5);
+                counter++;
+                if (counter < 40) {
+                    this.destroyLoop(deferred, counter);
+                } else {
+                    deferred.resolve();
+                }
+            }, 10);
         }
+
+        magicBullshitCompareTo(pen: number, sword: number): number {
+            if (pen === sword) return 0;
+            if (pen > sword) return -1;
+            return 1;
+        }
+
+        getNewCoordsForTrain(coords: trains.play.TrainCoords): trains.play.TrainCoords {
+
+            var currentAngle = Math.atan2(coords.currentY, coords.currentX);
+            var lastAngle = Math.atan2(coords.currentY, coords.currentX);
+            if (this.direction === trains.play.Direction.LeftUp)
+            {
+                currentAngle -= Math.PI / 30;
+                return {
+                    currentX: coords.currentX + ((trains.play.gridSize/2)* Math.cos(currentAngle)),
+                    currentY: coords.currentY + ((trains.play.gridSize/2)* Math.sin(currentAngle)),
+                    previousX: coords.currentX,
+                    previousY: coords.currentY
+                };
+            }
+
+            return {
+                currentX: coords.currentX + (10 * this.magicBullshitCompareTo(coords.previousX, coords.currentX)),
+                currentY: coords.currentY + (10 * this.magicBullshitCompareTo(coords.previousY, coords.currentY)),
+                previousX: coords.currentX,
+                previousY: coords.currentY
+            }
+        }
+    }
+
+    export interface TrainCoords {
+        currentX: number;
+        currentY: number;
+        previousX: number;
+        previousY: number;
     }
 }

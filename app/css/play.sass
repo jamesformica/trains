@@ -50,15 +50,18 @@ $tools-height: $tools-padding * 2 + $tool-button-height
     
 
 
-canvas.track-canvas, canvas.grid-canvas
+canvas.track-canvas, canvas.grid-canvas, canvas.train-canvas
     position: absolute
     display: block
     margin: 0 auto
     touch-action: none
 
-canvas.track-canvas
+canvas.track-canvas, canvas.train-canvas
     border: $border-double
     border-color: transparent
+    
+canvas.train-canvas
+    display: none
 
 canvas.grid-canvas
     border: $border-double

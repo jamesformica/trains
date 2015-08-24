@@ -6,11 +6,16 @@ module trains.play {
     export function InitialisePlay($container: JQuery): void {
 
         var playComponents = GetPlayComponent($container);
-        var board = new trains.play.Board(playComponents.$trackCanvas, playComponents.$gridCanvas);
+        var board = new trains.play.Board(playComponents);
 
         playComponents.$hintText.css("right", trains.play.gridSize);
         playComponents.$toolsButton.css("top", (($(window).height() - board.canvasHeight) / 2) - (playComponents.$toolsButton.outerHeight() / 2));
         playComponents.$toolsButton.css("left", (($(window).width() - board.canvasWidth) / 2) - (playComponents.$toolsButton.outerWidth() / 2));
+
+        $container.find('.ui-play').click(() => {
+            playComponents.$trainCanvas.show();
+            board.showChooChoo();
+        });
 
         playComponents.$toolsButton.click(() => {
             showToolsContainer();
@@ -88,15 +93,17 @@ module trains.play {
 
     export function GetPlayComponent($container: JQuery): trains.play.PlayComponents {
 
-        var $trainCanvas = $container.find('.ui-track-canvas');
+        var $trainCanvas = $container.find('.ui-train-canvas');
+        var $trackCanvas = $container.find('.ui-track-canvas');
         var $gridCanvas = $container.find('.ui-grid-canvas');
 
         var $toolsContainer = $container.find('.ui-play-tools');
 
         return {
-            $trackCanvas: $trainCanvas,
+            $trainCanvas: $trainCanvas,
+            $trackCanvas: $trackCanvas,
             $gridCanvas: $gridCanvas,
-            $canvases: $().add($trainCanvas).add($gridCanvas),
+            $canvases: $().add($trainCanvas).add($trackCanvas).add($gridCanvas),
             $hintText: $container.find('.ui-hint-text'),
             $toolsButton: $container.find('.ui-tools'),
             tools: {
@@ -108,6 +115,7 @@ module trains.play {
     }
 
     export interface PlayComponents {
+        $trainCanvas: JQuery;
         $trackCanvas: JQuery;
         $gridCanvas: JQuery;
         $canvases: JQuery;

@@ -1,6 +1,8 @@
 /// <reference path="../types/jquery.d.ts" />
 /// <reference path="../types/awesomeCursor.d.ts" />
+/// <reference path="play.ts" />
 /// <reference path="play.cell.ts" />
+/// <reference path="play.train.ts" />
 /// <reference path="play.board.renderer.ts" />
 
 module trains.play {
@@ -16,8 +18,9 @@ module trains.play {
     export class Board {
 
         private $window: JQuery;
-        private $canvases: JQuery;
 
+        private trainCanvas: HTMLCanvasElement;
+        public trainContext: CanvasRenderingContext2D;
         private trackCanvas: HTMLCanvasElement;
         public trackContext: CanvasRenderingContext2D;
         private gridCanvas: HTMLCanvasElement;
@@ -29,25 +32,29 @@ module trains.play {
         private cells: trains.play.BoardCells = {};
         private tool: Tool;
         
-        constructor(private $trainCanvas: JQuery, private $gridCanvas: JQuery) {
+        public firstCell: trains.play.Cell;
+        
+        constructor(public playComponents: trains.play.PlayComponents) {
 
             this.$window = $(window);
-            this.$canvases = $().add($trainCanvas).add($gridCanvas);
 
-            this.trackCanvas = <HTMLCanvasElement>this.$trainCanvas.get(0);
+            this.trainCanvas = <HTMLCanvasElement>this.playComponents.$trainCanvas.get(0);
+            this.trainContext = this.trainCanvas.getContext("2d");
+
+            this.trackCanvas = <HTMLCanvasElement>this.playComponents.$trackCanvas.get(0);
             this.trackContext = this.trackCanvas.getContext("2d");
 
-            this.gridCanvas = <HTMLCanvasElement>this.$gridCanvas.get(0);
+            this.gridCanvas = <HTMLCanvasElement>this.playComponents.$gridCanvas.get(0);
             this.gridContext = this.gridCanvas.getContext("2d");
 
             this.canvasWidth = this.roundToNearestGridSize(this.$window.width() - (gridSize * 2));
             this.canvasHeight = this.roundToNearestGridSize(this.$window.height() - (gridSize * 2));
 
-            this.$canvases.attr('width', this.canvasWidth);
-            this.$canvases.attr('height', this.canvasHeight);
-            this.$canvases.width(this.canvasWidth);
-            this.$canvases.css('top', (this.$window.height() - this.canvasHeight) / 2);
-            this.$canvases.css('left', (this.$window.width() - this.canvasWidth) / 2);
+            this.playComponents.$canvases.attr('width', this.canvasWidth);
+            this.playComponents.$canvases.attr('height', this.canvasHeight);
+            this.playComponents.$canvases.width(this.canvasWidth);
+            this.playComponents.$canvases.css('top', (this.$window.height() - this.canvasHeight) / 2);
+            this.playComponents.$canvases.css('left', (this.$window.width() - this.canvasWidth) / 2);
 
             this.trackCanvas.addEventListener('click', (event: MouseEvent) => this.cellClick(event));
             this.trackCanvas.addEventListener('mousemove', (event: MouseEvent) => this.cellMoveOver(event));
@@ -103,7 +110,6 @@ module trains.play {
                 this.cellClick(event);
             }
         }
-
 
         private cellTouch(event: any): void {
             var column = this.getGridCoord(event.touches[0].pageX - this.trackCanvas.offsetLeft);
@@ -181,7 +187,13 @@ module trains.play {
             var cellID = this.getCellID(column, row);
 
             if (this.cells[cellID] === undefined) {
+                
                 var newCell = new trains.play.Cell(this, cellID, column, row);
+                
+                if (this.firstCell === undefined) {
+                    this.firstCell = newCell;
+                }  
+                
                 this.cells[newCell.id] = newCell;
 
                 newCell.checkYourself();
@@ -207,17 +219,26 @@ module trains.play {
                 });
             }
         }
+        
+        showChooChoo(): void {
+            var train = new trains.play.Train(this);
+            train.doChooChoo();
+        }
 
         private roundToNearestGridSize(value: number): number {
             return Math.round(value / gridSize) * gridSize;
         }
 
-        private getGridCoord(value: number): number {
+        getGridCoord(value: number): number {
             return Math.floor(value / gridSize);
         }
 
         getCellID(column: number, row: number): string {
             return column.toString() + ':' + row.toString();
+        }
+        
+        getCell(column: number, row: number): trains.play.Cell {
+            return this.cells[this.getCellID(column, row)];
         }
 
         getNeighbouringCells(column: number, row: number, includeHappyNeighbours: boolean = false): trains.play.NeighbouringCells {
