@@ -64,6 +64,15 @@ module trains.play {
                         trains.play.CellRenderer.drawCurvedTrack(context);
                         break;
                     }
+                case trains.play.Direction.Cross:
+                {
+                    var neighbours = this.board.getNeighbouringCells(this.column, this.row);
+                    trains.play.CellRenderer.drawStraightTrack(context, false,false);
+                    context.translate(trains.play.gridSize, 0);
+                    context.rotate(Math.PI / 2);
+                    trains.play.CellRenderer.drawStraightTrack(context, false,false);
+                    break;
+                }
             }
 
             context.restore();
@@ -86,7 +95,11 @@ module trains.play {
             if (this.happy) return false;
 
             var newDirection: trains.play.Direction;
-            if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.up !== undefined) {
+            if (neighbours.left !== undefined && neighbours.right !== undefined && neighbours.up !== undefined && neighbours.down !== undefined) {
+                newDirection = trains.play.Direction.Cross;
+            }
+
+            else if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.up !== undefined) {
                 newDirection = trains.play.Direction.LeftUp;
             }
 
@@ -130,25 +143,29 @@ module trains.play {
         isConnectedUp(): boolean {
             return this.direction === Direction.Vertical ||
                 this.direction === Direction.LeftUp ||
-                this.direction === Direction.RightUp;
+                this.direction === Direction.RightUp ||
+                this.direction === Direction.Cross;
         }
 
         isConnectedDown(): boolean {
             return this.direction === Direction.Vertical ||
                 this.direction === Direction.LeftDown ||
-                this.direction === Direction.RightDown;
+                this.direction === Direction.RightDown||
+                this.direction === Direction.Cross;
         }
 
         isConnectedLeft(): boolean {
             return this.direction === Direction.Horizontal ||
                 this.direction === Direction.LeftUp ||
-                this.direction === Direction.LeftDown;
+                this.direction === Direction.LeftDown||
+                this.direction === Direction.Cross;
         }
 
         isConnectedRight(): boolean {
             return this.direction === Direction.Horizontal ||
                 this.direction === Direction.RightDown ||
-                this.direction === Direction.RightUp;
+                this.direction === Direction.RightUp||
+                this.direction === Direction.Cross;
         }
 
         destroy(): JQueryDeferred<{}> {
@@ -199,6 +216,17 @@ module trains.play {
                 return {
                     currentX: coords.currentX + (speed * this.magicBullshitCompareTo(coords.previousX, coords.currentX)),
                     currentY: this.y + (trains.play.gridSize/2),
+                    previousX: coords.currentX,
+                    previousY: coords.currentY
+                };
+            }
+            else if(this.direction === trains.play.Direction.Cross)
+            {
+                var x = (speed * this.magicBullshitCompareTo(coords.previousX, coords.currentX));
+                var y = (speed * this.magicBullshitCompareTo(coords.previousY, coords.currentY));
+                return {
+                    currentX: (x===0)?this.x + (trains.play.gridSize/2):coords.currentX +x,
+                    currentY: (y===0)?this.y + (trains.play.gridSize/2):coords.currentY +y,
                     previousX: coords.currentX,
                     previousY: coords.currentY
                 };

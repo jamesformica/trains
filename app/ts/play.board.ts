@@ -179,7 +179,7 @@ module trains.play {
             var cellID = this.getCellID(column, row);
             var cell = this.cells[cellID];
             if (cell !== undefined) {
-                if (cell.direction === trains.play.Direction.LeftUp) {
+                if (cell.direction === trains.play.Direction.Cross) {
                     cell.direction = trains.play.Direction.Vertical;
                 } else {
                     cell.direction = cell.direction + 1;
@@ -300,7 +300,8 @@ module trains.play {
         RightUp,
         RightDown,
         LeftDown,
-        LeftUp
+        LeftUp,
+        Cross
     }
 
 }
