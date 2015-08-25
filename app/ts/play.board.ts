@@ -161,12 +161,14 @@ module trains.play {
         }
         
         private cellMoveOver(event: MouseEvent): void {
-            if (event.buttons === 1) {
+            if (event.buttons === 1 && this.tool !== Tool.Train) {
                 this.cellClick(event);
             }
         }
 
         private cellTouch(event: any): void {
+            if (this.tool === Tool.Train) return;
+            
             var column = this.getGridCoord(event.touches[0].pageX - this.trackCanvas.offsetLeft);
             var row = this.getGridCoord(event.touches[0].pageY - this.trackCanvas.offsetTop);
             this.doTool(column, row, event.shiftKey);
