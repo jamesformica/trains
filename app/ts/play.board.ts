@@ -113,7 +113,7 @@ module trains.play {
             }
             var logicDuration = new Date().getTime() - logicStartTime;
             this.lastLogic = logicDuration.toFixed(2);
-            var timeTillNext = Math.max(15-logicDuration,1);
+            var timeTillNext = Math.max(15-logicDuration,5);
             setTimeout(()=>this.gameLoop(),timeTillNext);
         }
 
