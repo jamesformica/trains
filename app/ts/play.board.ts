@@ -38,8 +38,16 @@ module trains.play {
         
         private trains = new Array<trains.play.Train>();
         private gameRunningState = true;
-        private lastFps = "";
-        private lastLogic = "";
+        private lastRenderDuration = "";
+        private lastLogicDuration = "";
+        private lastRenderStartTime;
+        private renderPerSecond = 30; //Start with targets
+        private lastLogicStartTime;
+        private logicPerSecond = 40;
+
+        private showDiagnostics = true;
+
+        private lastGameLoopTime;
         
         constructor(public playComponents: trains.play.PlayComponents) {
 
@@ -92,16 +100,17 @@ module trains.play {
             if(this.trains.length > 0) {
                 this.trains.forEach(t=> t.draw());
             }
-            this.trainContext.font="10px Verdana";
-            this.trainContext.fillText("To render: "+this.lastFps+"ms",10,10);
-            this.trainContext.fillText("To logic: "+this.lastLogic+"ms",10,24);
-            if(this.trains.length > 0)
+            if(this.showDiagnostics === true)
             {
-                this.trainContext.fillText("Train Count: "+(this.trains.length),10,38);
+                this.drawDiagnostics(this.trainContext);
             }
             var renderDuration = new Date().getTime() - renderStartTime;
             var timeTillNextRender = Math.max(33-renderDuration,10);
-            this.lastFps = renderDuration.toFixed(2);
+            this.lastRenderDuration = renderDuration.toFixed(2);
+            if(this.lastRenderStartTime !== undefined) {
+                this.renderPerSecond = ((this.renderPerSecond * 4) + (1 / ((renderStartTime - this.lastRenderStartTime) / 1000))) / 5;
+            }
+            this.lastRenderStartTime = renderStartTime;
             setTimeout(()=>this.renderLoop(),timeTillNextRender);
         }
         public gameLoop(): void {
@@ -112,9 +121,24 @@ module trains.play {
                 }
             }
             var logicDuration = new Date().getTime() - logicStartTime;
-            this.lastLogic = logicDuration.toFixed(2);
-            var timeTillNext = Math.max(15-logicDuration,5);
+            this.lastLogicDuration = logicDuration.toFixed(2);
+            var timeTillNext = Math.max(25-logicDuration,10);
+            if(this.lastLogicStartTime !== undefined) {
+                this.logicPerSecond = ((this.logicPerSecond * 4) + (1 / ((logicStartTime - this.lastLogicStartTime) / 1000))) / 5;
+            }
+            this.lastLogicStartTime = logicStartTime;
             setTimeout(()=>this.gameLoop(),timeTillNext);
+        }
+
+        private drawDiagnostics(targetContext: CanvasRenderingContext2D):void
+        {
+            targetContext.font="10px Verdana";
+            targetContext.fillText("To render: "+this.lastRenderDuration+"ms ("+(this.renderPerSecond.toFixed(2))+"ps)",10,10);
+            targetContext.fillText("To logic: "+this.lastLogicDuration+"ms ("+(this.logicPerSecond.toFixed(2))+"ps)",10,24);
+            if(this.trains.length > 0)
+            {
+                targetContext.fillText("Train Count: "+(this.trains.length),10,38);
+            }
         }
 
         public startGame(): void {

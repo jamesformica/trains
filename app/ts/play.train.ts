@@ -37,7 +37,7 @@ module trains.play {
 
 				var cell = this.board.getCell(column, row);
 				if (cell !== undefined) {
-					this.coords = cell.getNewCoordsForTrain(this.coords, 1.25)
+					this.coords = cell.getNewCoordsForTrain(this.coords, 1.75)
 				}
 			}
 			catch (e) {
