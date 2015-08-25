@@ -4,6 +4,7 @@
 /// <reference path="play.cell.ts" />
 /// <reference path="play.train.ts" />
 /// <reference path="play.board.renderer.ts" />
+/// <reference path="track.ts" />
 
 module trains.play {
 
@@ -28,13 +29,17 @@ module trains.play {
 
         public canvasWidth: number;
         public canvasHeight: number;
+        
+        private maxColumns: number;
+        private maxRows: number;
 
         private cells: trains.play.BoardCells = {};
         private tool: Tool;
         
         private trains = new Array<trains.play.Train>();
-        
-        public firstCell: trains.play.Cell;
+        private gameRunningState = true;
+        private lastFps = "";
+        private lastLogic = "";
         
         constructor(public playComponents: trains.play.PlayComponents) {
 
@@ -50,7 +55,9 @@ module trains.play {
             this.gridContext = this.gridCanvas.getContext("2d");
 
             this.canvasWidth = this.roundToNearestGridSize(this.$window.width() - (gridSize * 2));
+            this.maxColumns = this.canvasWidth / gridSize;
             this.canvasHeight = this.roundToNearestGridSize(this.$window.height() - (gridSize * 2));
+            this.maxRows = this.canvasHeight / gridSize;
 
             this.playComponents.$canvases.attr('width', this.canvasWidth);
             this.playComponents.$canvases.attr('height', this.canvasHeight);
@@ -75,8 +82,49 @@ module trains.play {
             this.setTool(trains.play.Tool.Track);
             
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
+            this.renderLoop();
+            this.gameLoop();
         }
-        
+
+        public renderLoop(): void {
+            var renderStartTime = new Date().getTime();
+            this.trainContext.clearRect(0, 0, this.trainCanvas.width, this.trainCanvas.height);
+            if(this.trains.length > 0) {
+                this.trains.forEach(t=> t.draw());
+            }
+            this.trainContext.font="10px Verdana";
+            this.trainContext.fillText("To render: "+this.lastFps+"ms",10,10);
+            this.trainContext.fillText("To logic: "+this.lastLogic+"ms",10,24);
+            if(this.trains.length > 0)
+            {
+                this.trainContext.fillText("Train Count: "+(this.trains.length),10,38);
+            }
+            var renderDuration = new Date().getTime() - renderStartTime;
+            var timeTillNextRender = Math.max(33-renderDuration,10);
+            this.lastFps = renderDuration.toFixed(2);
+            setTimeout(()=>this.renderLoop(),timeTillNextRender);
+        }
+        public gameLoop(): void {
+            var logicStartTime = new Date().getTime();
+            if(this.gameRunningState) {
+                if (this.trains.length > 0) {
+                    this.trains.forEach(t=> t.chooChooMotherFucker());
+                }
+            }
+            var logicDuration = new Date().getTime() - logicStartTime;
+            this.lastLogic = logicDuration.toFixed(2);
+            var timeTillNext = Math.max(15-logicDuration,1);
+            setTimeout(()=>this.gameLoop(),timeTillNext);
+        }
+
+        public startGame(): void {
+            this.gameRunningState = true;
+        }
+
+        public stopGame(): void {
+            this.gameRunningState = false;
+        }
+
         redraw(): void {
             trains.play.BoardRenderer.redrawCells(this.cells, this.trackContext, this.canvasWidth, this.canvasHeight);
         }            
@@ -113,12 +161,14 @@ module trains.play {
         }
         
         private cellMoveOver(event: MouseEvent): void {
-            if (event.buttons === 1) {
+            if (event.buttons === 1 && this.tool !== Tool.Train) {
                 this.cellClick(event);
             }
         }
 
         private cellTouch(event: any): void {
+            if (this.tool === Tool.Train) return;
+            
             var column = this.getGridCoord(event.touches[0].pageX - this.trackCanvas.offsetLeft);
             var row = this.getGridCoord(event.touches[0].pageY - this.trackCanvas.offsetTop);
             this.doTool(column, row, event.shiftKey);
@@ -138,6 +188,8 @@ module trains.play {
         }
         
         private doTool(column: number, row: number, shift: boolean): void {
+            if (row >= this.maxRows || column >= this.maxColumns) return;
+                
             switch (this.tool) {
                 case Tool.Track:
                 {
@@ -172,8 +224,8 @@ module trains.play {
         }
         
         public destroyTrack(): void {
-            
-            this.trains.forEach(t=> t.stop());
+
+            this.stopGame();
             this.trains = new Array<Train>();
             var deferreds = new Array<JQueryDeferred<{}>>();
             for (var id in this.cells) {
@@ -195,16 +247,7 @@ module trains.play {
             var cellID = this.getCellID(column, row);
             var cell: trains.play.Cell = this.cells[cellID];
             if (cell !== undefined) {
-                if (cell.direction === trains.play.Direction.Cross) {
-                    cell.direction = trains.play.Direction.Vertical;
-                } else {
-                    cell.direction = cell.direction + 1;
-                }
-                cell.draw(this.trackContext);
-                var neighbours = this.getNeighbouringCells(cell.column, cell.row);
-                neighbours.all.forEach((neighbour) => {
-                    neighbour.draw(this.trackContext);
-                });
+                cell.turnAroundBrightEyes();
             }
         }
 
@@ -213,11 +256,11 @@ module trains.play {
 
             if (this.cells[cellID] === undefined) {
                 
-                var newCell = new trains.play.Cell(this, cellID, column, row);
+                var newCell: Cell;
                 
-                if (this.firstCell === undefined) {
-                    this.firstCell = newCell;
-                }  
+                if (this.tool === Tool.Track) {
+                    newCell = new trains.play.Track(this, cellID, column, row);
+                }
                 
                 this.cells[newCell.id] = newCell;
 
@@ -246,11 +289,11 @@ module trains.play {
         }
         
         showChooChoo(): void {
-            this.trains.forEach(t=>t.start());
+            this.startGame();
         }
         
         stopChooChoo(): void {
-            this.trains.forEach(t=>t.stop());
+            this.stopGame();
         }
 
         private roundToNearestGridSize(value: number): number {
