@@ -34,6 +34,9 @@ module trains.play {
         private tool: Tool;
         
         private trains = new Array<trains.play.Train>();
+        private gameRunningState = true;
+        private lastFps = "";
+        private lastLogic = "";
         
         constructor(public playComponents: trains.play.PlayComponents) {
 
@@ -74,8 +77,49 @@ module trains.play {
             this.setTool(trains.play.Tool.Track);
             
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
+            this.renderLoop();
+            this.gameLoop();
         }
-        
+
+        public renderLoop(): void {
+            var renderStartTime = new Date().getTime();
+            this.trainContext.clearRect(0, 0, this.trainCanvas.width, this.trainCanvas.height);
+            if(this.trains.length > 0) {
+                this.trains.forEach(t=> t.draw());
+            }
+            this.trainContext.font="10px Verdana";
+            this.trainContext.fillText("To render: "+this.lastFps+"ms",10,10);
+            this.trainContext.fillText("To logic: "+this.lastLogic+"ms",10,24);
+            if(this.trains.length > 0)
+            {
+                this.trainContext.fillText("Train Count: "+(this.trains.length),10,38);
+            }
+            var renderDuration = new Date().getTime() - renderStartTime;
+            var timeTillNextRender = Math.max(33-renderDuration,10);
+            this.lastFps = renderDuration.toFixed(2);
+            setTimeout(()=>this.renderLoop(),timeTillNextRender);
+        }
+        public gameLoop(): void {
+            var logicStartTime = new Date().getTime();
+            if(this.gameRunningState) {
+                if (this.trains.length > 0) {
+                    this.trains.forEach(t=> t.chooChooMotherFucker());
+                }
+            }
+            var logicDuration = new Date().getTime() - logicStartTime;
+            this.lastLogic = logicDuration.toFixed(2);
+            var timeTillNext = Math.max(15-logicDuration,1);
+            setTimeout(()=>this.gameLoop(),timeTillNext);
+        }
+
+        public startGame(): void {
+            this.gameRunningState = true;
+        }
+
+        public stopGame(): void {
+            this.gameRunningState = false;
+        }
+
         redraw(): void {
             trains.play.BoardRenderer.redrawCells(this.cells, this.trackContext, this.canvasWidth, this.canvasHeight);
         }            
@@ -171,8 +215,8 @@ module trains.play {
         }
         
         public destroyTrack(): void {
-            
-            this.trains.forEach(t=> t.stop());
+
+            this.stopGame();
             this.trains = new Array<Train>();
             var deferreds = new Array<JQueryDeferred<{}>>();
             for (var id in this.cells) {
@@ -236,11 +280,11 @@ module trains.play {
         }
         
         showChooChoo(): void {
-            this.trains.forEach(t=>t.start());
+            this.startGame();
         }
         
         stopChooChoo(): void {
-            this.trains.forEach(t=>t.stop());
+            this.stopGame();
         }
 
         private roundToNearestGridSize(value: number): number {
