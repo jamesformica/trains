@@ -1,6 +1,7 @@
 /// <reference path="play.board.ts" />
 /// <reference path="play.cell.ts" />
 /// <reference path="play.board.renderer.ts" />
+/// <reference path="play.train.renderer.ts" />
 
 module trains.play {
 
@@ -69,8 +70,7 @@ module trains.play {
 			
 			context.translate(x,y);
 			context.rotate(angle * -1);
-			context.fillStyle = "blue";
-			context.fillRect(trains.play.gridSize/-4, trains.play.gridSize / -2, trains.play.gridSize/2, trains.play.gridSize);
+			trains.play.TrainRenderer.DrawChoochoo(context);
 			
 			context.restore();
 		}
