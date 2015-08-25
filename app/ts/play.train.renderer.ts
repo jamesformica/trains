@@ -38,13 +38,21 @@ module trains.play.TrainRenderer {
 	var shaftX = leftX + shaftPadding;
 	var shaftY = frontY + shaftPadding;
 
-	export function DrawChoochoo(context: CanvasRenderingContext2D, shaftColourIndex: number): void {
+	export function GetRandomShaftColour(): number {
+		return Math.floor(Math.random() * trains.play.TrainRenderer.trainColours.length);
+	}
 
+	export function DrawChoochoo(context: CanvasRenderingContext2D, shaftColourIndex: number): void {
+		
+		var shaftColour = trainColours[shaftColourIndex];
+		if (shaftColourIndex === -1) {
+			shaftColour = trainColours[GetRandomShaftColour()];
+		}
 
 		context.fillStyle = baseColour;
 		context.fillRect(leftX, frontY, trainWidth, trainLength);
 
-		context.fillStyle = GetShaftFillStyle(context, trainColours[shaftColourIndex][0], trainColours[shaftColourIndex][1]);
+		context.fillStyle = GetShaftFillStyle(context, shaftColour[0], shaftColour[1]);
 		context.fillRect(shaftX, shaftY, shaftWidth, shaftLength);
 
 		context.fillStyle = GetRoofFillStyle(context, baseColour, "#5d5d5d");

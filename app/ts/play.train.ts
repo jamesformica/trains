@@ -22,7 +22,11 @@ module trains.play {
 					previousY: currentCell.y-1 //Cos we never want to be the centre of attention
 				}
 				
-				this.trainColourIndex = Math.floor(Math.random() * trains.play.TrainRenderer.trainColours.length);
+				if (Math.floor(Math.random() * 10) === 0) {
+					this.trainColourIndex = -1;
+				} else {
+					this.trainColourIndex = trains.play.TrainRenderer.GetRandomShaftColour();
+				}
 			}
 		}
 		
