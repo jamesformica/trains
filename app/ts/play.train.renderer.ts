@@ -18,7 +18,7 @@ module trains.play.TrainRenderer {
 	var trainLength = trains.play.gridSize;
 
 	var leftX = firstTrackPosY * -1;
-	var rightX = secondTrackPosY * -1;
+	var rightX = leftX + trainWidth;
 
 	var frontY = halfGridSize * -1;
 	var backY = halfGridSize;
@@ -37,6 +37,11 @@ module trains.play.TrainRenderer {
 	var shaftLength = trainLength - shaftPadding;
 	var shaftX = leftX + shaftPadding;
 	var shaftY = frontY + shaftPadding;
+	
+	var bumperPoke = 2;
+	var bumperWidth = 1;
+	var bumperLength = 3;
+	var bumperOffset = 3;
 
 	export function GetRandomShaftColour(): number {
 		return Math.floor(Math.random() * trains.play.TrainRenderer.trainColours.length);
@@ -65,6 +70,9 @@ module trains.play.TrainRenderer {
 		context.stroke();
 		context.closePath;
 		context.fill();
+		
+		DrawFrontBumpers(context);
+		DrawBackBumpers(context);
 	}
 
 	function GetRoofFillStyle(context: CanvasRenderingContext2D, firstColour: string, secondColour: string): CanvasGradient {
@@ -85,5 +93,43 @@ module trains.play.TrainRenderer {
 		grd.addColorStop(0.5, secondColour)
 		grd.addColorStop(1, firstColour);
 		return grd;
+	}
+	
+	function DrawFrontBumpers(context: CanvasRenderingContext2D): void {
+		
+		context.beginPath();
+		context.lineWidth = bumperWidth;
+		context.strokeStyle = baseColour;
+		
+		context.moveTo(leftX + bumperOffset, frontY - bumperPoke);
+		context.lineTo(leftX + bumperOffset, frontY);
+		context.moveTo(leftX + bumperOffset - (bumperLength / 2), frontY - bumperPoke);
+		context.lineTo(leftX + bumperOffset + (bumperLength / 2), frontY - bumperPoke);
+		
+		context.moveTo(rightX - bumperOffset, frontY - bumperPoke);
+		context.lineTo(rightX - bumperOffset, frontY);
+		context.moveTo(rightX - bumperOffset - (bumperLength / 2), frontY - bumperPoke);
+		context.lineTo(rightX - bumperOffset + (bumperLength / 2), frontY - bumperPoke);
+		
+		context.stroke();
+		
+	}
+	
+	function DrawBackBumpers(context: CanvasRenderingContext2D): void {
+		context.beginPath();
+		context.lineWidth = bumperWidth;
+		context.strokeStyle = baseColour;
+		
+		context.moveTo(leftX + bumperOffset, backY + bumperPoke);
+		context.lineTo(leftX + bumperOffset, backY);
+		context.moveTo(leftX + bumperOffset - (bumperLength / 2), backY + bumperPoke);
+		context.lineTo(leftX + bumperOffset + (bumperLength / 2), backY + bumperPoke);
+		
+		context.moveTo(rightX - bumperOffset, backY + bumperPoke);
+		context.lineTo(rightX - bumperOffset, backY);
+		context.moveTo(rightX - bumperOffset - (bumperLength / 2), backY + bumperPoke);
+		context.lineTo(rightX - bumperOffset + (bumperLength / 2), backY + bumperPoke);
+		
+		context.stroke();
 	}
 }
