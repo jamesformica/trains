@@ -1,6 +1,16 @@
 /// <reference path="play.board.ts" />
 
 module trains.play.TrainRenderer {
+	
+	// dark then light
+	export var trainColours: Array<Array<string>> = [
+		["#7A040B", "#DD2C3E"],			// red
+		["#4272DC", "#759cef"],			// blue
+		["#2e9b3d", "#66d174"],			// green
+		["#44096d", "#8644b5"],			// purple
+		["#8644b5", "#f4ef53"]			// yellow
+		];
+	
 
 	var halfGridSize = trains.play.gridSize / 2;
 
@@ -28,13 +38,13 @@ module trains.play.TrainRenderer {
 	var shaftX = leftX + shaftPadding;
 	var shaftY = frontY + shaftPadding;
 
-	export function DrawChoochoo(context: CanvasRenderingContext2D): void {
+	export function DrawChoochoo(context: CanvasRenderingContext2D, shaftColourIndex: number): void {
 
 
 		context.fillStyle = baseColour;
 		context.fillRect(leftX, frontY, trainWidth, trainLength);
 
-		context.fillStyle = GetShaftFillStyle(context, "#7A040B", "#DD2C3E");
+		context.fillStyle = GetShaftFillStyle(context, trainColours[shaftColourIndex][0], trainColours[shaftColourIndex][1]);
 		context.fillRect(shaftX, shaftY, shaftWidth, shaftLength);
 
 		context.fillStyle = GetRoofFillStyle(context, baseColour, "#5d5d5d");

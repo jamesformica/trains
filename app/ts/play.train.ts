@@ -11,7 +11,7 @@ module trains.play {
 
 		private previousAngle: number;
 		
-		// alex was here
+		private trainColourIndex: number;
 
 		constructor(private board: trains.play.Board, currentCell: Cell) {
 			if (currentCell !== undefined) {
@@ -21,6 +21,8 @@ module trains.play {
 					previousX: currentCell.x,
 					previousY: currentCell.y-1 //Cos we never want to be the centre of attention
 				}
+				
+				this.trainColourIndex = Math.floor(Math.random() * trains.play.TrainRenderer.trainColours.length);
 			}
 		}
 		
@@ -50,7 +52,7 @@ module trains.play {
 			
 			context.translate(x,y);
 			context.rotate(angle * -1);
-			trains.play.TrainRenderer.DrawChoochoo(context);
+			trains.play.TrainRenderer.DrawChoochoo(context, this.trainColourIndex);
 			
 			context.restore();
 		}
