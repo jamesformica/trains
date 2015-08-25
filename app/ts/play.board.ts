@@ -4,6 +4,7 @@
 /// <reference path="play.cell.ts" />
 /// <reference path="play.train.ts" />
 /// <reference path="play.board.renderer.ts" />
+/// <reference path="track.ts" />
 
 module trains.play {
 
@@ -33,8 +34,6 @@ module trains.play {
         private tool: Tool;
         
         private trains = new Array<trains.play.Train>();
-        
-        public firstCell: trains.play.Cell;
         
         constructor(public playComponents: trains.play.PlayComponents) {
 
@@ -195,16 +194,7 @@ module trains.play {
             var cellID = this.getCellID(column, row);
             var cell: trains.play.Cell = this.cells[cellID];
             if (cell !== undefined) {
-                if (cell.direction === trains.play.Direction.Cross) {
-                    cell.direction = trains.play.Direction.Vertical;
-                } else {
-                    cell.direction = cell.direction + 1;
-                }
-                cell.draw(this.trackContext);
-                var neighbours = this.getNeighbouringCells(cell.column, cell.row);
-                neighbours.all.forEach((neighbour) => {
-                    neighbour.draw(this.trackContext);
-                });
+                cell.turnAroundBrightEyes();
             }
         }
 
@@ -213,11 +203,11 @@ module trains.play {
 
             if (this.cells[cellID] === undefined) {
                 
-                var newCell = new trains.play.Cell(this, cellID, column, row);
+                var newCell: Cell;
                 
-                if (this.firstCell === undefined) {
-                    this.firstCell = newCell;
-                }  
+                if (this.tool === Tool.Track) {
+                    newCell = new trains.play.Track(this, cellID, column, row);
+                }
                 
                 this.cells[newCell.id] = newCell;
 

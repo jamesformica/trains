@@ -8,9 +8,9 @@ module trains.play {
         public happy: boolean;
         public x: number;
         public y: number;
-        public direction: trains.play.Direction;
+        protected direction: trains.play.Direction;
 
-        constructor(private board: trains.play.Board, public id: string, public column: number, public row: number) {
+        constructor(protected board: trains.play.Board, public id: string, public column: number, public row: number) {
             this.happy = false;
             this.x = this.column * trains.play.gridSize;
             this.y = this.row * trains.play.gridSize;
@@ -18,64 +18,11 @@ module trains.play {
         }
 
         draw(context: CanvasRenderingContext2D): void {
-            context.save();
-
-            context.translate(this.x + 0.5, this.y + 0.5);
-            trains.play.CellRenderer.clearCell(context);
-
-            switch (this.direction) {
-                case trains.play.Direction.Horizontal:
-                    {
-                        var neighbours = this.board.getNeighbouringCells(this.column, this.row);
-                        trains.play.CellRenderer.drawStraightTrack(context, neighbours.left === undefined, neighbours.right === undefined);
-                        break;
-                    }
-                case trains.play.Direction.Vertical:
-                    {
-                        var neighbours = this.board.getNeighbouringCells(this.column, this.row);
-                        context.translate(trains.play.gridSize, 0);
-                        context.rotate(Math.PI / 2);
-                        trains.play.CellRenderer.drawStraightTrack(context, neighbours.up === undefined, neighbours.down === undefined);
-                        break;
-                    }
-                case trains.play.Direction.LeftUp:
-                    {
-                        trains.play.CellRenderer.drawCurvedTrack(context);
-                        break;
-                    }
-                case trains.play.Direction.LeftDown:
-                    {
-                        context.translate(0, trains.play.gridSize);
-                        context.rotate(Math.PI * 1.5);
-                        trains.play.CellRenderer.drawCurvedTrack(context);
-                        break;
-                    }
-                case trains.play.Direction.RightUp:
-                    {
-                        context.translate(trains.play.gridSize, 0);
-                        context.rotate(Math.PI / 2);
-                        trains.play.CellRenderer.drawCurvedTrack(context);
-                        break;
-                    }
-                case trains.play.Direction.RightDown:
-                    {
-                        context.translate(trains.play.gridSize, trains.play.gridSize);
-                        context.rotate(Math.PI);
-                        trains.play.CellRenderer.drawCurvedTrack(context);
-                        break;
-                    }
-                case trains.play.Direction.Cross:
-                {
-                    var neighbours = this.board.getNeighbouringCells(this.column, this.row);
-                    trains.play.CellRenderer.drawStraightTrack(context, false,false);
-                    context.translate(trains.play.gridSize, 0);
-                    context.rotate(Math.PI / 2);
-                    trains.play.CellRenderer.drawStraightTrack(context, false,false);
-                    break;
-                }
-            }
-
-            context.restore();
+            throw new Error("This method is abstract.. no really.. come on.. just pretend! It will be fun I promise.");
+        }
+                
+        turnAroundBrightEyes(): void {
+            throw new Error("abstract");
         }
 
         checkYourself(): void {
