@@ -12,6 +12,8 @@ module trains.play {
 		private rotation: number;
 		
 		private timer: number;
+		
+		// alex was here
 
 		constructor(private board: trains.play.Board, currentCell: Cell) {
 			if (currentCell !== undefined) {
