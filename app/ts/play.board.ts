@@ -29,6 +29,9 @@ module trains.play {
 
         public canvasWidth: number;
         public canvasHeight: number;
+        
+        private maxColumns: number;
+        private maxRows: number;
 
         private cells: trains.play.BoardCells = {};
         private tool: Tool;
@@ -52,7 +55,9 @@ module trains.play {
             this.gridContext = this.gridCanvas.getContext("2d");
 
             this.canvasWidth = this.roundToNearestGridSize(this.$window.width() - (gridSize * 2));
+            this.maxColumns = this.canvasWidth / gridSize;
             this.canvasHeight = this.roundToNearestGridSize(this.$window.height() - (gridSize * 2));
+            this.maxRows = this.canvasHeight / gridSize;
 
             this.playComponents.$canvases.attr('width', this.canvasWidth);
             this.playComponents.$canvases.attr('height', this.canvasHeight);
@@ -181,6 +186,8 @@ module trains.play {
         }
         
         private doTool(column: number, row: number, shift: boolean): void {
+            if (row >= this.maxRows || column >= this.maxColumns) return;
+                
             switch (this.tool) {
                 case Tool.Track:
                 {
