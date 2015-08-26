@@ -277,7 +277,6 @@ module trains.play {
         }
         
         private destroyTrack(): void {
-            this.stopGame();
             this.trains = new Array<Train>();
             var deferreds = new Array<JQueryDeferred<{}>>();
             for (var id in this.cells) {
