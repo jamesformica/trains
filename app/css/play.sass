@@ -8,10 +8,27 @@ $tools-height: $tools-padding * 2 + $tool-button-height
     display: inline-block
     left: 0
     
-.train-buttons
+.train-control-centre
     position: absolute
-    width: 100%
     text-align: center
+    border: $border-double
+    background-color: $colour-background
+    z-index: 1000
+    display: none
+    
+    > .close
+        position: absolute
+        top: 0px
+        right: 1px
+        cursor: pointer
+    
+    > .handle
+        cursor: move
+        float: left
+        width: 100%
+    
+    > ul
+        float: left
 
 canvas.track-canvas, canvas.grid-canvas, canvas.train-canvas
     position: absolute

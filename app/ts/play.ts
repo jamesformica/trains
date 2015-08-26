@@ -1,4 +1,4 @@
-/// <reference path="../types/jquery.d.ts" />
+/// <reference path="../types/jqueryui.d.ts" />
 /// <reference path="play.board.ts" />
 
 module trains.play {
@@ -17,8 +17,13 @@ module trains.play {
             this.board = new trains.play.Board(this.playComponents);
 
             var top = ($(window).height() - this.board.canvasHeight) / 2;
+            var left = ($(window).width() - this.board.canvasWidth) / 2;
             this.playComponents.$trackButtons.css("top", top);
-            this.playComponents.$trainButtons.css("line-height", top + "px");
+            this.playComponents.$trainButtons.css("top", top).css("right", left);
+            
+            this.playComponents.$trainButtons.draggable({
+                handle: '.ui-handle'
+            })
 
             this.AttachEvents();
         }
@@ -31,9 +36,12 @@ module trains.play {
                 }
             });
 
+            this.playComponents.$trainButtons.find('.ui-close').click(() => {
+                this.board.hideTrainControls();
+            });
+
             this.playComponents.$trainButtons.find('button').click((event) => {
                 var $option = $(event.currentTarget);
-
                 switch ($option.data("action").toLowerCase()) {
                     case "play": {
                         this.TogglePlayStop($option);
@@ -41,10 +49,6 @@ module trains.play {
                     }
                     case "forward": {
                         this.board.setGameSpeed(2);
-                        break;
-                    }
-                    case "fast-forward": {
-                        this.board.setGameSpeed(4);
                         break;
                     }
                 }

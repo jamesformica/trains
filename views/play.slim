@@ -21,27 +21,34 @@
             li
                 button data-action="bomb"
                     i class="fa fa-bomb"
-      
-    div class="train-buttons ui-train-buttons"          
+    
+    div class="train-control-centre ui-train-buttons animated flipInX"
+    
+        i class="fa fa-times close ui-close"
+    
+        span class="handle ui-handle"
+            | ::::::::::
+             
         ul class="horizontal-icon-buttons"
             li
-                button data-action="fast-backward"
-                    i class="fa fa-fast-backward"
-            li
-                button data-action="backward"
+                button data-action="backward" data-title="slower"
                     i class="fa fa-backward"
                     
             li
-                button data-action="play" class="ui-play-stop"
+                button data-action="play" data-title="go/stop" class="ui-play-stop"
                     i class="fa fa-play"
             
             li
-                button data-action="forward"
+                button data-action="forward" data-title="faster"
                     i class="fa fa-forward"
-            
+          
             li
-                button data-action="fast-forward"
-                    i class="fa fa-fast-forward"
+                button data-action="prod" data-title="push"
+                    i class="fa fa-hand-o-right"
+                    
+            li
+                button data-action="bomb" data-title="delete"
+                    i class="fa fa-trash"
 
     canvas class="ui-grid-canvas grid-canvas"
     canvas class="ui-track-canvas track-canvas"

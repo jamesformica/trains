@@ -343,7 +343,7 @@ module trains.play {
         private pointAtThing(column: number, row: number): void {
             this.trains.forEach((train) => {
                 if (train.isTrainHere(column, row)) {
-                    alert("YAY");
+                    this.showTrainControls();
                 }
             });
         }
@@ -395,6 +395,14 @@ module trains.play {
                 left: left,
                 all: all
             };
+        }
+        
+        showTrainControls(): void {
+            this.playComponents.$trainButtons.show();
+        }
+        
+        hideTrainControls(): void {
+            this.playComponents.$trainButtons.hide();
         }
     }
 
