@@ -71,8 +71,8 @@ module trains.play.TrainRenderer {
 		context.closePath;
 		context.fill();
 		
-		DrawFrontBumpers(context);
-		DrawBackBumpers(context);
+		DrawBumpers(context, true);
+		DrawBumpers(context, false);
 	}
 
 	function GetRoofFillStyle(context: CanvasRenderingContext2D, firstColour: string, secondColour: string): CanvasGradient {
@@ -95,41 +95,32 @@ module trains.play.TrainRenderer {
 		return grd;
 	}
 	
-	function DrawFrontBumpers(context: CanvasRenderingContext2D): void {
+	function DrawBumpers(context: CanvasRenderingContext2D, upFront: boolean): void {
+		
+		var y: number;
+		var bumperY: number;
+		if (upFront) {
+			y = frontY;
+			bumperY = frontY - bumperPoke;
+		} else {
+			y = backY;
+			bumperY = backY + bumperPoke
+		}
 		
 		context.beginPath();
 		context.lineWidth = bumperWidth;
 		context.strokeStyle = baseColour;
 		
-		context.moveTo(leftX + bumperOffset, frontY - bumperPoke);
-		context.lineTo(leftX + bumperOffset, frontY);
-		context.moveTo(leftX + bumperOffset - (bumperLength / 2), frontY - bumperPoke);
-		context.lineTo(leftX + bumperOffset + (bumperLength / 2), frontY - bumperPoke);
+		context.moveTo(leftX + bumperOffset, bumperY);
+		context.lineTo(leftX + bumperOffset, y);
+		context.moveTo(leftX + bumperOffset - (bumperLength / 2), bumperY);
+		context.lineTo(leftX + bumperOffset + (bumperLength / 2), bumperY);
 		
-		context.moveTo(rightX - bumperOffset, frontY - bumperPoke);
-		context.lineTo(rightX - bumperOffset, frontY);
-		context.moveTo(rightX - bumperOffset - (bumperLength / 2), frontY - bumperPoke);
-		context.lineTo(rightX - bumperOffset + (bumperLength / 2), frontY - bumperPoke);
+		context.moveTo(rightX - bumperOffset, bumperY);
+		context.lineTo(rightX - bumperOffset, y);
+		context.moveTo(rightX - bumperOffset - (bumperLength / 2), bumperY);
+		context.lineTo(rightX - bumperOffset + (bumperLength / 2), bumperY);
 		
-		context.stroke();
-		
-	}
-	
-	function DrawBackBumpers(context: CanvasRenderingContext2D): void {
-		context.beginPath();
-		context.lineWidth = bumperWidth;
-		context.strokeStyle = baseColour;
-		
-		context.moveTo(leftX + bumperOffset, backY + bumperPoke);
-		context.lineTo(leftX + bumperOffset, backY);
-		context.moveTo(leftX + bumperOffset - (bumperLength / 2), backY + bumperPoke);
-		context.lineTo(leftX + bumperOffset + (bumperLength / 2), backY + bumperPoke);
-		
-		context.moveTo(rightX - bumperOffset, backY + bumperPoke);
-		context.lineTo(rightX - bumperOffset, backY);
-		context.moveTo(rightX - bumperOffset - (bumperLength / 2), backY + bumperPoke);
-		context.lineTo(rightX - bumperOffset + (bumperLength / 2), backY + bumperPoke);
-		
-		context.stroke();
+		context.stroke();	
 	}
 }

@@ -29,7 +29,7 @@ module trains.play {
 				}
 			}
 		}
-		
+
 		public chooChooMotherFucker(speed: number): void {
 			try {
 				var column = this.board.getGridCoord(this.coords.currentX);
@@ -59,6 +59,12 @@ module trains.play {
 			trains.play.TrainRenderer.DrawChoochoo(context, this.trainColourIndex);
 			
 			context.restore();
+		}
+		
+		public isTrainHere(column: number, row: number): boolean {
+			var myColumn = this.board.getGridCoord(this.coords.currentX);
+			var myRow = this.board.getGridCoord(this.coords.currentY);
+			return column === myColumn && row === myRow;
 		}
 	}
 }

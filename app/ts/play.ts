@@ -53,6 +53,10 @@ module trains.play {
             this.playComponents.$trackButtons.find('button').click((event) => {
                 var $option = $(event.currentTarget);
                 switch ($option.data("action").toLowerCase()) {
+                    case "pointer": {
+                        this.board.setTool(trains.play.Tool.Pointer);
+                        break;
+                    }
                     case "train": {
                         this.board.setTool(trains.play.Tool.Train);
                         break;
