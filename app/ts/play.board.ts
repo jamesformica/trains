@@ -152,7 +152,7 @@ module trains.play {
 
         redraw(): void {
             trains.play.BoardRenderer.redrawCells(this.cells, this.trackContext, this.canvasWidth, this.canvasHeight);
-        }            
+        }
 
         setTool(tool: Tool): void {
             if (tool !== this.tool) {
@@ -172,6 +172,7 @@ module trains.play {
                     }
                     case trains.play.Tool.Train: {
                         cursorName = "train";
+                        hotspot = 'center';
                         break;
                     }
                     case trains.play.Tool.Eraser: {
@@ -180,6 +181,7 @@ module trains.play {
                     }
                     case trains.play.Tool.Rotate: {
                         cursorName = "refresh";
+                        hotspot = 'center';
                         break;
                     }
                 }
