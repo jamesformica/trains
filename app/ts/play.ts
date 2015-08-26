@@ -56,6 +56,7 @@ module trains.play {
 
             this.playComponents.$trackButtons.find('button').click((event) => {
                 var $option = $(event.currentTarget);
+                this.board.hideTrainControls();
                 switch ($option.data("action").toLowerCase()) {
                     case "pointer": {
                         this.board.setTool(trains.play.Tool.Pointer);
