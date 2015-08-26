@@ -39,12 +39,24 @@ module trains.play {
                         this.TogglePlayStop($option);
                         break;
                     }
+                    case "forward": {
+                        this.board.setGameSpeed(2);
+                        break;
+                    }
+                    case "fast-forward": {
+                        this.board.setGameSpeed(4);
+                        break;
+                    }
                 }
             });
 
             this.playComponents.$trackButtons.find('button').click((event) => {
                 var $option = $(event.currentTarget);
                 switch ($option.data("action").toLowerCase()) {
+                    case "pointer": {
+                        this.board.setTool(trains.play.Tool.Pointer);
+                        break;
+                    }
                     case "train": {
                         this.board.setTool(trains.play.Tool.Train);
                         break;
