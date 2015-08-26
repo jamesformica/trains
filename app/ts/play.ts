@@ -23,7 +23,7 @@ module trains.play {
 
             this.playComponents.$trainButtons.draggable({
                 handle: '.ui-handle'
-            })
+            });
 
             this.AttachEvents();
         }

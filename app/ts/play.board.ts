@@ -206,7 +206,7 @@ module trains.play {
                 $('body').css('cursor', '');
                 $('body').awesomeCursor(cursorName, {
                     hotspot: hotspot,
-                    size: 30
+                    size: 22
                 });
             }
         }
