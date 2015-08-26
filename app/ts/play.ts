@@ -20,7 +20,7 @@ module trains.play {
             var left = ($(window).width() - this.board.canvasWidth) / 2;
             this.playComponents.$trackButtons.css("top", top);
             this.playComponents.$trainButtons.css("top", top).css("right", left);
-            
+
             this.playComponents.$trainButtons.draggable({
                 handle: '.ui-handle'
             })
@@ -41,52 +41,11 @@ module trains.play {
             });
 
             this.playComponents.$trainButtons.find('button').click((event) => {
-                var $option = $(event.currentTarget);
-                switch ($option.data("action").toLowerCase()) {
-                    case "play": {
-                        this.TogglePlayStop($option);
-                        break;
-                    }
-                    case "forward": {
-                        this.board.setGameSpeed(2);
-                        break;
-                    }
-                }
+                this.board.trainControlClick(event.currentTarget);
             });
 
             this.playComponents.$trackButtons.find('button').click((event) => {
-                var $option = $(event.currentTarget);
-                this.board.hideTrainControls();
-                switch ($option.data("action").toLowerCase()) {
-                    case "pointer": {
-                        this.board.setTool(trains.play.Tool.Pointer);
-                        break;
-                    }
-                    case "train": {
-                        this.board.setTool(trains.play.Tool.Train);
-                        break;
-                    }
-                    case "pencil": {
-                        this.board.setTool(trains.play.Tool.Track);
-                        break;
-                    }
-                    case "eraser": {
-                        this.board.setTool(trains.play.Tool.Eraser);
-                        break;
-                    }
-                    case "rotate": {
-                        this.board.setTool(trains.play.Tool.Rotate);
-                        break;
-                    }
-                    case "bomb": {
-                        var response = confirm("Are you sure buddy?");
-                        if (response) {
-                            this.board.destroyTrack();
-                            this.board.setTool(trains.play.Tool.Track);
-                        }
-                        break;
-                    }
-                }
+                this.board.trackControlClick(event.currentTarget);
             });
         }
 

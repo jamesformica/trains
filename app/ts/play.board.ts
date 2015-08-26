@@ -15,6 +15,8 @@ module trains.play {
     export var trackPadding = 10;
     export var firstTrackPosY = trackPadding;
     export var secondTrackPosY = trains.play.gridSize - trackPadding;
+    
+    export var animationEndEventString = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd onanimationend animationend";
 
     export class Board {
 
@@ -36,7 +38,9 @@ module trains.play {
         private cells: trains.play.BoardCells = {};
         private tool: Tool;
         
+        private trainIDCounter = 0;
         private trains = new Array<trains.play.Train>();
+        private selectedTrain: trains.play.Train;
         private gameRunningState = true;
         private lastRenderDuration = 0;
         private lastLogicDuration = 0;
@@ -167,7 +171,7 @@ module trains.play {
             trains.play.BoardRenderer.redrawCells(this.cells, this.trackContext, this.canvasWidth, this.canvasHeight);
         }
 
-        setTool(tool: Tool): void {
+        private setTool(tool: Tool): void {
             if (tool !== this.tool) {
                 this.tool = tool;
                 
@@ -267,7 +271,7 @@ module trains.play {
                     var cellID = this.getCellID(column, row);
 
                     if (this.cells[cellID] !== undefined) {
-                        var t = new Train(this, this.cells[cellID]);
+                        var t = new Train(this.trainIDCounter++, this, this.cells[cellID]);
                         this.trains.push(t);
                     }
                     break;    
@@ -275,8 +279,7 @@ module trains.play {
             }
         }
         
-        public destroyTrack(): void {
-
+        private destroyTrack(): void {
             this.stopGame();
             this.trains = new Array<Train>();
             var deferreds = new Array<JQueryDeferred<{}>>();
@@ -343,7 +346,7 @@ module trains.play {
         private pointAtThing(column: number, row: number): void {
             this.trains.forEach((train) => {
                 if (train.isTrainHere(column, row)) {
-                    this.showTrainControls();
+                    this.showTrainControls(train);
                 }
             });
         }
@@ -397,12 +400,84 @@ module trains.play {
             };
         }
         
-        showTrainControls(): void {
-            this.playComponents.$trainButtons.show();
+        trackControlClick(option: EventTarget): void {
+             var $option = $(option);
+                if (this.selectedTrain !== undefined) {
+                    this.hideTrainControls();    
+                }
+                switch ($option.data("action").toLowerCase()) {
+                    case "pointer": {
+                        this.setTool(trains.play.Tool.Pointer);
+                        break;
+                    }
+                    case "train": {
+                        this.setTool(trains.play.Tool.Train);
+                        break;
+                    }
+                    case "pencil": {
+                        this.setTool(trains.play.Tool.Track);
+                        break;
+                    }
+                    case "eraser": {
+                        this.setTool(trains.play.Tool.Eraser);
+                        break;
+                    }
+                    case "rotate": {
+                        this.setTool(trains.play.Tool.Rotate);
+                        break;
+                    }
+                    case "bomb": {
+                        var response = confirm("Are you sure buddy?");
+                        if (response) {
+                            this.destroyTrack();
+                            this.setTool(trains.play.Tool.Track);
+                        }
+                        break;
+                    }
+                }
+        }
+        
+        trainControlClick(option: EventTarget): void {
+            if (this.selectedTrain !== undefined) {
+                var $option = $(option);
+                switch ($option.data("action").toLowerCase()) {
+                    case "play": {
+                        //this.TogglePlayStop($option);
+                        break;
+                    }
+                    case "forward": {
+                        this.setGameSpeed(2);
+                        break;
+                    }
+                    case "delete": {
+                        for (var i = 0; i < this.trains.length; i++) {
+                            if (this.trains[i].id === this.selectedTrain.id) {
+                                this.trains.splice(i, 1);
+                                this.hideTrainControls();
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else {
+                this.hideTrainControls();
+            }
+        }
+        
+        showTrainControls(train: trains.play.Train): void {
+            this.selectedTrain = train;
+            this.playComponents.$trainButtons.addClass("flipInX").show();
+            this.playComponents.$trainButtons.one(trains.play.animationEndEventString, () => {
+                this.playComponents.$trainButtons.removeClass("flipInX");
+            });
         }
         
         hideTrainControls(): void {
-            this.playComponents.$trainButtons.hide();
+            this.selectedTrain = undefined;
+            this.playComponents.$trainButtons.addClass("flipOutX");
+            this.playComponents.$trainButtons.one(trains.play.animationEndEventString, () => {
+                this.playComponents.$trainButtons.removeClass("flipOutX").hide();
+            });
         }
     }
 

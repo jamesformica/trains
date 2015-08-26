@@ -13,7 +13,7 @@ module trains.play {
 		
 		private trainColourIndex: number;
 
-		constructor(private board: trains.play.Board, currentCell: Cell) {
+		constructor(public id: number, private board: trains.play.Board, currentCell: Cell) {
 			if (currentCell !== undefined) {
 				this.coords = {
 					currentX: currentCell.x + (trains.play.gridSize / 2),
