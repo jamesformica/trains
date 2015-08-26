@@ -30,7 +30,7 @@ module trains.play {
 			}
 		}
 		
-		public chooChooMotherFucker(): void {
+		chooChooMotherFucker(): void {
 			try {
 				var column = this.board.getGridCoord(this.coords.currentX);
 				var row = this.board.getGridCoord(this.coords.currentY);
@@ -44,7 +44,7 @@ module trains.play {
 			}
 		}
 		
-		public draw(): void {
+		draw(): void {
 			var x = this.coords.currentX;
 			var y = this.coords.currentY;
 			var angle = Math.atan2(this.coords.previousX - x, this.coords.previousY - y);
@@ -59,6 +59,12 @@ module trains.play {
 			trains.play.TrainRenderer.DrawChoochoo(context, this.trainColourIndex);
 			
 			context.restore();
+		}
+		
+		isTrainHere(column: number, row: number): boolean {
+			var myColumn = this.board.getGridCoord(this.coords.currentX);
+			var myRow = this.board.getGridCoord(this.coords.currentY);
+			return column === myColumn && row === myRow;
 		}
 	}
 }

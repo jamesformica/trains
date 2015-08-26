@@ -113,6 +113,7 @@ module trains.play {
             this.lastRenderStartTime = renderStartTime;
             setTimeout(()=>this.renderLoop(),timeTillNextRender);
         }
+        
         public gameLoop(): void {
             var logicStartTime = new Date().getTime();
             if(this.gameRunningState) {
@@ -158,7 +159,13 @@ module trains.play {
                 this.tool = tool;
                 
                 var cursorName;
+                var hotspot = 'bottom left';
                 switch (tool) {
+                    case trains.play.Tool.Pointer: {
+                        cursorName = "hand-pointer-o";
+                        hotspot = 'top left';
+                        break;
+                    }
                     case trains.play.Tool.Track: {
                         cursorName = "pencil";
                         break;
@@ -179,8 +186,9 @@ module trains.play {
                 
                 $('body').css('cursor', '');
                 $('body').awesomeCursor(cursorName, {
-                    hotspot: 'bottom left'
-                })
+                    hotspot: hotspot,
+                    size: 30
+                });
             }
         }
         
@@ -215,6 +223,11 @@ module trains.play {
             if (row >= this.maxRows || column >= this.maxColumns) return;
                 
             switch (this.tool) {
+                case Tool.Pointer:
+                {
+                    this.pointAtThing(column, row);
+                    break;    
+                }
                 case Tool.Track:
                 {
                     if (shift) {
@@ -312,6 +325,14 @@ module trains.play {
             }
         }
         
+        private pointAtThing(column: number, row: number): void {
+            this.trains.forEach((train) => {
+                if (train.isTrainHere(column, row)) {
+                    alert("YAY");
+                }
+            });
+        }
+        
         showChooChoo(): void {
             this.startGame();
         }
@@ -375,6 +396,7 @@ module trains.play {
     }
 
     export enum Tool {
+        Pointer,
         Track,
         Eraser,
         Rotate,
