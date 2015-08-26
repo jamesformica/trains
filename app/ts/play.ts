@@ -39,6 +39,14 @@ module trains.play {
                         this.TogglePlayStop($option);
                         break;
                     }
+                    case "forward": {
+                        this.board.setGameSpeed(2);
+                        break;
+                    }
+                    case "fast-forward": {
+                        this.board.setGameSpeed(4);
+                        break;
+                    }
                 }
             });
 

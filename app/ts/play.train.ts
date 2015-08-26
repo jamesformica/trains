@@ -30,14 +30,14 @@ module trains.play {
 			}
 		}
 		
-		public chooChooMotherFucker(): void {
+		public chooChooMotherFucker(speed: number): void {
 			try {
 				var column = this.board.getGridCoord(this.coords.currentX);
 				var row = this.board.getGridCoord(this.coords.currentY);
 
 				var cell = this.board.getCell(column, row);
 				if (cell !== undefined) {
-					this.coords = cell.getNewCoordsForTrain(this.coords, 1.75)
+					this.coords = cell.getNewCoordsForTrain(this.coords, 1.75*speed);
 				}
 			}
 			catch (e) {
