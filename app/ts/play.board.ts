@@ -50,8 +50,6 @@ module trains.play {
         private lastLogicLoopEndTime;
         private logicPerSecond = 40;
 
-        private gameSpeedModifier = 1;
-
         private showDiagnostics = true;
         
         constructor(public playComponents: trains.play.PlayComponents) {
@@ -122,7 +120,7 @@ module trains.play {
         public gameLoop(): void {
             if(this.lastLogicLoopEndTime!==undefined) {
                 var logicStartTime = new Date().getTime();
-                var steps = ((logicStartTime-this.lastLogicLoopEndTime)/25) * this.gameSpeedModifier;
+                var steps = ((logicStartTime-this.lastLogicLoopEndTime)/25);
                 if (this.gameRunningState) {
                     if (this.trains.length > 0) {
                         while(steps>1)
@@ -145,9 +143,6 @@ module trains.play {
             setTimeout(()=>this.gameLoop(),timeTillNext);
         }
 
-        public setGameSpeed(speed: number) {
-            this.gameSpeedModifier = speed;
-        }
         private drawDiagnostics(targetContext: CanvasRenderingContext2D):void
         {
             targetContext.font="10px Verdana";
@@ -446,9 +441,21 @@ module trains.play {
                         break;
                     }
                     case "forward": {
-                        this.setGameSpeed(2);
+                        for (var i = 0; i < this.trains.length; i++) {
+                            if (this.trains[i].id === this.selectedTrain.id) {
+                                this.trains[i].fasterFasterFaster();
+                            }
+                        }
                         break;
                     }
+                    case "backward": {
+                        for (var i = 0; i < this.trains.length; i++) {
+                            if (this.trains[i].id === this.selectedTrain.id) {
+                                this.trains[i].slowYourRoll();
+                            }
+                        }
+                        break;
+                    }    
                     case "delete": {
                         for (var i = 0; i < this.trains.length; i++) {
                             if (this.trains[i].id === this.selectedTrain.id) {

@@ -8,7 +8,7 @@ module trains.play {
         public happy: boolean;
         public x: number;
         public y: number;
-        protected direction: trains.play.Direction;
+        public direction: trains.play.Direction;
 
         constructor(protected board: trains.play.Board, public id: string, public column: number, public row: number) {
             this.happy = false;
@@ -139,72 +139,6 @@ module trains.play {
                     deferred.resolve();
                 }
             }, 10);
-        }
-
-        magicBullshitCompareTo(pen: number, sword: number): number {
-            if (pen === sword) return 0;
-            if (pen > sword) return -1;
-            return 1;
-        }
-
-        getNewCoordsForTrain(coords: trains.play.TrainCoords, speed: number): trains.play.TrainCoords {
-
-            if(this.direction === trains.play.Direction.Vertical)
-            {
-                return {
-                    currentX: this.x + (trains.play.gridSize/2),
-                    currentY: coords.currentY + (speed * this.magicBullshitCompareTo(coords.previousY, coords.currentY)),
-                    previousX: coords.currentX,
-                    previousY: coords.currentY
-                };
-            }
-            else if(this.direction === trains.play.Direction.Horizontal)
-            {
-                return {
-                    currentX: coords.currentX + (speed * this.magicBullshitCompareTo(coords.previousX, coords.currentX)),
-                    currentY: this.y + (trains.play.gridSize/2),
-                    previousX: coords.currentX,
-                    previousY: coords.currentY
-                };
-            }
-            else if(this.direction === trains.play.Direction.Cross)
-            {
-                var x = (speed * this.magicBullshitCompareTo(coords.previousX, coords.currentX));
-                var y = (speed * this.magicBullshitCompareTo(coords.previousY, coords.currentY));
-                return {
-                    currentX: (x===0)?this.x + (trains.play.gridSize/2):coords.currentX +x,
-                    currentY: (y===0)?this.y + (trains.play.gridSize/2):coords.currentY +y,
-                    previousX: coords.currentX,
-                    previousY: coords.currentY
-                };
-            }
-
-            var yOffset = (this.direction === trains.play.Direction.LeftDown || this.direction === trains.play.Direction.RightDown)?yOffset = trains.play.gridSize:0;
-            var xOffset = (this.direction === trains.play.Direction.RightUp || this.direction === trains.play.Direction.RightDown)?xOffset = trains.play.gridSize:0;
-            var xOffsetFromGrid = (coords.currentX - this.x) - xOffset;
-            if(xOffsetFromGrid===0) xOffsetFromGrid+=0.001;
-            var yOffsetFromGrid = (coords.currentY - this.y) - yOffset;
-            if(yOffsetFromGrid===0) yOffsetFromGrid+=0.001;
-            var xOffsetFromGridLast = (coords.previousX - this.x) - xOffset;
-            if(xOffsetFromGridLast===0) xOffsetFromGridLast+=0.001;
-            var yOffsetFromGridLast = (coords.previousY - this.y) - yOffset;
-            if(yOffsetFromGridLast===0) yOffsetFromGridLast+=0.001;
-
-            var angle = Math.atan2(xOffsetFromGrid,yOffsetFromGrid);
-            var angleLast = Math.atan2(xOffsetFromGridLast,yOffsetFromGridLast);
-            var direction = this.magicBullshitCompareTo(angleLast,angle) * ((Math.abs(angleLast-angle) > Math.PI)?-1:1);
-            var angleSpeed = speed/(trains.play.gridSize/2);
-            var newAngle = (Math.PI/2)-(angle + (angleSpeed * direction));
-
-            var xOffsetFromGridNew = ((trains.play.gridSize/2)*Math.cos(newAngle)) + xOffset;
-            var yOffsetFromGridNew = ((trains.play.gridSize/2)*Math.sin(newAngle)) + yOffset;
-
-            return {
-                currentX: this.x + xOffsetFromGridNew,
-                currentY: this.y + yOffsetFromGridNew,
-                previousX: coords.currentX,
-                previousY: coords.currentY
-            };
         }
     }
 

@@ -11,7 +11,9 @@ module trains.play {
 
 		private previousAngle: number;
 		
-		private trainColourIndex: number;
+        private trainColourIndex: number;
+        
+        private trainSpeed: number = 1.75;
 
 		constructor(public id: number, private board: trains.play.Board, currentCell: Cell) {
 			if (currentCell !== undefined) {
@@ -37,12 +39,89 @@ module trains.play {
 
 				var cell = this.board.getCell(column, row);
 				if (cell !== undefined) {
-					this.coords = cell.getNewCoordsForTrain(this.coords, 1.75*speed);
+					this.coords = this.getNewCoordsForTrain(cell, this.coords, this.trainSpeed * speed);
 				}
 			}
 			catch (e) {
 			}
 		}
+		
+        public slowYourRoll(): void {
+            this.trainSpeed--;
+            if (this.trainSpeed < 1) {
+                this.trainSpeed = 1;
+            }
+        }
+        
+        public fasterFasterFaster(): void {
+            this.trainSpeed++;
+        }
+        
+		magicBullshitCompareTo(pen: number, sword: number): number {
+            if (pen === sword) return 0;
+            if (pen > sword) return -1;
+            return 1;
+        }
+
+        getNewCoordsForTrain(cell: Cell, coords: trains.play.TrainCoords, speed: number): trains.play.TrainCoords {
+
+            if(cell.direction === trains.play.Direction.Vertical)
+            {
+                return {
+                    currentX: cell.x + (trains.play.gridSize/2),
+                    currentY: coords.currentY + (speed * this.magicBullshitCompareTo(coords.previousY, coords.currentY)),
+                    previousX: coords.currentX,
+                    previousY: coords.currentY
+                };
+            }
+            else if(cell.direction === trains.play.Direction.Horizontal)
+            {
+                return {
+                    currentX: coords.currentX + (speed * this.magicBullshitCompareTo(coords.previousX, coords.currentX)),
+                    currentY: cell.y + (trains.play.gridSize/2),
+                    previousX: coords.currentX,
+                    previousY: coords.currentY
+                };
+            }
+            else if(cell.direction === trains.play.Direction.Cross)
+            {
+                var x = (speed * this.magicBullshitCompareTo(coords.previousX, coords.currentX));
+                var y = (speed * this.magicBullshitCompareTo(coords.previousY, coords.currentY));
+                return {
+                    currentX: (x===0)?cell.x + (trains.play.gridSize/2):coords.currentX +x,
+                    currentY: (y===0)?cell.y + (trains.play.gridSize/2):coords.currentY +y,
+                    previousX: coords.currentX,
+                    previousY: coords.currentY
+                };
+            }
+
+            var yOffset = (cell.direction === trains.play.Direction.LeftDown || cell.direction === trains.play.Direction.RightDown)?yOffset = trains.play.gridSize:0;
+            var xOffset = (cell.direction === trains.play.Direction.RightUp || cell.direction === trains.play.Direction.RightDown)?xOffset = trains.play.gridSize:0;
+            var xOffsetFromGrid = (coords.currentX - cell.x) - xOffset;
+            if(xOffsetFromGrid===0) xOffsetFromGrid+=0.001;
+            var yOffsetFromGrid = (coords.currentY - cell.y) - yOffset;
+            if(yOffsetFromGrid===0) yOffsetFromGrid+=0.001;
+            var xOffsetFromGridLast = (coords.previousX - cell.x) - xOffset;
+            if(xOffsetFromGridLast===0) xOffsetFromGridLast+=0.001;
+            var yOffsetFromGridLast = (coords.previousY - cell.y) - yOffset;
+            if(yOffsetFromGridLast===0) yOffsetFromGridLast+=0.001;
+
+            var angle = Math.atan2(xOffsetFromGrid,yOffsetFromGrid);
+            var angleLast = Math.atan2(xOffsetFromGridLast,yOffsetFromGridLast);
+            var direction = this.magicBullshitCompareTo(angleLast,angle) * ((Math.abs(angleLast-angle) > Math.PI)?-1:1);
+            var angleSpeed = speed/(trains.play.gridSize/2);
+            var newAngle = (Math.PI/2)-(angle + (angleSpeed * direction));
+
+            var xOffsetFromGridNew = ((trains.play.gridSize/2)*Math.cos(newAngle)) + xOffset;
+            var yOffsetFromGridNew = ((trains.play.gridSize/2)*Math.sin(newAngle)) + yOffset;
+
+            return {
+                currentX: cell.x + xOffsetFromGridNew,
+                currentY: cell.y + yOffsetFromGridNew,
+                previousX: coords.currentX,
+                previousY: coords.currentY
+            };
+        }
 		
 		public draw(): void {
 			var x = this.coords.currentX;
