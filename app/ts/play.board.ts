@@ -5,6 +5,8 @@
 /// <reference path="play.train.ts" />
 /// <reference path="play.board.renderer.ts" />
 /// <reference path="track.ts" />
+/// <reference path="play.loop.game.ts" />
+/// <reference path="play.loop.render.ts" />
 
 module trains.play {
 
@@ -22,7 +24,7 @@ module trains.play {
 
         private $window: JQuery;
 
-        private trainCanvas: HTMLCanvasElement;
+        public trainCanvas: HTMLCanvasElement;
         public trainContext: CanvasRenderingContext2D;
         private trackCanvas: HTMLCanvasElement;
         public trackContext: CanvasRenderingContext2D;
@@ -39,18 +41,13 @@ module trains.play {
         private tool: Tool;
         
         private trainIDCounter = 0;
-        private trains = new Array<trains.play.Train>();
+        public trains = new Array<trains.play.Train>();
         private selectedTrain: trains.play.Train;
         private gameRunningState = true;
-        private lastRenderDuration = 0;
-        private lastLogicDuration = 0;
-        private lastRenderStartTime;
-        private renderPerSecond = 30; //Start with targets
-        private lastLogicStartTime;
-        private lastLogicLoopEndTime;
-        private logicPerSecond = 40;
 
-        private showDiagnostics = true;
+        public gameLoop: trains.play.GameLoop;
+        public renderLoop: trains.play.RenderLoop;
+        public showDiagnostics = true;
         
         constructor(public playComponents: trains.play.PlayComponents) {
 
@@ -91,67 +88,11 @@ module trains.play {
                     return false; }, false);
             });
             this.setTool(trains.play.Tool.Track);
-            
+            this.gameLoop = new GameLoop(this);
+            this.renderLoop = new RenderLoop(this);
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
-            this.renderLoop();
-            this.gameLoop();
-        }
-
-        public renderLoop(): void {
-            var renderStartTime = new Date().getTime();
-            this.trainContext.clearRect(0, 0, this.trainCanvas.width, this.trainCanvas.height);
-            if(this.trains.length > 0) {
-                this.trains.forEach(t=> t.draw());
-            }
-            if(this.showDiagnostics === true)
-            {
-                this.drawDiagnostics(this.trainContext);
-            }
-            var renderDuration = new Date().getTime() - renderStartTime;
-            var timeTillNextRender = Math.max(33-renderDuration,10);
-            this.lastRenderDuration = renderDuration;
-            if(this.lastRenderStartTime !== undefined) {
-                this.renderPerSecond = ((this.renderPerSecond * 4) + (1 / ((renderStartTime - this.lastRenderStartTime) / 1000))) / 5;
-            }
-            this.lastRenderStartTime = renderStartTime;
-            setTimeout(()=>this.renderLoop(),timeTillNextRender);
-        }
-        
-        public gameLoop(): void {
-            if(this.lastLogicLoopEndTime!==undefined) {
-                var logicStartTime = new Date().getTime();
-                var steps = ((logicStartTime-this.lastLogicLoopEndTime)/25);
-                if (this.gameRunningState) {
-                    if (this.trains.length > 0) {
-                        while(steps>1)
-                        {
-                            this.trains.forEach(t=> t.chooChooMotherFucker(1));
-                            steps--;
-                        }
-                        this.trains.forEach(t=> t.chooChooMotherFucker(steps));
-                    }
-                }
-                var logicDuration = new Date().getTime() - logicStartTime;
-                this.lastLogicDuration = logicDuration;
-                var timeTillNext = Math.max(20 - logicDuration, 10);
-                if (this.lastLogicStartTime !== undefined) {
-                    this.logicPerSecond = ((this.logicPerSecond * 4) + (1 / ((logicStartTime - this.lastLogicStartTime) / 1000))) / 5;
-                }
-                this.lastLogicStartTime = logicStartTime;
-            }
-            this.lastLogicLoopEndTime = new Date().getTime();
-            setTimeout(()=>this.gameLoop(),timeTillNext);
-        }
-
-        private drawDiagnostics(targetContext: CanvasRenderingContext2D):void
-        {
-            targetContext.font="10px Verdana";
-            targetContext.fillText("To render: "+(this.lastRenderDuration.toFixed(2))+"ms ("+(this.renderPerSecond.toFixed(2))+"ps)",10,10);
-            targetContext.fillText("To logic: "+(this.lastLogicDuration.toFixed(2))+"ms ("+(this.logicPerSecond.toFixed(2))+"ps)",10,24);
-            if(this.trains.length > 0)
-            {
-                targetContext.fillText("Train Count: "+(this.trains.length),10,38);
-            }
+            this.gameLoop.startLoop();
+            this.renderLoop.startLoop();
         }
 
         public startGame(): void {
