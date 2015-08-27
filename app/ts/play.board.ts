@@ -430,6 +430,7 @@ module trains.play {
         showTrainControls(train: trains.play.Train): void {
             this.selectedTrain = train;
             this.playComponents.$trainName.text(train.name);
+            this.playComponents.$trainRPSLS.removeClass().addClass("fa " + train.getRPSLSClass());
             this.playComponents.$trainButtons.addClass("flipInX").show();
             this.playComponents.$trainButtons.one(trains.play.animationEndEventString, () => {
                 this.playComponents.$trainButtons.removeClass("flipInX");

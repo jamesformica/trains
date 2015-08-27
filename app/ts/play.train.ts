@@ -171,20 +171,41 @@ module trains.play {
                         return this.board.trains.some(t =>t.clashOfTheTitans(t, this));
                 }
                 
-                public whoIsTheWeakestLink(you: number, me: number)
-                {
-
-                        if (you == me) return 0;
+                public whoIsTheWeakestLink(you: number, me: number): number {
+                        if (you === me) return 0;
                         
-                        var isEven = (you + me) % 2 === 0;
+                        var isEven = ((you + me) % 2) === 0;
                         var youHigher = you > me;
                         
-                        if (youHigher == isEven)
+                        if (youHigher === isEven) {
                                 return 1;
-                        else 
+                        }
+                        else {
                                 return 2;
-                }
+                        }
+                } 
                 
+                public getRPSLSClass(): string {
+                        switch (this.paperRockLizardScissorsSpock)
+                        {
+                                case 1: {
+                                        return "fa-hand-rock-o";
+                                }
+                                case 2: {
+                                        return "fa-hand-paper-o";
+                                }
+                                case 3: {
+                                        return "fa-hand-scissors-o";
+                                }
+                                case 4: {
+                                        return "fa-hand-lizard-o";
+                                }
+                                case 5: {
+                                        return "fa-hand-spock-o";
+                                }
+                        } 
+                }  
+
                 public clashOfTheTitans(train1: Train, train2: Train)
                 {
                         var myColumn = this.board.getGridCoord(train1.coords.currentX);
