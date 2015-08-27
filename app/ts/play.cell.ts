@@ -171,6 +171,7 @@ module trains.play {
         previousX: number;
         previousY: number;
     }
+    
     //Someone please rename this!
     export interface TrainCoordsResult {
         coords: TrainCoords;

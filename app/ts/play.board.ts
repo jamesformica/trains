@@ -229,20 +229,19 @@ module trains.play {
         }
         
         private destroyTrack(): void {
+            this.hideTrainControls();
             this.trains = new Array<Train>();
             var deferreds = new Array<JQueryDeferred<{}>>();
             for (var id in this.cells) {
                 if (this.cells.hasOwnProperty(id)) {
-                    if (!isNaN(id)) {
-                        deferreds.push(this.cells[id].destroy());
-                    }
+                    deferreds.push(this.cells[id].destroy());
                 }
             }
 
             $.when.apply($, deferreds).done(() => {
                 trains.play.BoardRenderer.clearCells(this.trackContext, this.canvasWidth, this.canvasHeight);
                 trains.play.BoardRenderer.clearCells(this.trainContext, this.canvasWidth, this.canvasHeight);
-                this.cells = [];
+                this.cells = {};
             });
         }
         
@@ -352,9 +351,6 @@ module trains.play {
         
         trackControlClick(option: EventTarget): void {
              var $option = $(option);
-                if (this.selectedTrain !== undefined) {
-                    this.hideTrainControls();    
-                }
                 switch ($option.data("action").toLowerCase()) {
                     case "pointer": {
                         this.setTool(trains.play.Tool.Pointer);
@@ -408,24 +404,18 @@ module trains.play {
                         break;
                     }    
                     case "delete": {
-                        this.killItWithFire(this.selectedTrain, true);
+                        for (var i = 0; i < this.trains.length; i++) {
+                            if (this.trains[i].id === this.selectedTrain.id) {
+                                this.trains.splice(i, 1);
+                                this.hideTrainControls();
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
             } else {
                 this.hideTrainControls();
-            }
-        }
-        
-        public killItWithFire(train: Train, hideControls: boolean): void {
-            for (var i = 0; i < this.trains.length; i++) {
-                if (this.trains[i].id === train.id) {
-                    this.trains.splice(i, 1);
-                    if (hideControls) {
-                        this.hideTrainControls();
-                    }
-                    break;
-                }
             }
         }
         
@@ -448,7 +438,7 @@ module trains.play {
     }
 
     export interface BoardCells {
-        [position: number]: trains.play.Cell;
+        [position: string]: trains.play.Cell;
     }
 
     export interface NeighbouringCells {
