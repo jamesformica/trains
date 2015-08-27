@@ -14,7 +14,7 @@ module trains.play {
 
                 private trainColourIndex: number;
                 
-                private name: string;
+                public name: string;
 
                 private trainSpeed: number = this.defaultSpeed;
                 
