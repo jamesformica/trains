@@ -14,11 +14,12 @@ module trains.play {
 
         private trainColourIndex:number;
 
-        private name:string;
+        public name:string;
 
         private trainSpeed:number = this.defaultSpeed;
 
         private paperRockLizardScissorsSpock:number;
+        private trainHP: number;
 
         constructor(public id:number, private board:trains.play.Board, currentCell:Cell) {
             if (currentCell !== undefined) {
@@ -38,6 +39,7 @@ module trains.play {
                 this.paperRockLizardScissorsSpock = Math.floor(Math.random() * 5) + 1;
 
                 this.name = trains.util.getRandomName();
+                this.trainHP = 100;
             }
         }
 
@@ -181,8 +183,7 @@ module trains.play {
         private zeroIncrement(input:number):number {
             return (input === 0) ? input + 0.001 : input;
         }
-
-        public draw(context:CanvasRenderingContext2D, translate:boolean = true):void {
+        public draw(context: CanvasRenderingContext2D, translate: boolean = true): void {
             var x = this.coords.currentX;
             var y = this.coords.currentY;
             var angle = Math.atan2(this.coords.previousX - x, this.coords.previousY - y);
@@ -193,7 +194,7 @@ module trains.play {
                 context.translate(x, y);
                 context.rotate(angle * -1);
             }
-            else {
+            else{
                 context.translate(play.gridSize / 2, play.gridSize / 2);
             }
 
@@ -203,64 +204,112 @@ module trains.play {
             context.restore();
         }
 
-        public isTrainHere(column:number, row:number):boolean {
+        public isTrainHere(column: number, row: number): boolean {
             var myColumn = this.board.getGridCoord(this.coords.currentX);
             var myRow = this.board.getGridCoord(this.coords.currentY);
             return column === myColumn && row === myRow;
         }
 
-        public wreckYourself():boolean {
+        public wreckYourself(): boolean {
 
             return this.board.trains.some(t =>t.clashOfTheTitans(t, this));
         }
 
-        public whoIsTheWeakestLink(you:number, me:number) {
+        public whoIsTheWeakestLink(you: number, me: number): number {
+            if (you === me) return 0;
 
-            if (you == me) return 0;
-
-            var isEven = (you + me) % 2 === 0;
+            var isEven = ((you + me) % 2) === 0;
             var youHigher = you > me;
 
-            if (youHigher == isEven)
+            if (youHigher === isEven) {
                 return 1;
-            else
+            }
+            else {
                 return 2;
+            }
         }
 
-        public clashOfTheTitans(train1:Train, train2:Train) {
+        public turnTheBeatAround(train1: Train, train2: Train): void {
+            var x1 = train1.coords.currentX;
+            var y1 = train1.coords.currentY;
+            var x2 = train2.coords.currentX;
+            var y2 = train2.coords.currentY;
+
+            train1.coords.currentX = train1.coords.previousX;
+            train1.coords.currentY = train1.coords.previousY;
+            train2.coords.currentX = train2.coords.previousX;
+            train2.coords.currentY = train2.coords.previousY;
+
+            train1.coords.previousX = x1;
+            train1.coords.previousY = y1;
+            train2.coords.previousX = x2;
+            train2.coords.previousY = y2;
+        }
+
+        public getRPSLSClass(): string {
+            switch (this.paperRockLizardScissorsSpock)
+            {
+                case 1: {
+                    return "fa-hand-rock-o";
+                }
+                case 2: {
+                    return "fa-hand-paper-o";
+                }
+                case 3: {
+                    return "fa-hand-scissors-o";
+                }
+                case 4: {
+                    return "fa-hand-lizard-o";
+                }
+                case 5: {
+                    return "fa-hand-spock-o";
+                }
+            }
+        }
+
+        private adjustTrainHP(train: Train, change: number): void{
+            train.trainHP += change;
+            if (train.trainHP < 1){
+                this.board.killItWithFire(train, true);
+            }
+        }
+
+        public clashOfTheTitans(train1: Train, train2: Train)
+        {
             var myColumn = this.board.getGridCoord(train1.coords.currentX);
             var myRow = this.board.getGridCoord(train1.coords.currentY);
 
-            if (train1 !== train2 && train2.isTrainHere(myColumn, myRow)) {
-                if (train1.trainSpeed === train2.trainSpeed) {
-                    var train1Seed = train1.paperRockLizardScissorsSpock;
-                    var train2Seed = train1.paperRockLizardScissorsSpock;
-
-                    switch (this.whoIsTheWeakestLink(train1Seed, train2Seed)) {
-                        case 0:
-                        {
-                            this.board.killItWithFire(train1, true);
-                            this.board.killItWithFire(train2, true);
-                            return true;
-                        }
-                        case 1:
-                        {
-                            this.board.killItWithFire(train2, true);
-                            return true;
-                        }
-                        case 2:
-                        {
-                            this.board.killItWithFire(train1, true);
-                            return true;
-                        }
-                    }
-                }
-                else if (train1.trainSpeed < train2.trainSpeed) {
-                    this.board.killItWithFire(train1, false);
+            if (train1 !== train2 && train2.isTrainHere(myColumn, myRow))
+            {
+                if (train1.trainSpeed === train2.trainSpeed)
+                {
+                    this.turnTheBeatAround(train2, train1);
+                    this.adjustTrainHP(train1, train2.trainSpeed*-1);
+                    this.adjustTrainHP(train2, train1.trainSpeed*-1);
                     return true;
                 }
-                else {
-                    this.board.killItWithFire(train2, false);
+                else if (train1.trainSpeed < train2.trainSpeed)
+                {
+                    var speedDiff = train2.trainSpeed - train1.trainSpeed
+                    this.turnTheBeatAround(train1, train2);
+
+                    if ((train1.trainSpeed + speedDiff ) > (play.gridSize / 2)) {
+                        train1.trainSpeed = (play.gridSize / 2);
+                    }
+                    else{
+                        train1.trainSpeed += speedDiff;
+                    }
+                    this.adjustTrainHP(train1, train2.trainSpeed *-1);
+
+                    if ((train2.trainSpeed - speedDiff) < 1){
+                        train2.trainSpeed = 1
+                    }
+                    else
+                    {
+                        train2.trainSpeed -= speedDiff;
+                    }
+                    this.adjustTrainHP(train2, train1.trainSpeed *-1)
+
                     return true;
                 }
             }

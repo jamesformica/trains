@@ -9,8 +9,8 @@ module trains.play.TrainRenderer {
 		["#2e9b3d", "#66d174"],			// green
 		["#44096d", "#8644b5"],			// purple
 		["#8644b5", "#f4ef53"]			// yellow
-		];
-	
+	];
+
 
 	var halfGridSize = trains.play.gridSize / 2;
 
@@ -37,7 +37,7 @@ module trains.play.TrainRenderer {
 	var shaftLength = trainLength - shaftPadding;
 	var shaftX = leftX + shaftPadding;
 	var shaftY = frontY + shaftPadding;
-	
+
 	var bumperPoke = 2;
 	var bumperWidth = 1;
 	var bumperLength = 3;
@@ -48,7 +48,7 @@ module trains.play.TrainRenderer {
 	}
 
 	export function DrawChoochoo(context: CanvasRenderingContext2D, shaftColourIndex: number): void {
-		
+
 		var shaftColour = trainColours[shaftColourIndex];
 		if (shaftColourIndex === -1) {
 			shaftColour = trainColours[GetRandomShaftColour()];
@@ -70,7 +70,7 @@ module trains.play.TrainRenderer {
 		context.stroke();
 		context.closePath;
 		context.fill();
-		
+
 		DrawBumpers(context, true);
 		DrawBumpers(context, false);
 	}
@@ -94,9 +94,9 @@ module trains.play.TrainRenderer {
 		grd.addColorStop(1, firstColour);
 		return grd;
 	}
-	
+
 	function DrawBumpers(context: CanvasRenderingContext2D, upFront: boolean): void {
-		
+
 		var y: number;
 		var bumperY: number;
 		if (upFront) {
@@ -106,21 +106,21 @@ module trains.play.TrainRenderer {
 			y = backY;
 			bumperY = backY + bumperPoke
 		}
-		
+
 		context.beginPath();
 		context.lineWidth = bumperWidth;
 		context.strokeStyle = baseColour;
-		
+
 		context.moveTo(leftX + bumperOffset, bumperY);
 		context.lineTo(leftX + bumperOffset, y);
 		context.moveTo(leftX + bumperOffset - (bumperLength / 2), bumperY);
 		context.lineTo(leftX + bumperOffset + (bumperLength / 2), bumperY);
-		
+
 		context.moveTo(rightX - bumperOffset, bumperY);
 		context.lineTo(rightX - bumperOffset, y);
 		context.moveTo(rightX - bumperOffset - (bumperLength / 2), bumperY);
 		context.lineTo(rightX - bumperOffset + (bumperLength / 2), bumperY);
-		
-		context.stroke();	
+
+		context.stroke();
 	}
 }

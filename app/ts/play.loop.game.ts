@@ -1,5 +1,6 @@
 /// <reference path="play.board.ts" />
 /// <reference path="play.baseloop.ts" />
+/// <reference path="play.train.ts" />
 
 module trains.play {
     export class GameLoop extends Loop {
@@ -7,6 +8,7 @@ module trains.play {
             super();
             this.targetLoopsPerSecond = 40;
         }
+
         loopBody(): void {
             var steps = ((this.loopStartTime - this.lastLoopEndTime) / 25);
             if (this.board.trains.length > 0) {
