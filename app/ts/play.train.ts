@@ -9,7 +9,7 @@ module trains.play {
 
                 private defaultSpeed = 2;
 
-                private coords: trains.play.TrainCoords;
+                public coords: trains.play.TrainCoords;
 
                 private previousAngle: number;
 

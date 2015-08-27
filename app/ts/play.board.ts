@@ -42,7 +42,7 @@ module trains.play {
         
         private trainIDCounter = 0;
         public trains = new Array<trains.play.Train>();
-        private selectedTrain: trains.play.Train;
+        public selectedTrain: trains.play.Train;
         private gameRunningState = true;
 
         public gameLoop: trains.play.GameLoop;
