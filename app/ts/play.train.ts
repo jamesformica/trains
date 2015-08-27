@@ -47,7 +47,12 @@ module trains.play {
                 if (cell !== undefined) {
                     var result = this.getNewCoordsForTrain(cell, this.coords, speed);
                     this.coords = result.coords;
+                    //Super small speeds cause MAJOR problems with the game loop.
+                    // First occurrence of this bug, speed was 1.13e-14!!!!!
                     speed = result.remainingSpeed;
+                    if(speed<0.00001){
+                        speed=0;
+                    }
                 }
                 else break;
             }
@@ -87,7 +92,7 @@ module trains.play {
             //This needs a MAJOR rewrite, moving duplicate code out into helpers and refactoring.
             //Also, there are some equations that can be simplified, will slowly fix them up.
 
-            //Start out with a remaningSpeed of 0, this means the movement is contained within this cell
+            //Start out with a remainingSpeed of 0, this means the movement is contained within this cell
             var remainingSpeed = 0;
 
             //Lets go vertical
@@ -99,26 +104,18 @@ module trains.play {
 
                 //Check if biggest move is outside of the cell
                 if (targetY < cell.y) {
-
-                    //Find how far we move past the cell
-                    var additionalTravel = cell.y - targetY;
-
-                    //Using fractions, find out what fraction of the move we can't do, and multiply by speed
-                    // This gives us the 'speed' we couldn't use in this cell
-                    remainingSpeed = (additionalTravel / (additionalTravel + (coords.currentY - cell.y))) * speed;
-
                     //Set our new y position to the limit, then add 0.001 (need to make this a const called 'smallStep'
                     // Moving it the extra 0.001 means that the train will be outside this cell, so the next
                     // call to getNewCoords won't be to this cell again.
                     targetY = cell.y - 0.001;
-
                 }
                 //Or outside the other side, same as above
                 else if (targetY > (cell.y + trains.play.gridSize)) {
-                    var additionalTravel = targetY - (cell.y + trains.play.gridSize);
-                    remainingSpeed = (additionalTravel / (additionalTravel + ((cell.y + trains.play.gridSize) - coords.currentY))) * speed;
                     targetY = cell.y + trains.play.gridSize + 0.001;
                 }
+
+                //Set out remaining 'speed' to be our speed minus what we used
+                remainingSpeed = speed - Math.abs(coords.currentY-targetY);
 
                 //Return our payload, the new coords, and if we couldn't use the whole 'speed', what is remaining
                 return {
@@ -137,14 +134,11 @@ module trains.play {
                 //This is the same as vertical, just modifying X instead.
                 var targetX = coords.currentX + (speed * this.magicBullshitCompareTo(coords.previousX, coords.currentX));
                 if (targetX < cell.x) {
-                    var additionalTravel = cell.x - targetX;
-                    remainingSpeed = (additionalTravel / (additionalTravel + (coords.currentX - cell.x))) * speed;
                     targetX = cell.x - 0.001;
                 } else if (targetX > (cell.x + trains.play.gridSize)) {
-                    var additionalTravel = targetX - (cell.x + trains.play.gridSize);
-                    remainingSpeed = (additionalTravel / (additionalTravel + ((cell.x + trains.play.gridSize) - coords.currentX))) * speed;
                     targetX = cell.x + trains.play.gridSize + 0.001;
                 }
+                remainingSpeed = speed - Math.abs(coords.currentX-targetX);
                 return {
                     coords: {
                         currentX: targetX,
@@ -173,28 +167,22 @@ module trains.play {
                     //This is same as above
                     x = coords.currentX + (speed * this.magicBullshitCompareTo(coords.previousX, coords.currentX));
                     if (x < cell.x) {
-                        var additionalTravel = cell.x - x;
-                        remainingSpeed = (additionalTravel / (additionalTravel + (coords.currentX - cell.x))) * speed;
                         x = cell.x - 0.001;
                     } else if (x > cell.x + trains.play.gridSize) {
-                        var additionalTravel = x - (cell.x + trains.play.gridSize);
-                        remainingSpeed = (additionalTravel / (additionalTravel + ((cell.x + trains.play.gridSize) - coords.currentX))) * speed;
                         x = cell.x + trains.play.gridSize + 0.001;
                     }
+                    remainingSpeed = speed - Math.abs(coords.currentX-x);
                 }
                 else {
 
                     //Same as above
                     y = coords.currentY + (speed * this.magicBullshitCompareTo(coords.previousY, coords.currentY));
                     if (y < cell.y) {
-                        var additionalTravel = cell.y - y;
-                        remainingSpeed = (additionalTravel / (additionalTravel + (coords.currentY - cell.y))) * speed;
-                        x = cell.y - 0.001;
+                        y = cell.y - 0.001;
                     } else if (y > cell.y + trains.play.gridSize) {
-                        var additionalTravel = y - (cell.y + trains.play.gridSize);
-                        remainingSpeed = (additionalTravel / (additionalTravel + ((cell.x + trains.play.gridSize) - coords.currentY))) * speed;
                         y = cell.y + trains.play.gridSize + 0.001;
                     }
+                    remainingSpeed = speed - Math.abs(coords.currentY-y);
                 }
                 return {
                     coords: {
@@ -242,20 +230,14 @@ module trains.play {
 
             //Check if we have gone outside lower range
             if (newAngle < angleSector) {
-
-                //Set our new angle to match the minimum
                 newAngle = angleSector - 0.001;
-
-                //Using the relationship lengthOfArc=angle*radius, we can use the change in angle to calculate speed
-                remainingSpeed = speed-((angle-newAngle)*(trains.play.gridSize / 2));
             }
             //Check if we have gone outside upper range
             else if (newAngle > (angleSector + (Math.PI / 2))) {
-
-                //As above
                 newAngle = (angleSector + (Math.PI / 2)) + 0.001;
-                remainingSpeed = speed-((angle-newAngle)*(trains.play.gridSize / 2));
             }
+            //Using the relationship lengthOfArc=angle*radius, we can use the change in angle to calculate speed
+            remainingSpeed = speed-(Math.abs(angle-newAngle)*(trains.play.gridSize / 2));
 
             //Add 90 degrees because I abused atan2 in a bad way
             //TODO: fix this plx
