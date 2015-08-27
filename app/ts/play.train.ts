@@ -44,7 +44,7 @@ module trains.play {
                         if (cell !== undefined) {
                                 this.coords = this.getNewCoordsForTrain(cell, this.coords, this.trainSpeed * speed);
                         }
-
+                        this.wreckYourself();
                 }
 
                 public slowYourRoll(): void {
@@ -154,5 +154,22 @@ module trains.play {
                         var myRow = this.board.getGridCoord(this.coords.currentY);
                         return column === myColumn && row === myRow;
                 }
+                
+                public wreckYourself(): boolean {
+  
+                        return this.board.trains.some(t =>t.checkTrainsForBoom(this, t));
+                }
+                
+                public checkTrainsForBoom(train1: Train, train2: Train)
+                {
+                        var myColumn = this.board.getGridCoord(train1.coords.currentX);
+                        var myRow = this.board.getGridCoord(train1.coords.currentY);
+
+                        if (train1 !== train2 && train2.isTrainHere(myColumn, myRow)) {
+                                this.board.killItWithFire(train1, false);
+                                return true;
+                        }
+                }
+                
         }
 }

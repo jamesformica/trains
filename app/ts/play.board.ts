@@ -39,7 +39,7 @@ module trains.play {
         private tool: Tool;
         
         private trainIDCounter = 0;
-        private trains = new Array<trains.play.Train>();
+        public trains = new Array<trains.play.Train>();
         private selectedTrain: trains.play.Train;
         private gameRunningState = true;
         private lastRenderDuration = 0;
@@ -129,7 +129,6 @@ module trains.play {
                             steps--;
                         }
                         this.trains.forEach(t=> t.chooChooMotherFucker(steps));
-                        this.trains.forEach(t=> t.wreckYourself(this.trains));
                     }
                 }
                 var logicDuration = new Date().getTime() - logicStartTime;
@@ -456,17 +455,24 @@ module trains.play {
                         break;
                     }    
                     case "delete": {
-                        for (var i = 0; i < this.trains.length; i++) {
-                            if (this.trains[i].id === this.selectedTrain.id) {
-                                this.trains.splice(i, 1);
-                                this.hideTrainControls();
-                                break;
-                            }
-                        }
+                        this.killItWithFire(this.selectedTrain, true);
+                        break;
                     }
                 }
             } else {
                 this.hideTrainControls();
+            }
+        }
+        
+        public killItWithFire(train: Train, hideControls: boolean): void {
+            for (var i = 0; i < this.trains.length; i++) {
+                if (this.trains[i].id === train.id) {
+                    this.trains.splice(i, 1);
+                    if (hideControls) {
+                        this.hideTrainControls();
+                    }
+                    break;
+                }
             }
         }
         
