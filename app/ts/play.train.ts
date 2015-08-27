@@ -2,6 +2,7 @@
 /// <reference path="play.cell.ts" />
 /// <reference path="play.board.renderer.ts" />
 /// <reference path="play.train.renderer.ts" />
+/// <reference path="util.ts" />
 
 module trains.play {
 
@@ -11,9 +12,9 @@ module trains.play {
 
                 public coords: trains.play.TrainCoords;
 
-                private previousAngle: number;
-
                 private trainColourIndex: number;
+                
+                private name: string;
 
                 private trainSpeed: number = this.defaultSpeed;
                 
@@ -26,7 +27,7 @@ module trains.play {
                                         currentY: currentCell.y + (trains.play.gridSize / 2),
                                         previousX: currentCell.x,
                                         previousY: currentCell.y - 1 //Cos we never want to be the centre of attention
-                                }
+                                };
 
                                 if (Math.floor(Math.random() * 10) === 0) {
                                         this.trainColourIndex = -1;
@@ -34,8 +35,10 @@ module trains.play {
                                         this.trainColourIndex = trains.play.TrainRenderer.GetRandomShaftColour();
                                 }
                                 
-                                this.paperRockLizardScissorsSpock = Math.floor(Math.random() * 5) + 1 ;
-                        }
+                                this.paperRockLizardScissorsSpock = Math.floor(Math.random() * 5) + 1;
+                                
+                                this.name = trains.util.getRandomName();
+                        }                                
                 }
 
                 public chooChooMotherFucker(speed: number): void {
@@ -136,18 +139,22 @@ module trains.play {
                         };
                 }
 
-                public draw(): void {
+                public draw(context: CanvasRenderingContext2D, translate: boolean = true): void {
                         var x = this.coords.currentX;
                         var y = this.coords.currentY;
                         var angle = Math.atan2(this.coords.previousX - x, this.coords.previousY - y);
 
-                        var context = this.board.trainContext;
-
-                        this.previousAngle = angle;
                         context.save();
 
-                        context.translate(x, y);
-                        context.rotate(angle * -1);
+                        if (translate) {
+                                context.translate(x, y);
+                                context.rotate(angle * -1);
+                        }
+                        else{
+                                context.translate(play.gridSize / 2, play.gridSize / 2);
+                        }   
+       
+
                         trains.play.TrainRenderer.DrawChoochoo(context, this.trainColourIndex);
 
                         context.restore();

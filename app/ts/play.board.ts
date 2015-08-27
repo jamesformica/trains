@@ -30,6 +30,8 @@ module trains.play {
         public trackContext: CanvasRenderingContext2D;
         private gridCanvas: HTMLCanvasElement;
         private gridContext: CanvasRenderingContext2D;
+        private trainLogoCanvas: HTMLCanvasElement;
+        public trainLogoContext: CanvasRenderingContext2D;
 
         public canvasWidth: number;
         public canvasHeight: number;
@@ -61,6 +63,14 @@ module trains.play {
 
             this.gridCanvas = <HTMLCanvasElement>this.playComponents.$gridCanvas.get(0);
             this.gridContext = this.gridCanvas.getContext("2d");
+            
+            this.trainLogoCanvas = <HTMLCanvasElement>this.playComponents.$trainLogoCanvas.get(0);
+            this.trainLogoContext = this.trainLogoCanvas.getContext("2d");
+            
+            this.playComponents.$trainLogoCanvas.attr('width', gridSize);
+            this.playComponents.$trainLogoCanvas.attr('height', gridSize);
+            this.playComponents.$trainLogoCanvas.width(gridSize);
+            this.playComponents.$trainLogoCanvas.height(gridSize);
 
             this.canvasWidth = this.roundToNearestGridSize(this.$window.width() - (gridSize * 2));
             this.maxColumns = this.canvasWidth / gridSize;

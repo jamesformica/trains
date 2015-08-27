@@ -48,11 +48,13 @@ module trains.play {
         var $trainCanvas = $container.find('.ui-train-canvas');
         var $trackCanvas = $container.find('.ui-track-canvas');
         var $gridCanvas = $container.find('.ui-grid-canvas');
+        var $trainLogoCanvas = $container.find('.ui-train-logo-canvas');
 
         return {
             $trainCanvas: $trainCanvas,
             $trackCanvas: $trackCanvas,
             $gridCanvas: $gridCanvas,
+            $trainLogoCanvas: $trainLogoCanvas,
             $canvases: $().add($trainCanvas).add($trackCanvas).add($gridCanvas),
             $trackButtons: $container.find('.ui-track-buttons'),
             $trainButtons: $container.find('.ui-train-buttons')
@@ -66,5 +68,6 @@ module trains.play {
         $canvases: JQuery;
         $trackButtons: JQuery;
         $trainButtons: JQuery;
+        $trainLogoCanvas: JQuery;
     }
 }

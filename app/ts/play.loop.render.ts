@@ -10,7 +10,12 @@ module trains.play {
         loopBody(): void {
             this.board.trainContext.clearRect(0, 0, this.board.trainCanvas.width, this.board.trainCanvas.height);
             if(this.board.trains.length > 0) {
-                this.board.trains.forEach(t=> t.draw());
+                this.board.trains.forEach(t => {
+                    t.draw(this.board.trainContext);
+                    if (this.board.selectedTrain === t) {
+                        t.draw(this.board.trainLogoContext, false);
+                    }
+                });
             }
             if(this.board.showDiagnostics === true)
             {
