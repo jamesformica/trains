@@ -99,13 +99,17 @@ module trains.play {
                     ev.preventDefault();
                     return false; }, false);
             });
-            this.setTool(trains.play.Tool.Track);
+            
             this.gameLoop = new GameLoop(this);
             this.renderLoop = new RenderLoop(this);
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
             this.gameLoop.startLoop();
             this.renderLoop.startLoop();
             this.player = new trains.audio.Player();
+            
+            setTimeout(() => {
+                this.setTool(trains.play.Tool.Track);
+            }, 100);
         }
 
         public startGame(): void {
