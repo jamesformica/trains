@@ -129,6 +129,7 @@ module trains.play {
                             steps--;
                         }
                         this.trains.forEach(t=> t.chooChooMotherFucker(steps));
+                        this.trains.forEach(t=> t.wreckYourself(this.trains));
                     }
                 }
                 var logicDuration = new Date().getTime() - logicStartTime;
