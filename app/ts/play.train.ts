@@ -169,7 +169,7 @@ module trains.play {
 
                         if (you == me) return 0;
                         
-                        var isEven = (you + me) % 2 == 0;
+                        var isEven = (you + me) % 2 === 0;
                         var youHigher = you > me;
                         
                         if (youHigher == isEven)
@@ -194,7 +194,7 @@ module trains.play {
                                                 return true;
                                         } 
                                         case 1:{
-                                                this.board.killItWithFire(train2, false);
+                                                this.board.killItWithFire(train1, false);
                                                 return true;
                                         }
                                         case 2:{
