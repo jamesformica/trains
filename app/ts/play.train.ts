@@ -171,15 +171,8 @@ module trains.play {
                         return this.board.trains.some(t =>t.clashOfTheTitans(t, this));
                 }
                 
-<<<<<<< HEAD
-                public whoIsTheWeakestLink(you: number, me: number): number
-                {
-
-                        if (you == me) return 0;
-=======
                 public whoIsTheWeakestLink(you: number, me: number): number {
                         if (you === me) return 0;
->>>>>>> 1a19ab254843c70ba4371ac6cbde2d327c1c8c6d
                         
                         var isEven = ((you + me) % 2) === 0;
                         var youHigher = you > me;
@@ -191,8 +184,7 @@ module trains.play {
                                 return 2;
                         }
                 } 
-                
-<<<<<<< HEAD
+
                  public turnTheBeatAround(train1: Train, train2: Train): void {
                         var x1 = train1.coords.currentX;
                         var y1 = train1.coords.currentY;
@@ -210,8 +202,6 @@ module trains.play {
                         train2.coords.previousY = y2;     
                 }
 
-                public clashOfTheTitans(train1: Train, train2: Train): boolean
-=======
                 public getRPSLSClass(): string {
                         switch (this.paperRockLizardScissorsSpock)
                         {
@@ -234,7 +224,6 @@ module trains.play {
                 }  
 
                 public clashOfTheTitans(train1: Train, train2: Train)
->>>>>>> 1a19ab254843c70ba4371ac6cbde2d327c1c8c6d
                 {
                         var myColumn = this.board.getGridCoord(train1.coords.currentX);
                         var myRow = this.board.getGridCoord(train1.coords.currentY);
