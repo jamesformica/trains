@@ -17,7 +17,7 @@ module trains.play {
 
                 private trainSpeed: number = this.defaultSpeed;
                 
-                private prsls: number;
+                private paperRockLizardScissorsSpock: number;
 
                 constructor(public id: number, private board: trains.play.Board, currentCell: Cell) {
                         if (currentCell !== undefined) {
@@ -34,7 +34,7 @@ module trains.play {
                                         this.trainColourIndex = trains.play.TrainRenderer.GetRandomShaftColour();
                                 }
                                 
-                                this.prsls = Math.floor(Math.random() * 5) + 1 ;
+                                this.paperRockLizardScissorsSpock = Math.floor(Math.random() * 5) + 1 ;
                         }
                 }
 
@@ -161,7 +161,7 @@ module trains.play {
                 
                 public wreckYourself(): boolean {
   
-                        return this.board.trains.some(t =>t.checkTrainsForBoom(this, t));
+                        return this.board.trains.some(t =>t.clashOfTheTitans(this, t));
                 }
                 
                 public whoIsTheWeakestLink(you: number, me: number)
@@ -178,33 +178,46 @@ module trains.play {
                                 return 2;
                 }
                 
-                public checkTrainsForBoom(train1: Train, train2: Train)
+                public clashOfTheTitans(train1: Train, train2: Train)
                 {
                         var myColumn = this.board.getGridCoord(train1.coords.currentX);
                         var myRow = this.board.getGridCoord(train1.coords.currentY);
 
                         if (train1 !== train2 && train2.isTrainHere(myColumn, myRow)) 
                         {
-                                        
-                                switch (this.whoIsTheWeakestLink(train1.prsls, train2.prsls))
+                                if (train1.trainSpeed === train2.trainSpeed)
                                 {
-                                        case 0:{
-                                                this.board.killItWithFire(train1, false);
-                                                this.board.killItWithFire(train2, false);
-                                                return true;
-                                        } 
-                                        case 1:{
-                                                this.board.killItWithFire(train1, false);
-                                                return true;
+                                        var train1Seed = train1.paperRockLizardScissorsSpock;
+                                        var train2Seed = train1.paperRockLizardScissorsSpock;
+                                        
+                                        switch (this.whoIsTheWeakestLink(train1Seed, train2Seed))
+                                        {
+                                                case 0:{
+                                                        this.board.killItWithFire(train1, true);
+                                                        this.board.killItWithFire(train2, true);
+                                                        return true;
+                                                } 
+                                                case 1:{
+                                                        this.board.killItWithFire(train1, true);
+                                                        return true;
+                                                }
+                                                case 2:{
+                                                        this.board.killItWithFire(train2, true);
+                                                        return true;
+                                                }
                                         }
-                                        case 2:{
-                                                this.board.killItWithFire(train2, false);
-                                                return true;
-                                        }
+                                } 
+                                else if (train1.trainSpeed > train2.trainSpeed)
+                                {
+                                        this.board.killItWithFire(train1, false);
+                                        return true;  
                                 }
-                                
+                                else
+                                {
+                                        this.board.killItWithFire(train2, false);
+                                        return true;  
+                                }  
                         }
                 }
-     
         }
 }
