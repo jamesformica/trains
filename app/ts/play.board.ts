@@ -435,6 +435,10 @@ module trains.play {
                 this.playComponents.$trainButtons.removeClass("flipOutX").hide();
             });
         }
+        
+        setMuted(mute: boolean): void {
+            this.player.setMuted(mute);
+        }
     }
 
     export interface BoardCells {

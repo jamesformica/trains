@@ -1,5 +1,6 @@
 /// <reference path="../types/jqueryui.d.ts" />
 /// <reference path="play.board.ts" />
+/// <reference path="util.ts" />
 
 module trains.play {
 
@@ -20,6 +21,7 @@ module trains.play {
             var left = ($(window).width() - this.board.canvasWidth) / 2;
             this.playComponents.$trackButtons.css("top", top);
             this.playComponents.$trainButtons.css("top", top).css("right", left);
+            this.playComponents.$mute.width(left);
 
             this.playComponents.$trainButtons.draggable({
                 handle: '.ui-handle'
@@ -40,6 +42,19 @@ module trains.play {
             this.playComponents.$trackButtons.find('button').click((event) => {
                 this.board.trackControlClick(event.currentTarget);
             });
+            
+            this.playComponents.$mute.click(() => {
+                var $mute = this.playComponents.$mute;
+                var mute = trains.util.toBoolean($mute.val()); 
+                if (!mute) {
+                    $mute.val("true");
+                    $mute.removeClass("fa-volume-up").addClass("fa-volume-off");
+                } else {
+                    $mute.val("false");
+                    $mute.removeClass("fa-volume-off").addClass("fa-volume-up");
+                }
+                this.board.setMuted(!mute);
+            });
         }
     }
 
@@ -58,7 +73,8 @@ module trains.play {
             $canvases: $().add($trainCanvas).add($trackCanvas).add($gridCanvas),
             $trackButtons: $container.find('.ui-track-buttons'),
             $trainButtons: $container.find('.ui-train-buttons'),
-            $trainName: $container.find('.ui-train-name')
+            $trainName: $container.find('.ui-train-name'),
+            $mute: $container.find('.ui-mute')
         };
     }
 
@@ -71,5 +87,6 @@ module trains.play {
         $trainButtons: JQuery;
         $trainLogoCanvas: JQuery;
         $trainName: JQuery;
+        $mute: JQuery;
     }
 }

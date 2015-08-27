@@ -34,4 +34,9 @@ module trains.util {
 	function getRandomElement(items: Array<string>): string {
 		return items[Math.floor(Math.random() * items.length)];
 	}
+	
+	export function toBoolean(value: string): boolean {
+		if (value === "true") return true;
+		return false;
+	}
 }

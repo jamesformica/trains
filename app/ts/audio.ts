@@ -2,7 +2,7 @@ module trains.audio {
 
 	export class Player {
 
-		muted: boolean = false;
+		private muted: boolean = false;
 		private basePath: string = "audio/";
 
 		constructor() {
