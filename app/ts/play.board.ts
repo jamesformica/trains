@@ -7,6 +7,7 @@
 /// <reference path="track.ts" />
 /// <reference path="play.loop.game.ts" />
 /// <reference path="play.loop.render.ts" />
+/// <reference path="audio.ts" />
 
 module trains.play {
 
@@ -46,6 +47,7 @@ module trains.play {
         public trains = new Array<trains.play.Train>();
         public selectedTrain: trains.play.Train;
         private gameRunningState = true;
+        private player: trains.audio.Player;
 
         public gameLoop: trains.play.GameLoop;
         public renderLoop: trains.play.RenderLoop;
@@ -103,6 +105,7 @@ module trains.play {
             trains.play.BoardRenderer.drawGrid(this.gridContext, this.canvasWidth, this.canvasHeight);
             this.gameLoop.startLoop();
             this.renderLoop.startLoop();
+            this.player = new trains.audio.Player();
         }
 
         public startGame(): void {
@@ -258,17 +261,14 @@ module trains.play {
 
             if (this.cells[cellID] === undefined) {
                 
-                var newCell: Cell;
-                
-                if (this.tool === Tool.Track) {
-                    newCell = new trains.play.Track(this, cellID, column, row);
-                }
+                this.player.playSound(trains.audio.Sound.click);
+                var newCell = new trains.play.Track(this, cellID, column, row);
                 
                 this.cells[newCell.id] = newCell;
 
                 if (!newCell.crossTheRoad()) {
                     newCell.checkYourself();
-                }    
+                } 
             }
         }
 
