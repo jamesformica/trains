@@ -291,34 +291,33 @@ module trains.play {
             return this.board.trains.some(t => t.clashOfTheTitans(t, this));
         }
 
-        public turnTheBeatAround(train1:Train, train2:Train):void {
+        public turnTheBeatAround(train1: Train): void {
             var x1 = train1.coords.currentX;
             var y1 = train1.coords.currentY;
-            var x2 = train2.coords.currentX;
-            var y2 = train2.coords.currentY;
 
             train1.coords.currentX = train1.coords.previousX;
             train1.coords.currentY = train1.coords.previousY;
-            train2.coords.currentX = train2.coords.previousX;
-            train2.coords.currentY = train2.coords.previousY;
 
             train1.coords.previousX = x1;
             train1.coords.previousY = y1;
-            train2.coords.previousX = x2;
-            train2.coords.previousY = y2;
         }
 
         public clashOfTheTitans(train1:Train, train2:Train) {
             var myColumn = this.board.getGridCoord(train1.coords.currentX);
             var myRow = this.board.getGridCoord(train1.coords.currentY);
 
-            if (train1 !== train2 && train2.isTrainHere(myColumn, myRow)) {
-                if (train1.trainSpeed === train2.trainSpeed) {
-                    this.turnTheBeatAround(train2, train1);
+            if (train1 !== train2 && train2.isTrainHere(myColumn, myRow))
+            {
+                if (train1.trainSpeed === train2.trainSpeed)
+                {
+                    this.turnTheBeatAround(train2);
+                    this.turnTheBeatAround(train1);
+                    return true;
                 }
                 else if (train1.trainSpeed < train2.trainSpeed) {
                     var speedDiff = train2.trainSpeed - train1.trainSpeed
-                    this.turnTheBeatAround(train1, train2);
+                    this.turnTheBeatAround(train1);
+                    this.turnTheBeatAround(train2);
 
                     if ((train1.trainSpeed + speedDiff) > (play.gridSize / 2)) {
                         train1.trainSpeed = (play.gridSize / 2);

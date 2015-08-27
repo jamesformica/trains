@@ -417,6 +417,10 @@ module trains.play {
                         }
                         break;
                     }
+                    case "turnaround": {
+                        this.selectedTrain.turnTheBeatAround(this.selectedTrain);
+                        break;
+                    }
                 }
             } else {
                 this.hideTrainControls();
