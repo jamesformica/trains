@@ -267,7 +267,9 @@ module trains.play {
                 
                 this.cells[newCell.id] = newCell;
 
-                newCell.checkYourself();
+                if (!newCell.crossTheRoad()) {
+                    newCell.checkYourself();
+                }    
             }
         }
 

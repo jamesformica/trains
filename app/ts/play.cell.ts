@@ -38,6 +38,29 @@ module trains.play {
             }
         }
 
+        crossTheRoad(): boolean {
+            var neighbours = this.board.getNeighbouringCells(this.column, this.row, true);
+            
+            return neighbours.all.some(c => {
+                var myNeighbours = this.board.getNeighbouringCells(c.column, c.row, true);
+                if (myNeighbours.all.length < 4) return false;
+
+                if (!myNeighbours.up.isConnectedDown() && myNeighbours.up.happy) return false;
+                if (!myNeighbours.down.isConnectedUp() && myNeighbours.down.happy) return false;
+                if (!myNeighbours.left.isConnectedRight() && myNeighbours.left.happy) return false;
+                if (!myNeighbours.right.isConnectedLeft() && myNeighbours.right.happy) return false;
+
+                // if we got here, we should be a cross                
+                c.direction = Direction.Cross;
+                c.happy = true;
+                c.draw(this.board.trackContext);
+                myNeighbours = this.board.getNeighbouringCells(c.column, c.row);
+                myNeighbours.all.forEach(c2=> c2.checkYourself());
+                
+                return true;
+            });
+        }
+        
         determineDirection(neighbours: trains.play.NeighbouringCells): boolean {
             if (this.happy) return false;
 
