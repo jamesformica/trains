@@ -67,7 +67,7 @@ module trains.play {
 
             this.canvasWidth = this.roundToNearestGridSize(this.$window.width() - (gridSize * 2));
             this.maxColumns = this.canvasWidth / gridSize;
-            this.canvasHeight = this.roundToNearestGridSize(this.$window.height() - (gridSize * 2));
+            this.canvasHeight = this.roundToNearestGridSize(this.$window.height() - gridSize);
             this.maxRows = this.canvasHeight / gridSize;
 
             this.playComponents.$canvases.attr('width', this.canvasWidth);
@@ -438,23 +438,19 @@ module trains.play {
                 var $option = $(option);
                 switch ($option.data("action").toLowerCase()) {
                     case "play": {
-                        //this.TogglePlayStop($option);
+                        this.selectedTrain.wakeMeUp();
+                        break;
+                    }
+                    case "pause": {
+                        this.selectedTrain.hammerTime();
                         break;
                     }
                     case "forward": {
-                        for (var i = 0; i < this.trains.length; i++) {
-                            if (this.trains[i].id === this.selectedTrain.id) {
-                                this.trains[i].fasterFasterFaster();
-                            }
-                        }
+                        this.selectedTrain.fasterFasterFaster();
                         break;
                     }
                     case "backward": {
-                        for (var i = 0; i < this.trains.length; i++) {
-                            if (this.trains[i].id === this.selectedTrain.id) {
-                                this.trains[i].slowYourRoll();
-                            }
-                        }
+                        this.selectedTrain.slowYourRoll();
                         break;
                     }    
                     case "delete": {

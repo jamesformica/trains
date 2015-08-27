@@ -7,13 +7,15 @@ module trains.play {
 
         export class Train {
 
+                private defaultSpeed = 2;
+
                 private coords: trains.play.TrainCoords;
 
                 private previousAngle: number;
 
                 private trainColourIndex: number;
 
-                private trainSpeed: number = 1.75;
+                private trainSpeed: number = this.defaultSpeed;
 
                 constructor(public id: number, private board: trains.play.Board, currentCell: Cell) {
                         if (currentCell !== undefined) {
@@ -33,17 +35,16 @@ module trains.play {
                 }
 
                 public chooChooMotherFucker(speed: number): void {
-                        try {
-                                var column = this.board.getGridCoord(this.coords.currentX);
-                                var row = this.board.getGridCoord(this.coords.currentY);
+                        if (this.trainSpeed === 0) return;
 
-                                var cell = this.board.getCell(column, row);
-                                if (cell !== undefined) {
-                                        this.coords = this.getNewCoordsForTrain(cell, this.coords, this.trainSpeed*speed);
-                                }
+                        var column = this.board.getGridCoord(this.coords.currentX);
+                        var row = this.board.getGridCoord(this.coords.currentY);
+
+                        var cell = this.board.getCell(column, row);
+                        if (cell !== undefined) {
+                                this.coords = this.getNewCoordsForTrain(cell, this.coords, this.trainSpeed * speed);
                         }
-                        catch (e) {
-                        }
+
                 }
 
                 public slowYourRoll(): void {
@@ -58,6 +59,14 @@ module trains.play {
                         if (this.trainSpeed > (play.gridSize / 2)) {
                                 this.trainSpeed = (play.gridSize / 2);
                         }
+                }
+
+                public hammerTime(): void {
+                        this.trainSpeed = 0;
+                }
+
+                public wakeMeUp(): void {
+                        this.trainSpeed = this.defaultSpeed;
                 }
 
                 magicBullshitCompareTo(pen: number, sword: number): number {
@@ -139,11 +148,11 @@ module trains.play {
 
                         context.restore();
                 }
-        	
-		public isTrainHere(column: number, row: number): boolean {
-			var myColumn = this.board.getGridCoord(this.coords.currentX);
-			var myRow = this.board.getGridCoord(this.coords.currentY);
-			return column === myColumn && row === myRow;
-		}
-	}
+
+                public isTrainHere(column: number, row: number): boolean {
+                        var myColumn = this.board.getGridCoord(this.coords.currentX);
+                        var myRow = this.board.getGridCoord(this.coords.currentY);
+                        return column === myColumn && row === myRow;
+                }
+        }
 }
