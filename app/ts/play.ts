@@ -58,8 +58,7 @@ module trains.play {
             $canvases: $().add($trainCanvas).add($trackCanvas).add($gridCanvas),
             $trackButtons: $container.find('.ui-track-buttons'),
             $trainButtons: $container.find('.ui-train-buttons'),
-            $trainName: $container.find('.ui-train-name'),
-            $trainRPSLS: $container.find('.ui-rpsls').find('i')
+            $trainName: $container.find('.ui-train-name')
         };
     }
 
@@ -72,6 +71,5 @@ module trains.play {
         $trainButtons: JQuery;
         $trainLogoCanvas: JQuery;
         $trainName: JQuery;
-        $trainRPSLS: JQuery;
     }
 }
