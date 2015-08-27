@@ -270,6 +270,7 @@ module trains.play {
                         //Pre-move train to stop rendering at an odd angle.
                         t.chooChooMotherFucker(0.1);
                         this.trains.push(t);
+                        this.showTrainControls(t);
                     }
                     break;    
                 }        
