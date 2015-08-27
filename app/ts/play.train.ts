@@ -16,6 +16,8 @@ module trains.play {
                 private trainColourIndex: number;
 
                 private trainSpeed: number = this.defaultSpeed;
+                
+                private prsls: number;
 
                 constructor(public id: number, private board: trains.play.Board, currentCell: Cell) {
                         if (currentCell !== undefined) {
@@ -31,6 +33,8 @@ module trains.play {
                                 } else {
                                         this.trainColourIndex = trains.play.TrainRenderer.GetRandomShaftColour();
                                 }
+                                
+                                this.prsls = Math.floor(Math.random() * 5) + 1 ;
                         }
                 }
 
@@ -160,16 +164,47 @@ module trains.play {
                         return this.board.trains.some(t =>t.checkTrainsForBoom(this, t));
                 }
                 
+                public whoIsTheWeakestLink(you: number, me: number)
+                {
+
+                        if (you == me) return 0;
+                        
+                        var isEven = (you + me) % 2 == 0;
+                        var youHigher = you > me;
+                        
+                        if (youHigher == isEven)
+                                return 1;
+                        else 
+                                return 2;
+                }
+                
                 public checkTrainsForBoom(train1: Train, train2: Train)
                 {
                         var myColumn = this.board.getGridCoord(train1.coords.currentX);
                         var myRow = this.board.getGridCoord(train1.coords.currentY);
 
-                        if (train1 !== train2 && train2.isTrainHere(myColumn, myRow)) {
-                                this.board.killItWithFire(train1, false);
-                                return true;
+                        if (train1 !== train2 && train2.isTrainHere(myColumn, myRow)) 
+                        {
+                                        
+                                switch (this.whoIsTheWeakestLink(train1.prsls, train2.prsls))
+                                {
+                                        case 0:{
+                                                this.board.killItWithFire(train1, false);
+                                                this.board.killItWithFire(train2, false);
+                                                return true;
+                                        } 
+                                        case 1:{
+                                                this.board.killItWithFire(train2, false);
+                                                return true;
+                                        }
+                                        case 2:{
+                                                this.board.killItWithFire(train2, false);
+                                                return true;
+                                        }
+                                }
+                                
                         }
                 }
-                
+     
         }
 }
