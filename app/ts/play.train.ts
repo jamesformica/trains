@@ -171,7 +171,7 @@ module trains.play {
                         return this.board.trains.some(t =>t.clashOfTheTitans(t, this));
                 }
                 
-                public whoIsTheWeakestLink(you: number, me: number)
+                public whoIsTheWeakestLink(you: number, me: number): number
                 {
 
                         if (you == me) return 0;
@@ -185,7 +185,24 @@ module trains.play {
                                 return 2;
                 }
                 
-                public clashOfTheTitans(train1: Train, train2: Train)
+                 public turnTheBeatAround(train1: Train, train2: Train): void {
+                        var x1 = train1.coords.currentX;
+                        var y1 = train1.coords.currentY;
+                        var x2 = train2.coords.currentX;
+                        var y2 = train2.coords.currentY;
+                        
+                        train1.coords.currentX = train1.coords.previousX;
+                        train1.coords.currentY = train1.coords.previousY;
+                        train2.coords.currentX = train2.coords.previousX;
+                        train2.coords.currentY = train2.coords.previousY;
+                        
+                        train1.coords.previousX = x1;
+                        train1.coords.previousY = y1;
+                        train2.coords.previousX = x2;
+                        train2.coords.previousY = y2;     
+                }
+
+                public clashOfTheTitans(train1: Train, train2: Train): boolean
                 {
                         var myColumn = this.board.getGridCoord(train1.coords.currentX);
                         var myRow = this.board.getGridCoord(train1.coords.currentY);
@@ -206,22 +223,49 @@ module trains.play {
                                                 } 
                                                 case 1:{
                                                         this.board.killItWithFire(train2, true);
+                                                        this.turnTheBeatAround(train1, train2);
                                                         return true;
                                                 }
                                                 case 2:{
                                                         this.board.killItWithFire(train1, true);
+                                                        this.turnTheBeatAround(train2, train1);
                                                         return true;
                                                 }
                                         }
                                 } 
                                 else if (train1.trainSpeed < train2.trainSpeed)
                                 {
-                                        this.board.killItWithFire(train1, false);
+                                        var speedDiff = train2.trainSpeed - train1.trainSpeed
+                                        this.turnTheBeatAround(train1, train2);
+                                        
+                                        train1.trainSpeed += speedDiff;
+                                        if (train1.trainSpeed > (play.gridSize / 2)) {
+                                                train1.trainSpeed = (play.gridSize / 2);
+                                        }
+                                        train2.trainSpeed -= speedDiff;
+                                        if (train2.trainSpeed < 1){
+                                                train2.trainSpeed = 1
+                                        }
+                                       // this.board.killItWithFire(train1, false);
                                         return true;  
                                 }
                                 else
                                 {
-                                        this.board.killItWithFire(train2, false);
+                                        var speedDiff = train1.trainSpeed - train2.trainSpeed
+                                        this.turnTheBeatAround(train2, train1);
+                                        
+                                        train2.trainSpeed += speedDiff;
+                                        if (train2.trainSpeed > (play.gridSize / 2)) {
+                                                train2.trainSpeed = (play.gridSize / 2);
+                                        }
+                                        train1.trainSpeed -= speedDiff;
+                                        if (train1.trainSpeed < 1)
+                                        {
+                                                 train1.trainSpeed = 1
+                                        }
+                                               
+                    
+                                       // this.board.killItWithFire(train1, false);
                                         return true;  
                                 }  
                         }
