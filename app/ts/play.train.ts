@@ -19,6 +19,7 @@ module trains.play {
                 private trainSpeed: number = this.defaultSpeed;
                 
                 private paperRockLizardScissorsSpock: number;
+                private trainHP: number;
 
                 constructor(public id: number, private board: trains.play.Board, currentCell: Cell) {
                         if (currentCell !== undefined) {
@@ -38,6 +39,7 @@ module trains.play {
                                 this.paperRockLizardScissorsSpock = Math.floor(Math.random() * 5) + 1;
                                 
                                 this.name = trains.util.getRandomName();
+                                this.trainHP = 100;
                         }                                
                 }
 
@@ -222,6 +224,13 @@ module trains.play {
                                 }
                         } 
                 }  
+                
+                private adjustTrainHP(train: Train, change: number): void{
+                        train.trainHP += change;
+                        if (train.trainHP < 1){
+                                this.board.killItWithFire(train, true);
+                        }
+                }
 
                 public clashOfTheTitans(train1: Train, train2: Train)
                 {
@@ -232,63 +241,35 @@ module trains.play {
                         {
                                 if (train1.trainSpeed === train2.trainSpeed)
                                 {
-                                        var train1Seed = train1.paperRockLizardScissorsSpock;
-                                        var train2Seed = train1.paperRockLizardScissorsSpock;
-                                        
-                                        switch (this.whoIsTheWeakestLink(train1Seed, train2Seed))
-                                        {
-                                                case 0:{
-                                                        this.board.killItWithFire(train1, true);
-                                                        this.board.killItWithFire(train2, true);
-                                                        return true;
-                                                } 
-                                                case 1:{
-                                                        this.board.killItWithFire(train2, true);
-                                                        this.turnTheBeatAround(train1, train2);
-                                                        return true;
-                                                }
-                                                case 2:{
-                                                        this.board.killItWithFire(train1, true);
-                                                        this.turnTheBeatAround(train2, train1);
-                                                        return true;
-                                                }
-                                        }
+                                        this.turnTheBeatAround(train2, train1);
+                                        this.adjustTrainHP(train1, train2.trainSpeed*-1);
+                                        this.adjustTrainHP(train2, train1.trainSpeed*-1);
+                                        return true;
                                 } 
                                 else if (train1.trainSpeed < train2.trainSpeed)
                                 {
                                         var speedDiff = train2.trainSpeed - train1.trainSpeed
                                         this.turnTheBeatAround(train1, train2);
-                                        
-                                        train1.trainSpeed += speedDiff;
-                                        if (train1.trainSpeed > (play.gridSize / 2)) {
+       
+                                        if ((train1.trainSpeed + speedDiff ) > (play.gridSize / 2)) {
                                                 train1.trainSpeed = (play.gridSize / 2);
                                         }
-                                        train2.trainSpeed -= speedDiff;
-                                        if (train2.trainSpeed < 1){
+                                        else{
+                                                train1.trainSpeed += speedDiff;
+                                        }
+                                        this.adjustTrainHP(train1, train2.trainSpeed *-1);
+                                        
+                                        if ((train2.trainSpeed - speedDiff) < 1){
                                                 train2.trainSpeed = 1
                                         }
-                                       // this.board.killItWithFire(train1, false);
+                                        else
+                                        {
+                                                train2.trainSpeed -= speedDiff;
+                                        }
+                                        this.adjustTrainHP(train2, train1.trainSpeed *-1)
+                                       
                                         return true;  
                                 }
-                                else
-                                {
-                                        var speedDiff = train1.trainSpeed - train2.trainSpeed
-                                        this.turnTheBeatAround(train2, train1);
-                                        
-                                        train2.trainSpeed += speedDiff;
-                                        if (train2.trainSpeed > (play.gridSize / 2)) {
-                                                train2.trainSpeed = (play.gridSize / 2);
-                                        }
-                                        train1.trainSpeed -= speedDiff;
-                                        if (train1.trainSpeed < 1)
-                                        {
-                                                 train1.trainSpeed = 1
-                                        }
-                                               
-                    
-                                       // this.board.killItWithFire(train1, false);
-                                        return true;  
-                                }  
                         }
                 }
         }
