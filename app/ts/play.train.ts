@@ -19,6 +19,7 @@ module trains.play {
         private trainSpeed:number = this.defaultSpeed;
 
         private paperRockLizardScissorsSpock:number;
+        public trainHP:number;
     
         constructor(public id:number, private board:trains.play.Board, currentCell:Cell) {
             if (currentCell !== undefined) {
@@ -68,8 +69,8 @@ module trains.play {
 
         public fasterFasterFaster():void {
             this.trainSpeed++;
-            if (this.trainSpeed > (play.gridSize / 2)) {
-                this.trainSpeed = (play.gridSize / 2);
+            if (this.trainSpeed > (play.gridSize)) {
+                this.trainSpeed = (play.gridSize);
             }
         }
 
