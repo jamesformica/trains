@@ -19,8 +19,7 @@ module trains.play {
         private trainSpeed:number = this.defaultSpeed;
 
         private paperRockLizardScissorsSpock:number;
-        private trainHP: number;
-
+    
         constructor(public id:number, private board:trains.play.Board, currentCell:Cell) {
             if (currentCell !== undefined) {
                 this.coords = {
@@ -267,13 +266,6 @@ module trains.play {
             }
         }
 
-        private adjustTrainHP(train: Train, change: number): void{
-            train.trainHP += change;
-            if (train.trainHP < 1){
-                this.board.killItWithFire(train, true);
-            }
-        }
-
         public clashOfTheTitans(train1: Train, train2: Train)
         {
             var myColumn = this.board.getGridCoord(train1.coords.currentX);
@@ -284,8 +276,6 @@ module trains.play {
                 if (train1.trainSpeed === train2.trainSpeed)
                 {
                     this.turnTheBeatAround(train2, train1);
-                    this.adjustTrainHP(train1, train2.trainSpeed*-1);
-                    this.adjustTrainHP(train2, train1.trainSpeed*-1);
                     return true;
                 }
                 else if (train1.trainSpeed < train2.trainSpeed)
@@ -299,7 +289,6 @@ module trains.play {
                     else{
                         train1.trainSpeed += speedDiff;
                     }
-                    this.adjustTrainHP(train1, train2.trainSpeed *-1);
 
                     if ((train2.trainSpeed - speedDiff) < 1){
                         train2.trainSpeed = 1
@@ -308,7 +297,6 @@ module trains.play {
                     {
                         train2.trainSpeed -= speedDiff;
                     }
-                    this.adjustTrainHP(train2, train1.trainSpeed *-1)
 
                     return true;
                 }
