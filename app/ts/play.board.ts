@@ -64,7 +64,7 @@ module trains.play {
 
             this.canvasWidth = this.roundToNearestGridSize(this.$window.width() - (gridSize * 2));
             this.maxColumns = this.canvasWidth / gridSize;
-            this.canvasHeight = this.roundToNearestGridSize(this.$window.height() - (gridSize * 2));
+            this.canvasHeight = this.roundToNearestGridSize(this.$window.height() - gridSize);
             this.maxRows = this.canvasHeight / gridSize;
 
             this.playComponents.$canvases.attr('width', this.canvasWidth);
@@ -211,6 +211,7 @@ module trains.play {
                         //Pre-move train to stop rendering at an odd angle.
                         t.chooChooMotherFucker(0.1);
                         this.trains.push(t);
+                        this.showTrainControls(t);
                     }
                     break;    
                 }        
@@ -218,7 +219,6 @@ module trains.play {
         }
         
         private destroyTrack(): void {
-            this.stopGame();
             this.trains = new Array<Train>();
             var deferreds = new Array<JQueryDeferred<{}>>();
             for (var id in this.cells) {
@@ -380,37 +380,40 @@ module trains.play {
                 var $option = $(option);
                 switch ($option.data("action").toLowerCase()) {
                     case "play": {
-                        //this.TogglePlayStop($option);
+                        this.selectedTrain.wakeMeUp();
+                        break;
+                    }
+                    case "pause": {
+                        this.selectedTrain.hammerTime();
                         break;
                     }
                     case "forward": {
-                        for (var i = 0; i < this.trains.length; i++) {
-                            if (this.trains[i].id === this.selectedTrain.id) {
-                                this.trains[i].fasterFasterFaster();
-                            }
-                        }
+                        this.selectedTrain.fasterFasterFaster();
                         break;
                     }
                     case "backward": {
-                        for (var i = 0; i < this.trains.length; i++) {
-                            if (this.trains[i].id === this.selectedTrain.id) {
-                                this.trains[i].slowYourRoll();
-                            }
-                        }
+                        this.selectedTrain.slowYourRoll();
                         break;
                     }    
                     case "delete": {
-                        for (var i = 0; i < this.trains.length; i++) {
-                            if (this.trains[i].id === this.selectedTrain.id) {
-                                this.trains.splice(i, 1);
-                                this.hideTrainControls();
-                                break;
-                            }
-                        }
+                        this.killItWithFire(this.selectedTrain, true);
+                        break;
                     }
                 }
             } else {
                 this.hideTrainControls();
+            }
+        }
+        
+        public killItWithFire(train: Train, hideControls: boolean): void {
+            for (var i = 0; i < this.trains.length; i++) {
+                if (this.trains[i].id === train.id) {
+                    this.trains.splice(i, 1);
+                    if (hideControls) {
+                        this.hideTrainControls();
+                    }
+                    break;
+                }
             }
         }
         

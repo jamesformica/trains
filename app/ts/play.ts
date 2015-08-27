@@ -29,13 +29,6 @@ module trains.play {
         }
 
         private AttachEvents(): void {
-
-            $(window).keypress((e) => {
-                if (e.which === 32) {
-                    this.TogglePlayStop(this.playComponents.$trainButtons.find('.ui-play-stop'));
-                }
-            });
-
             this.playComponents.$trainButtons.find('.ui-close').click(() => {
                 this.board.hideTrainControls();
             });
@@ -47,17 +40,6 @@ module trains.play {
             this.playComponents.$trackButtons.find('button').click((event) => {
                 this.board.trackControlClick(event.currentTarget);
             });
-        }
-
-        TogglePlayStop($button: JQuery): void {
-            var $icon = $button.find('i:first');
-            if ($icon.hasClass("fa-play")) {
-                this.board.showChooChoo();
-                $icon.removeClass("fa-play").addClass("fa-stop");
-            } else {
-                this.board.stopChooChoo();
-                $icon.removeClass("fa-stop").addClass("fa-play");
-            }
         }
     }
 
