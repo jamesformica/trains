@@ -26,11 +26,11 @@ module trains.util {
 		"Warrior",
 		"Alfonse"
 	];
-	
+
 	export function getRandomName(): string {
 		return "The " + getRandomElement(adjectives) + " " + getRandomElement(names);
 	}
-	
+
 	function getRandomElement(items: Array<string>): string {
 		return items[Math.floor(Math.random() * items.length)];
 	}
