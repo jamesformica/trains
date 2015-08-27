@@ -161,7 +161,7 @@ module trains.play {
                 
                 public wreckYourself(): boolean {
   
-                        return this.board.trains.some(t =>t.clashOfTheTitans(this, t));
+                        return this.board.trains.some(t =>t.clashOfTheTitans(t, this));
                 }
                 
                 public whoIsTheWeakestLink(you: number, me: number)
@@ -198,16 +198,16 @@ module trains.play {
                                                         return true;
                                                 } 
                                                 case 1:{
-                                                        this.board.killItWithFire(train1, true);
+                                                        this.board.killItWithFire(train2, true);
                                                         return true;
                                                 }
                                                 case 2:{
-                                                        this.board.killItWithFire(train2, true);
+                                                        this.board.killItWithFire(train1, true);
                                                         return true;
                                                 }
                                         }
                                 } 
-                                else if (train1.trainSpeed > train2.trainSpeed)
+                                else if (train1.trainSpeed < train2.trainSpeed)
                                 {
                                         this.board.killItWithFire(train1, false);
                                         return true;  
