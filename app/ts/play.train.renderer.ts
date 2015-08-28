@@ -59,11 +59,11 @@ module trains.play.TrainRenderer {
         leftLightGradient.addColorStop(0, "#BBBBBB");
         leftLightGradient.addColorStop(1, "#000000");
         context.fillStyle = leftLightGradient;
-        context.moveTo(shaftWidth, frontY - bumperPoke);
-        context.lineTo(shaftWidth - xOffset, (frontY - bumperPoke) - lightDistance);
+        context.moveTo(0, frontY - bumperPoke);
+        context.lineTo(0 - xOffset, (frontY - bumperPoke) - lightDistance);
         //Need to implement circle tip here instead of flat
-        context.lineTo(shaftWidth + xOffset, (frontY - bumperPoke) - lightDistance);
-        context.lineTo(shaftWidth, frontY - bumperPoke);
+        context.lineTo(0 + xOffset, (frontY - bumperPoke) - lightDistance);
+        context.lineTo(0, frontY - bumperPoke);
         context.fill();
     }
 
