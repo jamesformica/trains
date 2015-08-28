@@ -48,10 +48,8 @@ module trains.play {
                 var mute = trains.util.toBoolean($mute.val()); 
                 if (!mute) {
                     $mute.val("true");
-                    $mute.removeClass("fa-volume-up").addClass("fa-volume-off");
                 } else {
                     $mute.val("false");
-                    $mute.removeClass("fa-volume-off").addClass("fa-volume-up");
                 }
                 this.board.setMuted(!mute);
             });
