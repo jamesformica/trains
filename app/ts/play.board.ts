@@ -50,7 +50,6 @@ module trains.play {
         public trains = new Array<trains.play.Train>();
         public selectedTrain: trains.play.Train;
         private gameRunningState = true;
-        public gameStartTime = (new Date().getTime());
         private player: trains.audio.Player;
 
         public gameLoop: trains.play.GameLoop;

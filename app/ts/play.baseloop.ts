@@ -9,7 +9,7 @@ module trains.play {
         //TODO: create getters!
         loopRunning = false;
         lastDuration = 0;
-        lastStartTime;
+        lastStartTime = 0;
         loopStartTime;
         lastLoopEndTime;
         averageLoopsPerSecond = 0;
@@ -45,6 +45,9 @@ module trains.play {
             this.timeoutId = undefined;
             if(this.lastLoopEndTime!==undefined) {
                 this.loopStartTime = new Date().getTime();
+                if(this.lastStartTime === 0) {
+                    this.lastStartTime = this.loopStartTime;
+                }
                 if (this.loopRunning) {
                     this.loopBody();
                 }
