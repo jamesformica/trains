@@ -117,6 +117,8 @@ module trains.play {
             this.renderLoop.startLoop();
             this.player = new trains.audio.Player();
             
+            this.setMuted(util.toBoolean(localStorage.getItem("muted")));
+            
             setTimeout(() => {
                 this.setTool(trains.play.Tool.Track);
             }, 100);
@@ -455,6 +457,12 @@ module trains.play {
         }
         
         setMuted(mute: boolean): void {
+            localStorage.setItem("muted", mute.toString());
+            if (mute) {
+                this.playComponents.$mute.removeClass("fa-volume-up").addClass("fa-volume-off");
+            } else {
+                this.playComponents.$mute.removeClass("fa-volume-off").addClass("fa-volume-up");
+            }
             this.player.setMuted(mute);
         }
     }
