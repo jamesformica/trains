@@ -10,7 +10,7 @@ module trains.play {
         public y: number;
         public direction: trains.play.Direction;
 
-        constructor(protected board: trains.play.Board, public id: string, public column: number, public row: number) {
+        constructor(public id: string, public column: number, public row: number) {
             this.happy = false;
             this.x = this.column * trains.play.gridSize;
             this.y = this.row * trains.play.gridSize;
@@ -26,23 +26,23 @@ module trains.play {
         }
 
         checkYourself(): void {
-            var neighbours = this.board.getNeighbouringCells(this.column, this.row);
+            var neighbours = GameBoard.getNeighbouringCells(this.column, this.row);
 
             var changed = this.determineDirection(neighbours);
             this.happy = (neighbours.all.length > 1);
-            this.draw(this.board.trackContext);
+            this.draw(GameBoard.trackContext);
 
             if (changed) {
-                var neighbours = this.board.getNeighbouringCells(this.column, this.row);
+                var neighbours = GameBoard.getNeighbouringCells(this.column, this.row);
                 neighbours.all.forEach(n => n.checkYourself());
             }
         }
 
         crossTheRoad(): boolean {
-            var neighbours = this.board.getNeighbouringCells(this.column, this.row, true);
+            var neighbours = GameBoard.getNeighbouringCells(this.column, this.row, true);
             
             return neighbours.all.some(c => {
-                var myNeighbours = this.board.getNeighbouringCells(c.column, c.row, true);
+                var myNeighbours = GameBoard.getNeighbouringCells(c.column, c.row, true);
                 if (myNeighbours.all.length < 4) return false;
 
                 if (!myNeighbours.up.isConnectedDown() && myNeighbours.up.happy) return false;
@@ -53,8 +53,8 @@ module trains.play {
                 // if we got here, we should be a cross                
                 c.direction = Direction.Cross;
                 c.happy = true;
-                c.draw(this.board.trackContext);
-                myNeighbours = this.board.getNeighbouringCells(c.column, c.row);
+                c.draw(GameBoard.trackContext);
+                myNeighbours = GameBoard.getNeighbouringCells(c.column, c.row);
                 myNeighbours.all.forEach(c2=> c2.checkYourself());
                 
                 return true;
@@ -143,7 +143,7 @@ module trains.play {
             this.destroyLoop(def, 0);
 
             def.done(() => {
-                this.board.trackContext.clearRect(this.x, this.y, trains.play.gridSize, trains.play.gridSize);
+                GameBoard.trackContext.clearRect(this.x, this.y, trains.play.gridSize, trains.play.gridSize);
             });
 
             return def;
@@ -154,7 +154,7 @@ module trains.play {
                 var x = Math.floor(Math.random() * trains.play.gridSize);
                 var y = Math.floor(Math.random() * trains.play.gridSize);
 
-                this.board.trackContext.clearRect(this.x + x, this.y + y, 5, 5);
+                GameBoard.trackContext.clearRect(this.x + x, this.y + y, 5, 5);
                 counter++;
                 if (counter < 40) {
                     this.destroyLoop(deferred, counter);

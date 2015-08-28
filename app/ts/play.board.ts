@@ -117,10 +117,27 @@ module trains.play {
             this.player = new trains.audio.Player();
             
             this.setMuted(util.toBoolean(localStorage.getItem("muted")));
+            this.setAutoSave(util.toBoolean(localStorage.getItem("autosave")));
             
             setTimeout(() => {
                 this.setTool(trains.play.Tool.Track);
             }, 100);
+        }
+        
+        public loadCells(): void {
+            var savedCells = JSON.parse(localStorage.getItem("cells"));
+            if (savedCells !== undefined) {
+                for (var id in savedCells) {
+                    if (savedCells.hasOwnProperty(id)) {
+                        var theCell = <Cell>savedCells[id];
+                        var newCell = new trains.play.Track(theCell.id, theCell.column, theCell.row);
+                        newCell.direction = theCell.direction;
+                        newCell.happy = theCell.happy;
+                        this.cells[newCell.id] = newCell;
+                    }
+                }
+            }
+            this.redraw();
         }
 
         public startGame(): void {
@@ -235,7 +252,7 @@ module trains.play {
                     var cellID = this.getCellID(column, row);
 
                     if (this.cells[cellID] !== undefined) {
-                        var t = new Train(this.trainIDCounter++, this, this.cells[cellID]);
+                        var t = new Train(this.trainIDCounter++, this.cells[cellID]);
                         //Pre-move train to stop rendering at an odd angle.
                         t.chooChooMotherFucker(0.1);
                         this.trains.push(t);
@@ -260,6 +277,7 @@ module trains.play {
                 trains.play.BoardRenderer.clearCells(this.trackContext, this.canvasWidth, this.canvasHeight);
                 trains.play.BoardRenderer.clearCells(this.trainContext, this.canvasWidth, this.canvasHeight);
                 this.cells = {};
+                localStorage.removeItem("cells");
             });
         }
         
@@ -269,6 +287,7 @@ module trains.play {
             if (cell !== undefined) {
                 cell.turnAroundBrightEyes();
             }
+            this.saveTrack();
         }
 
         private newTrack(column: number, row: number): void {
@@ -277,13 +296,15 @@ module trains.play {
             if (this.cells[cellID] === undefined) {
                 
                 this.player.playSound(trains.audio.Sound.click);
-                var newCell = new trains.play.Track(this, cellID, column, row);
+                var newCell = new trains.play.Track(cellID, column, row);
                 
                 this.cells[newCell.id] = newCell;
 
                 if (!newCell.crossTheRoad()) {
                     newCell.checkYourself();
-                } 
+                }
+                
+                this.saveTrack();
             }
         }
 
@@ -293,6 +314,7 @@ module trains.play {
             var cell = this.cells[cellID];            
             if (cell !== undefined) {
                 delete this.cells[cellID];
+                this.saveTrack();
                 cell.destroy().done(() => {
                     var neighbours = this.getNeighbouringCells(column, row, true);
 
@@ -304,6 +326,12 @@ module trains.play {
                     
                     neighbours.all.forEach(n => n.checkYourself()); 
                 });
+            }
+        }
+        
+        private saveTrack(): void {
+            if (util.toBoolean(localStorage.getItem("autosave"))) {
+                localStorage.setItem("cells", JSON.stringify(this.cells));
             }
         }
         
@@ -463,6 +491,16 @@ module trains.play {
                 this.playComponents.$mute.removeClass("fa-volume-off").addClass("fa-volume-up");
             }
             this.player.setMuted(mute);
+        }
+        
+        setAutoSave(autosave: boolean): void {
+            localStorage.setItem("autosave", autosave.toString());
+            if (autosave) {
+                this.playComponents.$autosave.css("color", "green");
+            } else {
+                localStorage.removeItem("cells");
+                this.playComponents.$autosave.css("color", "black");
+            }
         }
     }
 

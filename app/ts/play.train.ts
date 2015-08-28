@@ -18,13 +18,13 @@ module trains.play {
 
         private trainSpeed:number = this.defaultSpeed;
 
-        constructor(public id:number, private board:trains.play.Board, currentCell:Cell) {
-            if (currentCell !== undefined) {
+        constructor(public id:number, cell:Cell) {
+            if (cell !== undefined) {
                 this.coords = {
-                    currentX: currentCell.x + (trains.play.gridSize / 2),
-                    currentY: currentCell.y + (trains.play.gridSize / 2),
-                    previousX: currentCell.x,
-                    previousY: currentCell.y - 1 //Cos we never want to be the centre of attention
+                    currentX: cell.x + (trains.play.gridSize / 2),
+                    currentY: cell.y + (trains.play.gridSize / 2),
+                    previousX: cell.x,
+                    previousY: cell.y - 1 //Cos we never want to be the centre of attention
                 };
 
                 if (Math.floor(Math.random() * 10) === 0) {
@@ -41,9 +41,9 @@ module trains.play {
             if (this.trainSpeed === 0) return;
             speed *= this.trainSpeed;
             while (speed > 0) {
-                var column = this.board.getGridCoord(this.coords.currentX);
-                var row = this.board.getGridCoord(this.coords.currentY);
-                var cell = this.board.getCell(column, row);
+                var column = GameBoard.getGridCoord(this.coords.currentX);
+                var row = GameBoard.getGridCoord(this.coords.currentY);
+                var cell = GameBoard.getCell(column, row);
                 if (cell !== undefined) {
                     var result = this.getNewCoordsForTrain(cell, this.coords, speed);
                     this.coords = result.coords;
@@ -293,13 +293,13 @@ module trains.play {
         }
 
         public isTrainHere(column:number, row:number):boolean {
-            var myColumn = this.board.getGridCoord(this.coords.currentX);
-            var myRow = this.board.getGridCoord(this.coords.currentY);
+            var myColumn = GameBoard.getGridCoord(this.coords.currentX);
+            var myRow = GameBoard.getGridCoord(this.coords.currentY);
             return column === myColumn && row === myRow;
         }
 
         public wreckYourself():boolean {
-            return this.board.trains.some(t => t.clashOfTheTitans(t, this));
+            return GameBoard.trains.some(t => t.clashOfTheTitans(t, this));
         }
 
         public turnTheBeatAround(): void {
@@ -314,8 +314,8 @@ module trains.play {
         }
 
         public clashOfTheTitans(train1:Train, train2:Train) {
-            var myColumn = this.board.getGridCoord(train1.coords.currentX);
-            var myRow = this.board.getGridCoord(train1.coords.currentY);
+            var myColumn = GameBoard.getGridCoord(train1.coords.currentX);
+            var myRow = GameBoard.getGridCoord(train1.coords.currentY);
 
             if (train1 !== train2 && train2.isTrainHere(myColumn, myRow)) {
                 if (train1.trainSpeed === train2.trainSpeed) {

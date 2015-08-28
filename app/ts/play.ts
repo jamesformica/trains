@@ -7,40 +7,44 @@ module trains.play {
     export function InitialisePlay($container: JQuery): void {
         var manager = new trains.play.PlayManager($container);
     }
+    
+    export var GameBoard: Board;
 
     export class PlayManager {
 
         private playComponents: trains.play.PlayComponents;
-        private board: trains.play.Board;
 
         constructor(private $container: JQuery) {
             this.playComponents = GetPlayComponent($container);
-            this.board = new trains.play.Board(this.playComponents);
+            trains.play.GameBoard = new trains.play.Board(this.playComponents);
 
-            var top = ($(window).height() - this.board.canvasHeight) / 2;
-            var left = ($(window).width() - this.board.canvasWidth) / 2;
+            var top = ($(window).height() - trains.play.GameBoard.canvasHeight) / 2;
+            var left = ($(window).width() - trains.play.GameBoard.canvasWidth) / 2;
             this.playComponents.$trackButtons.css("top", top);
             this.playComponents.$trainButtons.css("top", top).css("right", left);
             this.playComponents.$mute.width(left);
+            this.playComponents.$autosave.width(left);
 
             this.playComponents.$trainButtons.draggable({
                 handle: '.ui-handle'
             });
 
             this.AttachEvents();
+            
+            GameBoard.loadCells();
         }
 
         private AttachEvents(): void {
             this.playComponents.$trainButtons.find('.ui-close').click(() => {
-                this.board.hideTrainControls();
+                trains.play.GameBoard.hideTrainControls();
             });
 
             this.playComponents.$trainButtons.find('button').click((event) => {
-                this.board.trainControlClick(event.currentTarget);
+                trains.play.GameBoard.trainControlClick(event.currentTarget);
             });
 
             this.playComponents.$trackButtons.find('button').click((event) => {
-                this.board.trackControlClick(event.currentTarget);
+                trains.play.GameBoard.trackControlClick(event.currentTarget);
             });
             
             this.playComponents.$mute.click(() => {
@@ -51,7 +55,18 @@ module trains.play {
                 } else {
                     $mute.val("false");
                 }
-                this.board.setMuted(!mute);
+                trains.play.GameBoard.setMuted(!mute);
+            });
+            
+            this.playComponents.$autosave.click(() => {
+                var $autosave = this.playComponents.$autosave;
+                var autosave = trains.util.toBoolean($autosave.val());
+                 if (!autosave) {
+                    $autosave.val("true");
+                } else {
+                    $autosave.val("false");
+                }
+                trains.play.GameBoard.setAutoSave(!autosave); 
             });
         }
     }
@@ -72,7 +87,8 @@ module trains.play {
             $trackButtons: $container.find('.ui-track-buttons'),
             $trainButtons: $container.find('.ui-train-buttons'),
             $trainName: $container.find('.ui-train-name'),
-            $mute: $container.find('.ui-mute')
+            $mute: $container.find('.ui-mute'),
+            $autosave: $container.find('.ui-autosave')
         };
     }
 
@@ -86,5 +102,6 @@ module trains.play {
         $trainLogoCanvas: JQuery;
         $trainName: JQuery;
         $mute: JQuery;
+        $autosave: JQuery;
     }
 }

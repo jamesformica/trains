@@ -26,9 +26,7 @@ module trains.play.BoardRenderer {
 
         for (var id in cells) {
             if (cells.hasOwnProperty(id)) {
-                if (!isNaN(id)) {
-                    cells[id].draw(context);
-                }
+                cells[id].draw(context);
             }
         }
     }
