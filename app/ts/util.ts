@@ -22,7 +22,8 @@ module trains.util {
 		"Moronic",
 		"Cynical",
 		"Sassy",
-		"Reluctant"
+		"Reluctant",
+		"Majestic"
 	];
 
 	var names: Array<string> = [
