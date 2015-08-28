@@ -35,6 +35,15 @@ module trains.play {
         }
 
         private AttachEvents(): void {
+            
+            this.playComponents.$globalButtons.find('.ui-title').click(() => {
+                this.playComponents.$globalButtons.toggleClass("minimised");
+            });
+            
+            this.playComponents.$globalButtons.find('.ui-minimise').click(() => {
+                this.playComponents.$globalButtons.addClass("minimised");
+            });
+            
             this.playComponents.$trainButtons.find('.ui-close').click(() => {
                 trains.play.GameBoard.hideTrainControls();
             });
@@ -86,6 +95,7 @@ module trains.play {
             $canvases: $().add($trainCanvas).add($trackCanvas).add($gridCanvas),
             $trackButtons: $container.find('.ui-track-buttons'),
             $trainButtons: $container.find('.ui-train-buttons'),
+            $globalButtons: $container.find('.ui-game-buttons'),
             $trainName: $container.find('.ui-train-name'),
             $mute: $container.find('.ui-mute'),
             $autosave: $container.find('.ui-autosave')
@@ -99,6 +109,7 @@ module trains.play {
         $canvases: JQuery;
         $trackButtons: JQuery;
         $trainButtons: JQuery;
+        $globalButtons: JQuery;
         $trainLogoCanvas: JQuery;
         $trainName: JQuery;
         $mute: JQuery;
