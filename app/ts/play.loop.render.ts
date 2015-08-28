@@ -20,6 +20,9 @@ module trains.play {
 
             //Nighttime Daytime
             var diff = ((this.board.gameLoop.gameTimeElapsed / (1000 * this.dayCycleSpeedModifier)) + (this.msPerDayCycle / 2)) % this.msPerDayCycle;
+            if(this.board.cheat_alwaysNight) {
+                diff = 0;
+            }
             var r = (diff >= (this.msPerDayCycle / 2)) ? ((this.msPerDayCycle / 2) - diff) : 0;
             var g = (diff >= (this.msPerDayCycle / 2)) ? ((r / 135) * 100) : 0; //135 is magic!
             var b = (diff < (this.msPerDayCycle / 2)) ? diff : 0;

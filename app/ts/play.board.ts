@@ -55,6 +55,8 @@ module trains.play {
         public gameLoop: trains.play.GameLoop;
         public renderLoop: trains.play.RenderLoop;
         public showDiagnostics = false;
+
+        public cheat_alwaysNight = false;
         
         constructor(public playComponents: trains.play.PlayComponents) {
 
