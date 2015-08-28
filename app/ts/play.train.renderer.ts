@@ -43,9 +43,43 @@ module trains.play.TrainRenderer {
 	var bumperLength = 3;
 	var bumperOffset = 3;
 
+    var lightAngleInDegrees = 30;
+    var lightDistance = 40;
+    var lightFalloffDistance = 30;
+
 	export function GetRandomShaftColour(): number {
 		return Math.floor(Math.random() * trains.play.TrainRenderer.trainColours.length);
 	}
+
+    export function DrawChoochooLights(context: CanvasRenderingContext2D): void {
+        var xOffset = lightDistance*Math.tan(lightAngleInDegrees*(180/Math.PI)) / 2;
+
+        //Left light
+        context.beginPath();
+        var leftLightGradient=context.createRadialGradient(leftX, frontY - bumperPoke,lightFalloffDistance,leftX, frontY - bumperPoke,lightDistance);
+        leftLightGradient.addColorStop(0,"#BBBBBB");
+        leftLightGradient.addColorStop(1,"#000000");
+        context.fillStyle=leftLightGradient;
+        context.moveTo(leftX, frontY - bumperPoke);
+        context.lineTo(leftX-xOffset,(frontY - bumperPoke)-lightDistance);
+        //Need to implement circle tip here instead of flat
+        context.lineTo(leftX+xOffset,(frontY - bumperPoke)-lightDistance);
+        context.lineTo(leftX, frontY - bumperPoke);
+        context.fill();
+
+        //Right Light
+        context.beginPath();
+        var rightLightGradient=context.createRadialGradient(rightX, frontY - bumperPoke,lightFalloffDistance,rightX, frontY - bumperPoke,lightDistance);
+        rightLightGradient.addColorStop(0,"#BBBBBB");
+        rightLightGradient.addColorStop(1,"#000000");
+        context.fillStyle=rightLightGradient;
+        context.moveTo(rightX, frontY - bumperPoke);
+        context.lineTo(rightX-xOffset,(frontY - bumperPoke)-lightDistance);
+        //Need to implement circle tip here instead of flat
+        context.lineTo(rightX+xOffset,(frontY - bumperPoke)-lightDistance);
+        context.lineTo(rightX, frontY - bumperPoke);
+        context.fill();
+    }
 
 	export function DrawChoochoo(context: CanvasRenderingContext2D, shaftColourIndex: number): void {
 

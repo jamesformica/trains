@@ -34,6 +34,9 @@ module trains.play {
         private trainLogoCanvas: HTMLCanvasElement;
         public trainLogoContext: CanvasRenderingContext2D;
 
+        public lightingBufferCanvas: HTMLCanvasElement;
+        public lightingBufferContext: CanvasRenderingContext2D;
+
         public canvasWidth: number;
         public canvasHeight: number;
         
@@ -47,11 +50,12 @@ module trains.play {
         public trains = new Array<trains.play.Train>();
         public selectedTrain: trains.play.Train;
         private gameRunningState = true;
+        public gameStartTime = (new Date().getTime());
         private player: trains.audio.Player;
 
         public gameLoop: trains.play.GameLoop;
         public renderLoop: trains.play.RenderLoop;
-        public showDiagnostics = true;
+        public showDiagnostics = false;
         
         constructor(public playComponents: trains.play.PlayComponents) {
 
@@ -99,6 +103,12 @@ module trains.play {
                     ev.preventDefault();
                     return false; }, false);
             });
+
+            //Hidden canvas buffer
+            this.lightingBufferCanvas = <HTMLCanvasElement>document.createElement('canvas');
+            this.lightingBufferCanvas.width = this.canvasWidth;
+            this.lightingBufferCanvas.height = this.canvasHeight;
+            this.lightingBufferContext = this.lightingBufferCanvas.getContext("2d");
             
             this.gameLoop = new GameLoop(this);
             this.renderLoop = new RenderLoop(this);

@@ -281,6 +281,17 @@ module trains.play {
             context.restore();
         }
 
+        public drawLighting(context:CanvasRenderingContext2D):void {
+            var x = this.coords.currentX;
+            var y = this.coords.currentY;
+            var angle = Math.atan2(this.coords.previousX - x, this.coords.previousY - y);
+            context.save();
+            context.translate(x, y);
+            context.rotate(angle * -1);
+            trains.play.TrainRenderer.DrawChoochooLights(context);
+            context.restore();
+        }
+
         public isTrainHere(column:number, row:number):boolean {
             var myColumn = this.board.getGridCoord(this.coords.currentX);
             var myRow = this.board.getGridCoord(this.coords.currentY);
