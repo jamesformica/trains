@@ -44,6 +44,10 @@ module trains.play {
                 this.playComponents.$globalButtons.addClass("minimised");
             });
             
+            this.playComponents.$globalButtons.find('button').click((event) => {
+                trains.play.GameBoard.globalControlClick(event.currentTarget);
+            });
+            
             this.playComponents.$trainButtons.find('.ui-close').click(() => {
                 trains.play.GameBoard.hideTrainControls();
             });

@@ -468,6 +468,20 @@ module trains.play {
             }
         }
         
+        globalControlClick(option: EventTarget): void {
+            var $option = $(option);
+            switch ($option.data("action").toLowerCase()) {
+                case "play": {
+                    this.gameLoop.startLoop();
+                    break;
+                }
+                case "pause": {
+                    this.gameLoop.stopLoop();
+                    break;
+                }
+            }
+        }
+        
         showTrainControls(train: trains.play.Train): void {
             this.selectedTrain = train;
             this.playComponents.$trainName.text(train.name);
