@@ -43,8 +43,8 @@ module trains.play.TrainRenderer {
 	var bumperLength = 3;
 	var bumperOffset = 3;
 
-    var lightAngleInDegrees = 30;
-    var lightDistance = 40;
+    var lightAngleInDegrees = 60;
+    var lightDistance = 80;
     var lightFalloffDistance = 30;
 
 	export function GetRandomShaftColour(): number {
