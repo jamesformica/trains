@@ -251,22 +251,22 @@ module trains.play {
                 this.directionToUse = cell.direction;
                 var flip = (Math.random() > 0.5);
                 if (this.directionToUse === Direction.LeftUpLeftDown) {
-                    if (this.lastCell !== undefined && this.lastCell.direction === Direction.Vertical) {
+                    if (this.lastCell !== undefined && (this.lastCell.isConnectedDown() || this.lastCell.isConnectedUp())) {
                         flip = this.coords.previousY < this.coords.currentY;
                     }
                     this.directionToUse = flip ? Direction.LeftUp : Direction.LeftDown;
                 } else if (this.directionToUse === Direction.LeftUpRightUp) {
-                    if (this.lastCell !== undefined && this.lastCell.direction === Direction.Horizontal) {
+                    if (this.lastCell !== undefined && (this.lastCell.isConnectedLeft() || this.lastCell.isConnectedRight())) {
                         flip = this.coords.previousX < this.coords.currentX;
                     }
                     this.directionToUse = flip ? Direction.LeftUp : Direction.RightUp;
                 } else if (this.directionToUse === Direction.RightDownLeftDown) {
-                    if (this.lastCell !== undefined && this.lastCell.direction === Direction.Horizontal) {
+                    if (this.lastCell !== undefined && (this.lastCell.isConnectedLeft() || this.lastCell.isConnectedRight())) {
                         flip = this.coords.previousX > this.coords.currentX;
                     }
                     this.directionToUse = flip ? Direction.RightDown : Direction.LeftDown;
                 } else if (this.directionToUse === Direction.RightDownRightUp) {
-                    if (this.lastCell !== undefined && this.lastCell.direction === Direction.Vertical) {
+                    if (this.lastCell !== undefined && (this.lastCell.isConnectedDown() || this.lastCell.isConnectedUp())) {
                         flip = this.coords.previousY > this.coords.currentY;
                     }
                     this.directionToUse = flip ? Direction.RightDown : Direction.RightUp;
