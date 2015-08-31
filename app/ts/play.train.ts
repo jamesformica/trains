@@ -18,6 +18,7 @@ module trains.play {
         public name:string;
 
         public trainSpeed:number = this.defaultSpeed;
+        public imageReverse:number = 1;
 
         public carriage:trains.play.TrainCarriage;
 
@@ -65,21 +66,20 @@ module trains.play {
             if (this.trainSpeed === 0) return;
             var baseSpeed = speed;
             speed *= this.trainSpeed;
-            while (speed > 0) {
+            //Super small speeds cause MAJOR problems with the game loop.
+            // First occurrence of this bug, speed was 1.13e-14!!!!!
+            while (Math.abs(speed)>0.00001) {
                 var column = GameBoard.getGridCoord(this.coords.currentX);
                 var row = GameBoard.getGridCoord(this.coords.currentY);
                 var cell = GameBoard.getCell(column, row);
                 if (cell !== undefined) {
                     var result = this.getNewCoordsForTrain(cell, this.coords, speed);
                     this.coords = result.coords;
-                    //Super small speeds cause MAJOR problems with the game loop.
-                    // First occurrence of this bug, speed was 1.13e-14!!!!!
                     speed = result.remainingSpeed;
-                    if(speed<0.00001){
-                        speed=0;
-                    }
                 }
-                else break;
+                else{
+                    break;
+                }
             }
             if(this.carriage!==undefined){
                 this.carriage.trainSpeed = this.trainSpeed;
@@ -92,8 +92,8 @@ module trains.play {
 
         public slowYourRoll():void {
             this.trainSpeed--;
-            if (this.trainSpeed < 1) {
-                this.trainSpeed = 1;
+            if (this.trainSpeed < (-1*play.gridSize)) {
+                this.trainSpeed = (-1*play.gridSize);
             }
         }
 
@@ -146,7 +146,7 @@ module trains.play {
                 }
 
                 //Set out remaining 'speed' to be our speed minus what we used
-                remainingSpeed = speed - Math.abs(coords.currentY-targetY);
+                remainingSpeed = speed + (((speed>0)?-1:1)* Math.abs(coords.currentY-targetY));
 
                 //Return our payload, the new coords, and if we couldn't use the whole 'speed', what is remaining
                 return {
@@ -169,7 +169,7 @@ module trains.play {
                 } else if (targetX > (cell.x + trains.play.gridSize)) {
                     targetX = cell.x + trains.play.gridSize + 0.001;
                 }
-                remainingSpeed = speed - Math.abs(coords.currentX-targetX);
+                remainingSpeed = speed + (((speed>0)?-1:1)* Math.abs(coords.currentX-targetX));
                 return {
                     coords: {
                         currentX: targetX,
@@ -202,7 +202,8 @@ module trains.play {
                     } else if (x > cell.x + trains.play.gridSize) {
                         x = cell.x + trains.play.gridSize + 0.001;
                     }
-                    remainingSpeed = speed - Math.abs(coords.currentX-x);
+
+                    remainingSpeed = speed + (((speed>0)?-1:1)* Math.abs(coords.currentX-x));;
                 }
                 else {
 
@@ -213,7 +214,7 @@ module trains.play {
                     } else if (y > cell.y + trains.play.gridSize) {
                         y = cell.y + trains.play.gridSize + 0.001;
                     }
-                    remainingSpeed = speed - Math.abs(coords.currentY-y);
+                    remainingSpeed = speed + (((speed>0)?-1:1)* Math.abs(coords.currentY-y));
                 }
                 return {
                     coords: {
@@ -268,7 +269,7 @@ module trains.play {
                 newAngle = (angleSector + (Math.PI / 2)) + 0.001;
             }
             //Using the relationship lengthOfArc=angle*radius, we can use the change in angle to calculate speed
-            remainingSpeed = speed-(Math.abs(angle-newAngle)*(trains.play.gridSize / 2));
+            remainingSpeed = speed + (((speed>0)?-1:1)*(Math.abs(angle-newAngle)*(trains.play.gridSize / 2)));
 
             //Add 90 degrees because I abused atan2 in a bad way
             //TODO: fix this plx
@@ -301,7 +302,7 @@ module trains.play {
 
             if (translate) {
                 context.translate(x, y);
-                context.rotate(angle * -1);
+                context.rotate((angle * -1) +((this.imageReverse<0)?Math.PI:0));
             }
             else {
                 context.translate(play.gridSize / 2, play.gridSize / 2);
@@ -324,7 +325,7 @@ module trains.play {
             var angle = Math.atan2(this.coords.previousX - x, this.coords.previousY - y);
             context.save();
             context.translate(x, y);
-            context.rotate(angle * -1);
+            context.rotate((angle * -1) +((this.imageReverse<0)?Math.PI:0));
             trains.play.TrainRenderer.DrawChoochooLights(context);
             context.restore();
         }
@@ -332,7 +333,11 @@ module trains.play {
         public isTrainHere(column:number, row:number):boolean {
             var myColumn = GameBoard.getGridCoord(this.coords.currentX);
             var myRow = GameBoard.getGridCoord(this.coords.currentY);
-            return column === myColumn && row === myRow;
+            if(this.carriage !== undefined) {
+                return ((column === myColumn && row === myRow) || this.carriage.isTrainHere(column,row));
+            }else{
+                return column === myColumn && row === myRow;
+            }
         }
 
         public wreckYourself():boolean {
@@ -340,12 +345,12 @@ module trains.play {
         }
         public drawLink(context:CanvasRenderingContext2D):void{
             var sp1 = (trains.play.gridSize/2)/Math.sqrt(Math.pow(this.coords.currentX-this.coords.previousX,2)+Math.pow(this.coords.currentY-this.coords.previousY,2));
-            var x1 = this.coords.currentX - ((this.coords.currentX-this.coords.previousX)*sp1);
-            var y1 = this.coords.currentY - ((this.coords.currentY-this.coords.previousY)*sp1);
+            var x1 = this.coords.currentX - ((this.coords.currentX-this.coords.previousX)*sp1*this.imageReverse);
+            var y1 = this.coords.currentY - ((this.coords.currentY-this.coords.previousY)*sp1*this.imageReverse);
 
             var sp2 =(trains.play.gridSize/2)/Math.sqrt(Math.pow(this.carriage.coords.currentX-this.carriage.coords.previousX,2)+Math.pow(this.carriage.coords.currentY-this.carriage.coords.previousY,2));
-            var x2 = this.carriage.coords.currentX + ((this.carriage.coords.currentX-this.carriage.coords.previousX)*sp2);
-            var y2 = this.carriage.coords.currentY + ((this.carriage.coords.currentY-this.carriage.coords.previousY)*sp2);
+            var x2 = this.carriage.coords.currentX + ((this.carriage.coords.currentX-this.carriage.coords.previousX)*sp2*this.imageReverse);
+            var y2 = this.carriage.coords.currentY + ((this.carriage.coords.currentY-this.carriage.coords.previousY)*sp2*this.imageReverse);
 
 
             context.save();
@@ -369,6 +374,12 @@ module trains.play {
 
             this.coords.previousX = x1;
             this.coords.previousY = y1;
+            //Woo!
+            this.imageReverse *= -1;
+            if(this.carriage !== undefined)
+            {
+                this.carriage.turnTheBeatAround();
+            }
         }
 
         public clashOfTheTitans(train1:Train, train2:Train) {

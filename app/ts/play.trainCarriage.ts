@@ -22,7 +22,7 @@ module trains.play {
 
             if (translate) {
                 context.translate(x, y);
-                context.rotate(angle * -1);
+                context.rotate((angle * -1) +((this.imageReverse<0)?Math.PI:0));
             }
             else {
                 context.translate(play.gridSize / 2, play.gridSize / 2);
