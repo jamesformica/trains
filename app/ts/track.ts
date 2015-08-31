@@ -13,37 +13,31 @@ module trains.play {
 
             switch (this.direction) {
                 case trains.play.Direction.Horizontal: {
-                    var neighbours = GameBoard.getNeighbouringCells(this.column, this.row);
+                    var neighbours = this.board.getNeighbouringCells(this.column, this.row);
                     trains.play.CellRenderer.drawStraightTrack(context, neighbours.left === undefined, neighbours.right === undefined);
                     break;
                 }
                 case trains.play.Direction.Vertical: {
-                    var neighbours = GameBoard.getNeighbouringCells(this.column, this.row);
+                    var neighbours = this.board.getNeighbouringCells(this.column, this.row);
                     context.translate(trains.play.gridSize, 0);
                     context.rotate(Math.PI / 2);
                     trains.play.CellRenderer.drawStraightTrack(context, neighbours.up === undefined, neighbours.down === undefined);
                     break;
                 }
                 case trains.play.Direction.LeftUp: {
-                    trains.play.CellRenderer.drawCurvedTrack(context);
+                    this.leftUp(context);
                     break;
                 }
                 case trains.play.Direction.LeftDown: {
-                    context.translate(0, trains.play.gridSize);
-                    context.rotate(Math.PI * 1.5);
-                    trains.play.CellRenderer.drawCurvedTrack(context);
+                    this.leftDown(context);
                     break;
                 }
                 case trains.play.Direction.RightUp: {
-                    context.translate(trains.play.gridSize, 0);
-                    context.rotate(Math.PI / 2);
-                    trains.play.CellRenderer.drawCurvedTrack(context);
+                    this.rightUp(context);
                     break;
                 }
                 case trains.play.Direction.RightDown: {
-                    context.translate(trains.play.gridSize, trains.play.gridSize);
-                    context.rotate(Math.PI);
-                    trains.play.CellRenderer.drawCurvedTrack(context);
+                    this.rightDown(context);
                     break;
                 }
                 case trains.play.Direction.Cross: {
@@ -106,10 +100,10 @@ module trains.play {
             } else {
                 this.direction = this.direction + 1;
             }
-            this.draw(GameBoard.trackContext);
-            var neighbours = GameBoard.getNeighbouringCells(this.column, this.row, true);
+            this.draw(this.board.trackContext);
+            var neighbours = this.board.getNeighbouringCells(this.column, this.row, true);
             neighbours.all.forEach((neighbour) => {
-                neighbour.draw(GameBoard.trackContext);
+                neighbour.draw(this.board.trackContext);
             });
         }
     }
