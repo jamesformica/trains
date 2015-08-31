@@ -65,6 +65,14 @@ module trains.play {
                 this.carriage.coords.previousY = this.carriage.coords.currentY + (-10 * this.magicBullshitCompareTo(this.carriage.coords.currentY, this.carriage.coords.previousY));
             }
         }
+        
+        public removeEndCarriage(parent: trains.play.Train): void {
+            if (this.carriage !== undefined) {
+                return this.carriage.removeEndCarriage(this);
+            } else {
+                parent.carriage = undefined;
+            }
+        }
 
         public chooChooMotherFucker(speed: number, checkCollision: boolean = true): void {
             if (this.trainSpeed === 0) return;

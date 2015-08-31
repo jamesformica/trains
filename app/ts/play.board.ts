@@ -464,6 +464,10 @@ module trains.play {
                         this.selectedTrain.spawnCarriage();
                         break;
                     }
+                    case "removecarriage": {
+                        this.selectedTrain.removeEndCarriage(this.selectedTrain);
+                        break;
+                    }
                     case "turnaround": {
                         this.selectedTrain.turnTheBeatAround();
                         break;
