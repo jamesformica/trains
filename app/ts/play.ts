@@ -20,13 +20,16 @@ module trains.play {
 
             var top = ($(window).height() - trains.play.GameBoard.canvasHeight) / 2;
             var left = ($(window).width() - trains.play.GameBoard.canvasWidth) / 2;
+            
+            $('body').height($(window).height());
             this.playComponents.$trackButtons.css("top", top);
-            this.playComponents.$trainButtons.css("top", top).css("right", left);
+            this.playComponents.$trainButtons.css("top", 15).css("right", 15);
             this.playComponents.$mute.width(left);
             this.playComponents.$autosave.width(left);
 
             this.playComponents.$trainButtons.draggable({
-                handle: '.ui-handle'
+                handle: '.ui-handle',
+                containment: 'body'
             });
 
             this.AttachEvents();
