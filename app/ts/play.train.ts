@@ -80,7 +80,7 @@ module trains.play {
             speed *= this.trainSpeed;
             //Super small speeds cause MAJOR problems with the game loop.
             // First occurrence of this bug, speed was 1.13e-14!!!!!
-            while (Math.abs(speed) > 0.00001) {
+            while (speed > 0.00001) {
                 var column = GameBoard.getGridCoord(this.coords.currentX);
                 var row = GameBoard.getGridCoord(this.coords.currentY);
                 var cell = GameBoard.getCell(column, row);
@@ -111,8 +111,8 @@ module trains.play {
 
         public slowYourRoll(): void {
             this.trainSpeed--;
-            if (this.trainSpeed < (-1 * play.gridSize)) {
-                this.trainSpeed = (-1 * play.gridSize);
+            if (this.trainSpeed < 1) {
+                this.trainSpeed = 1;
             }
         }
 
