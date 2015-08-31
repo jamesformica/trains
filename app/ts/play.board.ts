@@ -458,6 +458,10 @@ module trains.play {
                         }
                         break;
                     }
+                    case "spawncarriage": {
+                        this.selectedTrain.spawnCarriage();
+                        break;
+                    }
                     case "turnaround": {
                         this.selectedTrain.turnTheBeatAround();
                         break;

@@ -3,20 +3,25 @@
 /// <reference path="play.board.renderer.ts" />
 /// <reference path="play.train.renderer.ts" />
 /// <reference path="util.ts" />
+/// <reference path="play.trainCarriage.ts" />
 
 module trains.play {
 
     export class Train {
 
-        private defaultSpeed = 2;
+        public defaultSpeed = 2;
 
         public coords:trains.play.TrainCoords;
 
-        private trainColourIndex:number;
+        public trainColourIndex:number;
 
         public name:string;
 
-        private trainSpeed:number = this.defaultSpeed;
+        public trainSpeed:number = this.defaultSpeed;
+
+        public carriage:trains.play.TrainCarriage;
+
+        public carriagePadding:number = 5;
 
         constructor(public id:number, cell:Cell) {
             if (cell !== undefined) {
@@ -37,8 +42,28 @@ module trains.play {
             }
         }
 
-        public chooChooMotherFucker(speed:number):void {
+        public spawnCarriage():void
+        {
+            if(this.carriage !== undefined) {
+                this.carriage.spawnCarriage();
+            }else {
+                this.carriage = new TrainCarriage(-1, undefined);
+                this.carriage.coords = {
+                    currentX: this.coords.currentX,
+                    currentY: this.coords.currentY,
+                    previousX: this.coords.currentX + (-10 * this.magicBullshitCompareTo(this.coords.currentX, this.coords.previousX)),
+                    previousY: this.coords.currentY + (-10 * this.magicBullshitCompareTo(this.coords.currentY, this.coords.previousY))
+                    };
+                this.carriage.trainColourIndex = this.trainColourIndex;
+                this.carriage.chooChooMotherFucker(this.carriagePadding + (trains.play.gridSize/2));
+                this.carriage.coords.previousX = this.carriage.coords.currentX + (-10 * this.magicBullshitCompareTo(this.carriage.coords.currentX, this.carriage.coords.previousX));
+                this.carriage.coords.previousY = this.carriage.coords.currentY + (-10 * this.magicBullshitCompareTo(this.carriage.coords.currentY, this.carriage.coords.previousY));
+            }
+        }
+
+        public chooChooMotherFucker(speed:number, checkCollision:boolean = true):void {
             if (this.trainSpeed === 0) return;
+            var baseSpeed = speed;
             speed *= this.trainSpeed;
             while (speed > 0) {
                 var column = GameBoard.getGridCoord(this.coords.currentX);
@@ -56,7 +81,13 @@ module trains.play {
                 }
                 else break;
             }
-            this.wreckYourself();
+            if(this.carriage!==undefined){
+                this.carriage.trainSpeed = this.trainSpeed;
+                this.carriage.chooChooMotherFucker(baseSpeed, false);
+            }
+            if(checkCollision) {
+                this.wreckYourself();
+            }
         }
 
         public slowYourRoll():void {
@@ -279,6 +310,12 @@ module trains.play {
             trains.play.TrainRenderer.DrawChoochoo(context, this.trainColourIndex);
 
             context.restore();
+
+            if((this.carriage !== undefined)&&translate)
+            {
+                this.carriage.draw(context,translate);
+                this.drawLink(context);
+            }
         }
 
         public drawLighting(context:CanvasRenderingContext2D):void {
@@ -300,6 +337,27 @@ module trains.play {
 
         public wreckYourself():boolean {
             return GameBoard.trains.some(t => t.clashOfTheTitans(t, this));
+        }
+        public drawLink(context:CanvasRenderingContext2D):void{
+            var sp1 = (trains.play.gridSize/2)/Math.sqrt(Math.pow(this.coords.currentX-this.coords.previousX,2)+Math.pow(this.coords.currentY-this.coords.previousY,2));
+            var x1 = this.coords.currentX - ((this.coords.currentX-this.coords.previousX)*sp1);
+            var y1 = this.coords.currentY - ((this.coords.currentY-this.coords.previousY)*sp1);
+
+            var sp2 =(trains.play.gridSize/2)/Math.sqrt(Math.pow(this.carriage.coords.currentX-this.carriage.coords.previousX,2)+Math.pow(this.carriage.coords.currentY-this.carriage.coords.previousY,2));
+            var x2 = this.carriage.coords.currentX + ((this.carriage.coords.currentX-this.carriage.coords.previousX)*sp2);
+            var y2 = this.carriage.coords.currentY + ((this.carriage.coords.currentY-this.carriage.coords.previousY)*sp2);
+
+
+            context.save();
+            context.lineWidth = 3;
+            context.strokeStyle = "#454545";
+            context.beginPath();
+
+            context.moveTo(x1, y1);
+            context.lineTo(x2, y2);
+
+            context.stroke();
+            context.restore();
         }
 
         public turnTheBeatAround(): void {

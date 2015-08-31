@@ -57,7 +57,7 @@ module trains.play.TrainRenderer {
         context.beginPath();
         var leftLightGradient = context.createRadialGradient(leftX, frontY - bumperPoke, lightFalloffDistance, leftX, frontY - bumperPoke, lightDistance);
         leftLightGradient.addColorStop(0, "#BBBBBB");
-        leftLightGradient.addColorStop(1, "#000000");
+        leftLightGradient.addColorStop(1, 'rgba(187,187,187,0)');
         context.fillStyle = leftLightGradient;
         context.moveTo(0, frontY - bumperPoke);
         context.lineTo(0 - xOffset, (frontY - bumperPoke) - lightDistance);
@@ -94,6 +94,19 @@ module trains.play.TrainRenderer {
 		DrawBumpers(context, true);
 		DrawBumpers(context, false);
 	}
+
+    export function DrawCarriage(context: CanvasRenderingContext2D, shaftColourIndex: number): void {
+
+        var shaftColour = trainColours[shaftColourIndex];
+        if (shaftColourIndex === -1) {
+            shaftColour = trainColours[GetRandomShaftColour()];
+        }
+        context.fillStyle = baseColour;
+        context.fillRect(leftX, frontY, trainWidth, trainLength);
+
+        context.fillStyle = GetShaftFillStyle(context, shaftColour[0], shaftColour[1]);
+        context.fillRect(shaftX, shaftY, shaftWidth, shaftLength-shaftPadding);
+    }
 
 	function GetRoofFillStyle(context: CanvasRenderingContext2D, firstColour: string, secondColour: string): CanvasGradient {
 		var x2 = roofX + roofWidth;
