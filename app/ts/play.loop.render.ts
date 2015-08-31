@@ -1,6 +1,7 @@
 /// <reference path="play.board.ts" />
 /// <reference path="play.train.ts" />
 /// <reference path="play.baseloop.ts" />
+/// <reference path="play.particle.smoke.ts" />
 
 module trains.play {
     export class RenderLoop extends Loop {
@@ -45,6 +46,9 @@ module trains.play {
                         t.draw(this.board.trainLogoContext, false);
                     }
                 });
+            }
+            if (this.board.smokeParticleSystem.length > 0){
+                this.board.smokeParticleSystem.forEach(x=> x.Draw(this.board.trainContext));
             }
 
             this.board.trainContext.save();

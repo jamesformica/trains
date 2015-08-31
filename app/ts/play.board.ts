@@ -8,6 +8,7 @@
 /// <reference path="play.loop.game.ts" />
 /// <reference path="play.loop.render.ts" />
 /// <reference path="audio.ts" />
+/// <reference path="play.particle.smoke.ts" />
 
 module trains.play {
 
@@ -48,6 +49,7 @@ module trains.play {
         
         private trainIDCounter = 0;
         public trains = new Array<trains.play.Train>();
+        public smokeParticleSystem = new Array<ParticleSmoke>();
         public selectedTrain: trains.play.Train;
         private gameRunningState = true;
         private player: trains.audio.Player;

@@ -24,6 +24,8 @@ module trains.play {
 
         public carriagePadding:number = 5;
 
+        public nextSmoke = 0;
+
         constructor(public id:number, cell:Cell) {
             if (cell !== undefined) {
                 this.coords = {
@@ -87,6 +89,14 @@ module trains.play {
             }
             if(checkCollision) {
                 this.wreckYourself();
+            }
+            if(this.nextSmoke < GameBoard.gameLoop.gameTimeElapsed)
+            {
+                var p = new ParticleSmoke();
+                p.x = this.coords.currentX;
+                p.y = this.coords.currentY;
+                GameBoard.smokeParticleSystem.push(p);
+                this.nextSmoke = GameBoard.gameLoop.gameTimeElapsed + (Math.random()*125) + 475;
             }
         }
 
@@ -243,10 +253,10 @@ module trains.play {
             // We then call zeroIncrement which adds 0.001 to the value if === 0.
             // Read up on acos/asin/atan and x,y=0, we don't want any infinities here!
             // Finally we cheat and use atan2 to find the angle.
-            var angle = Math.atan2(this.zeroIncrement((coords.currentX - cell.x) - xOffset), this.zeroIncrement((coords.currentY - cell.y) - yOffset));
+            var angle = Math.atan2(this.zeroIncrement((coords.currentY - cell.y) - yOffset),this.zeroIncrement((coords.currentX - cell.x) - xOffset));
 
             //Same thing again to find the last angle
-            var angleLast = Math.atan2(this.zeroIncrement((coords.previousX - cell.x) - xOffset), this.zeroIncrement((coords.previousY - cell.y) - yOffset));
+            var angleLast = Math.atan2(this.zeroIncrement((coords.previousY - cell.y) - yOffset),this.zeroIncrement((coords.previousX - cell.x) - xOffset));
 
             //Using magicBullshit we find the direction.
             // We then multiply by -1 if the difference between the 2 angles in greater than Math.PI
@@ -269,11 +279,11 @@ module trains.play {
                 newAngle = (angleSector + (Math.PI / 2)) + 0.001;
             }
             //Using the relationship lengthOfArc=angle*radius, we can use the change in angle to calculate speed
-            remainingSpeed = speed + (((speed>0)?-1:1)*(Math.abs(angle-newAngle)*(trains.play.gridSize / 2)));
+            remainingSpeed = speed + (((speed>=0)?-1:1)*(Math.abs(angle-newAngle)*(trains.play.gridSize / 2)));
 
             //Add 90 degrees because I abused atan2 in a bad way
             //TODO: fix this plx
-            newAngle = (Math.PI / 2) - newAngle;
+            //newAngle = (Math.PI / 2) - newAngle;
 
             //Finally use the radius, angle, and offset to find the new coords
             var xOffsetFromGridNew = ((trains.play.gridSize / 2) * Math.cos(newAngle)) + xOffset;
