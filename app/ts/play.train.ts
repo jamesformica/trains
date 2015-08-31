@@ -58,7 +58,7 @@ module trains.play {
                     previousY: this.coords.currentY + (-10 * this.magicBullshitCompareTo(this.coords.currentY, this.coords.previousY))
                     };
                 this.carriage.trainColourIndex = this.trainColourIndex;
-                this.carriage.chooChooMotherFucker(this.carriagePadding + (trains.play.gridSize/2));
+                this.carriage.chooChooMotherFucker(this.carriagePadding + (trains.play.gridSize/2),false);
                 this.carriage.coords.previousX = this.carriage.coords.currentX + (-10 * this.magicBullshitCompareTo(this.carriage.coords.currentX, this.carriage.coords.previousX));
                 this.carriage.coords.previousY = this.carriage.coords.currentY + (-10 * this.magicBullshitCompareTo(this.carriage.coords.currentY, this.carriage.coords.previousY));
             }
@@ -90,8 +90,7 @@ module trains.play {
             if(checkCollision) {
                 this.wreckYourself();
             }
-            if(this.nextSmoke < GameBoard.gameLoop.gameTimeElapsed)
-            {
+            if(checkCollision &&(this.nextSmoke < GameBoard.gameLoop.gameTimeElapsed)){
                 var p = new ParticleSmoke();
                 p.x = this.coords.currentX;
                 p.y = this.coords.currentY;
