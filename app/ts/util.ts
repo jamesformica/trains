@@ -1,3 +1,5 @@
+/// <reference path="../types/jqueryui.d.ts" />
+
 module trains.util {
 
 	var adjectives: Array<string> = [
@@ -50,5 +52,11 @@ module trains.util {
 	export function toBoolean(value: string): boolean {
 		if (value === "true") return true;
 		return false;
+	}
+	
+	export function selectButton($button: JQuery): void {
+		var $parent = $button.closest('ul');
+		$parent.find('button.selected').removeClass('selected');
+		$button.addClass('selected');
 	}
 }

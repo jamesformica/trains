@@ -58,6 +58,7 @@ module trains.play {
 
             this.playComponents.$trackButtons.find('button').click((event) => {
                 trains.play.GameBoard.trackControlClick(event.currentTarget);
+                trains.util.selectButton($(event.currentTarget));
             });
 
             this.playComponents.$mute.click(() => {
