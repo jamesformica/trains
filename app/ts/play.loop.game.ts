@@ -18,16 +18,14 @@ module trains.play {
                 this.board.trains.forEach(t=> t.chooChooMotherFucker(steps));
             }
             //Need to move this to a particle system
-            for(var i=0; i<this.board.smokeParticleSystem.length; i++)
-            {
-                if(this.board.smokeParticleSystem[i].IsDead())
-                {
-                    this.board.smokeParticleSystem.splice(i--,1);
-                }else{
+            for (var i = 0; i < this.board.smokeParticleSystem.length; i++) {
+                if (this.board.smokeParticleSystem[i].IsDead()) {
+                    this.board.smokeParticleSystem.splice(i--, 1);
+                } else {
                     this.board.smokeParticleSystem[i].Update(steps);
                 }
             }
-            if (this.board.smokeParticleSystem.length > 0){
+            if (this.board.smokeParticleSystem.length > 0) {
                 this.board.smokeParticleSystem.forEach(x=> x.Update(steps));
             }
         }

@@ -17,8 +17,8 @@ module trains.play {
         private timeoutId;
         //TODO: implement strictTiming
 
-        public startLoop():void {
-            if(this.timeoutId === undefined){
+        public startLoop(): void {
+            if (this.timeoutId === undefined) {
                 this.loopCallback();
             }
             this.loopRunning = true;
@@ -29,13 +29,11 @@ module trains.play {
         }
 
         public dispose(): void {
-            if(this.timeoutId === undefined){
-                try
-                {
+            if (this.timeoutId === undefined) {
+                try {
                     clearTimeout(this.timeoutId);
                 }
-                finally
-                {
+                finally {
                     this.timeoutId = undefined;
                 }
             }
@@ -43,9 +41,9 @@ module trains.play {
 
         private loopCallback(): void {
             this.timeoutId = undefined;
-            if(this.lastLoopEndTime!==undefined) {
+            if (this.lastLoopEndTime !== undefined) {
                 this.loopStartTime = new Date().getTime();
-                if(this.lastStartTime === 0) {
+                if (this.lastStartTime === 0) {
                     this.lastStartTime = this.loopStartTime;
                 }
                 if (this.loopRunning) {
@@ -58,7 +56,7 @@ module trains.play {
                 this.lastStartTime = this.loopStartTime;
             }
             this.lastLoopEndTime = new Date().getTime();
-            this.timeoutId = setTimeout(()=>this.loopCallback(),Math.max((1000/this.targetLoopsPerSecond) - this.lastDuration , this.minimumTimeout));
+            this.timeoutId = setTimeout(() => this.loopCallback(), Math.max((1000 / this.targetLoopsPerSecond) - this.lastDuration, this.minimumTimeout));
         }
 
         loopBody(): void {

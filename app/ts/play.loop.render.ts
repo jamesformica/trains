@@ -5,7 +5,7 @@
 
 module trains.play {
     export class RenderLoop extends Loop {
-        constructor(private board:trains.play.Board) {
+        constructor(private board: trains.play.Board) {
             super();
             this.targetLoopsPerSecond = 30;
         }
@@ -15,13 +15,13 @@ module trains.play {
         private dayCycleSpeedModifier = 0.6;
         private dayToNightRatio = 5 / 12; //5 of 12 are night
 
-        loopBody():void {
+        loopBody(): void {
             this.board.trainContext.clearRect(0, 0, this.board.trainCanvas.width, this.board.trainCanvas.height);
             this.board.lightingBufferContext.clearRect(0, 0, this.board.trainCanvas.width, this.board.trainCanvas.height);
 
             //Nighttime Daytime
             var diff = ((this.board.gameLoop.gameTimeElapsed / (1000 * this.dayCycleSpeedModifier)) + (this.msPerDayCycle / 2)) % this.msPerDayCycle;
-            if(this.board.cheat_alwaysNight) {
+            if (this.board.cheat_alwaysNight) {
                 diff = 0;
             }
             var r = (diff >= (this.msPerDayCycle / 2)) ? ((this.msPerDayCycle / 2) - diff) : 0;
@@ -47,7 +47,7 @@ module trains.play {
                     }
                 });
             }
-            if (this.board.smokeParticleSystem.length > 0){
+            if (this.board.smokeParticleSystem.length > 0) {
                 this.board.smokeParticleSystem.forEach(x=> x.Draw(this.board.trainContext));
             }
 
@@ -60,11 +60,11 @@ module trains.play {
             }
         }
 
-        private rgbToHex(r:number, g:number, b:number):string {
+        private rgbToHex(r: number, g: number, b: number): string {
             return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
         }
 
-        private drawDiagnostics(targetContext:CanvasRenderingContext2D):void {
+        private drawDiagnostics(targetContext: CanvasRenderingContext2D): void {
             targetContext.font = "10px Verdana";
             targetContext.fillText("To render: " + (this.lastDuration.toFixed(2)) + "ms (" + (this.averageLoopsPerSecond.toFixed(2)) + "ps)", 10, 10);
             targetContext.fillText("To logic: " + (this.board.gameLoop.lastDuration.toFixed(2)) + "ms (" + (this.board.gameLoop.averageLoopsPerSecond.toFixed(2)) + "ps)", 10, 24);

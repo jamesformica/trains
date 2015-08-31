@@ -105,7 +105,7 @@ module trains.play.TrainRenderer {
         context.fillRect(leftX, frontY, trainWidth, trainLength);
 
         context.fillStyle = GetShaftFillStyle(context, shaftColour[0], shaftColour[1]);
-        context.fillRect(shaftX, shaftY, shaftWidth, shaftLength-shaftPadding);
+        context.fillRect(shaftX, shaftY, shaftWidth, shaftLength - shaftPadding);
     }
 
 	function GetRoofFillStyle(context: CanvasRenderingContext2D, firstColour: string, secondColour: string): CanvasGradient {

@@ -2,7 +2,7 @@
 
 module trains.logo {
 
-    export function InitialiseLogo($container: JQuery):void {
+    export function InitialiseLogo($container: JQuery): void {
 
         var outClass = 'fadeOutLeft';
         var inClass = 'fadeInRight';

@@ -20,7 +20,7 @@ module trains.play {
         draw(context: CanvasRenderingContext2D): void {
             throw new Error("This method is abstract.. no really.. come on.. just pretend! It will be fun I promise.");
         }
-                
+
         turnAroundBrightEyes(): void {
             throw new Error("abstract");
         }
@@ -40,7 +40,7 @@ module trains.play {
 
         crossTheRoad(): boolean {
             var neighbours = GameBoard.getNeighbouringCells(this.column, this.row, true);
-            
+
             return neighbours.all.some(c => {
                 var myNeighbours = GameBoard.getNeighbouringCells(c.column, c.row, true);
                 if (myNeighbours.all.length < 4) return false;
@@ -56,11 +56,11 @@ module trains.play {
                 c.draw(GameBoard.trackContext);
                 myNeighbours = GameBoard.getNeighbouringCells(c.column, c.row);
                 myNeighbours.all.forEach(c2=> c2.checkYourself());
-                
+
                 return true;
             });
         }
-        
+
         determineDirection(neighbours: trains.play.NeighbouringCells): boolean {
             if (this.happy) return false;
 
@@ -70,12 +70,12 @@ module trains.play {
             }
 
             else if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.up !== undefined) {
-                if (neighbours.down !== undefined){
+                if (neighbours.down !== undefined) {
                     newDirection = trains.play.Direction.LeftUpLeftDown;
                 }
-                else{
+                else {
                     newDirection = trains.play.Direction.LeftUp;
-                }              
+                }
             }
 
             else if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.down !== undefined) {
@@ -83,12 +83,11 @@ module trains.play {
             }
 
             else if (neighbours.left === undefined && neighbours.right !== undefined && neighbours.up !== undefined) {
-                if (neighbours.down !== undefined){
-                     newDirection = trains.play.Direction.RightDownLeftDown; // last one
+                if (neighbours.down !== undefined) {
+                    newDirection = trains.play.Direction.RightDownRightUp; // last one
                 }
-                else
-                {
-                    newDirection = trains.play.Direction.RightUp;    
+                else {
+                    newDirection = trains.play.Direction.RightUp;
                 }
             }
 
@@ -97,17 +96,17 @@ module trains.play {
             }
             // greedy vertical and horizontal joins    
             else if (neighbours.up !== undefined && neighbours.down !== undefined) {
-                newDirection = trains.play.Direction.Vertical;    
+                newDirection = trains.play.Direction.Vertical;
             }
             else if (neighbours.left !== undefined && neighbours.right !== undefined) {
-                if (neighbours.up !== undefined){
+                if (neighbours.up !== undefined) {
                     newDirection = trains.play.Direction.LeftUpRightUp;
                 }
-                else if (neighbours.down !== undefined){
-                     newDirection = trains.play.Direction.RightDownRightUp; 
+                else if (neighbours.down !== undefined) {
+                    newDirection = trains.play.Direction.RightDownLeftDown;
                 }
                 else {
-                    newDirection = trains.play.Direction.Horizontal;    
+                    newDirection = trains.play.Direction.Horizontal;
                 }
             }
             // now less fussy vertical and horizontal joins    
@@ -139,21 +138,21 @@ module trains.play {
         isConnectedDown(): boolean {
             return this.direction === Direction.Vertical ||
                 this.direction === Direction.LeftDown ||
-                this.direction === Direction.RightDown||
+                this.direction === Direction.RightDown ||
                 this.direction === Direction.Cross;
         }
 
         isConnectedLeft(): boolean {
             return this.direction === Direction.Horizontal ||
                 this.direction === Direction.LeftUp ||
-                this.direction === Direction.LeftDown||
+                this.direction === Direction.LeftDown ||
                 this.direction === Direction.Cross;
         }
 
         isConnectedRight(): boolean {
             return this.direction === Direction.Horizontal ||
                 this.direction === Direction.RightDown ||
-                this.direction === Direction.RightUp||
+                this.direction === Direction.RightUp ||
                 this.direction === Direction.Cross;
         }
 

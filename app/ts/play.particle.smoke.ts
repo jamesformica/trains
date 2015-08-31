@@ -30,11 +30,11 @@ module trains.play {
             super();
         }
 
-        public Update(lifeSteps:number):void {
+        public Update(lifeSteps: number): void {
             super.Update(lifeSteps);
         }
 
-        public Draw(context:CanvasRenderingContext2D):void {
+        public Draw(context: CanvasRenderingContext2D): void {
             context.save();
             context.translate(this.x, this.y);
             context.rotate(this.angle);

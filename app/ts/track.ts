@@ -48,23 +48,35 @@ module trains.play {
                     break;
                 }
                 case trains.play.Direction.LeftUpLeftDown: {
+                    context.save();
                     this.leftUp(context);
+                    context.restore();
                     this.leftDown(context);
+                    context.restore();
                     break;
                 }
                 case trains.play.Direction.LeftUpRightUp: {
+                    context.save();
                     this.leftUp(context);
+                    context.restore();
                     this.rightUp(context);
+                    context.restore();
                     break;   
                 }
                 case trains.play.Direction.RightDownRightUp: {
+                    context.save();
                     this.rightDown(context);
+                    context.restore();
                     this.rightUp(context);
+                    context.restore();
                     break;
                 }
                 case trains.play.Direction.RightDownLeftDown: {
+                    context.save();
                     this.rightDown(context);
+                    context.restore();
                     this.leftDown(context);
+                    context.restore();
                     break;
                 }
             }
@@ -95,7 +107,7 @@ module trains.play {
         
 
         turnAroundBrightEyes(): void {
-            if (this.direction === trains.play.Direction.Cross) {
+            if (this.direction === trains.play.Direction.RightDownLeftDown) {
                 this.direction = trains.play.Direction.Vertical;
             } else {
                 this.direction = this.direction + 1;
