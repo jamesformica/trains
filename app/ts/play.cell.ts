@@ -209,25 +209,25 @@ module trains.play {
                     }
                 } else if (this.direction === Direction.LeftUpRightUp) {
                     if (lastCell !== undefined && lastCell.isConnectedLeft() && neighbours.left === this) {
-                        return Direction.LeftUp;
-                    } else if (lastCell !== undefined && lastCell.isConnectedRight() && neighbours.right === this) {
                         return Direction.RightUp;
+                    } else if (lastCell !== undefined && lastCell.isConnectedRight() && neighbours.right === this) {
+                        return Direction.LeftUp;
                     } else {
                         return flip ? Direction.LeftUp : Direction.RightUp;
                     }
                 } else if (this.direction === Direction.RightDownLeftDown) {
                     if (lastCell !== undefined && lastCell.isConnectedLeft() && neighbours.left === this) {
-                        return Direction.LeftDown;
-                    } else if (lastCell !== undefined && lastCell.isConnectedRight() && neighbours.right === this) {
                         return Direction.RightDown;
+                    } else if (lastCell !== undefined && lastCell.isConnectedRight() && neighbours.right === this) {
+                        return Direction.LeftDown;
                     } else {
                         return flip ? Direction.LeftDown : Direction.RightDown;
                     }
                 } else if (this.direction === Direction.RightDownRightUp) {
                     if (lastCell !== undefined && lastCell.isConnectedDown() && neighbours.down === this) {
-                        return Direction.RightDown;
-                    } else if (lastCell !== undefined && lastCell.isConnectedUp() && neighbours.up === this) {
                         return Direction.RightUp;
+                    } else if (lastCell !== undefined && lastCell.isConnectedUp() && neighbours.up === this) {
+                        return Direction.RightDown;
                     }
                     else {
                         return flip ? Direction.RightUp : Direction.RightDown;
