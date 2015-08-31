@@ -193,6 +193,49 @@ module trains.play {
                 }
             }, 10);
         }
+
+        public getDirectionToUse(lastCell: Cell): Direction {
+            if (lastCell !== undefined) {
+                var flip = (Math.random() > 0.5); // flip a coin, or TODO use the set value of the switch on this cell
+                var neighbours = GameBoard.getNeighbouringCells(lastCell.column, lastCell.row);
+                if (this.direction === Direction.LeftUpLeftDown) {
+                    if (lastCell !== undefined && lastCell.isConnectedDown() && neighbours.down === this) {
+                        return Direction.LeftUp;
+                    } else if (lastCell !== undefined && lastCell.isConnectedUp() && neighbours.up === this) {
+                        return Direction.LeftDown;
+                    }
+                    else {
+                        return flip ? Direction.LeftUp : Direction.LeftDown;
+                    }
+                } else if (this.direction === Direction.LeftUpRightUp) {
+                    if (lastCell !== undefined && lastCell.isConnectedLeft() && neighbours.left === this) {
+                        return Direction.LeftUp;
+                    } else if (lastCell !== undefined && lastCell.isConnectedRight() && neighbours.right === this) {
+                        return Direction.RightUp;
+                    } else {
+                        return flip ? Direction.LeftUp : Direction.RightUp;
+                    }
+                } else if (this.direction === Direction.RightDownLeftDown) {
+                    if (lastCell !== undefined && lastCell.isConnectedLeft() && neighbours.left === this) {
+                        return Direction.LeftDown;
+                    } else if (lastCell !== undefined && lastCell.isConnectedRight() && neighbours.right === this) {
+                        return Direction.RightDown;
+                    } else {
+                        return flip ? Direction.LeftDown : Direction.RightDown;
+                    }
+                } else if (this.direction === Direction.RightDownRightUp) {
+                    if (lastCell !== undefined && lastCell.isConnectedDown() && neighbours.down === this) {
+                        return Direction.RightDown;
+                    } else if (lastCell !== undefined && lastCell.isConnectedUp() && neighbours.up === this) {
+                        return Direction.RightUp;
+                    }
+                    else {
+                        return flip ? Direction.RightUp : Direction.RightDown;
+                    }
+                }
+            }
+            return this.direction;
+        }
     }
 
     export interface TrainCoords {

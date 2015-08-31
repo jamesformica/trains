@@ -65,7 +65,7 @@ module trains.play {
                 this.carriage.coords.previousY = this.carriage.coords.currentY + (-10 * this.magicBullshitCompareTo(this.carriage.coords.currentY, this.carriage.coords.previousY));
             }
         }
-        
+
         public removeEndCarriage(parent: trains.play.Train): void {
             if (this.carriage !== undefined) {
                 return this.carriage.removeEndCarriage(this);
@@ -138,6 +138,11 @@ module trains.play {
         }
 
         getNewCoordsForTrain(cell: Cell, coords: trains.play.TrainCoords, speed: number): TrainCoordsResult {
+            if (this.lastCell !== cell) {
+                this.directionToUse = cell.getDirectionToUse(this.lastCell);
+                this.lastCell = cell;
+            }
+            
             //So, here it goes, some notes on how this all works.
             //This needs a MAJOR rewrite, moving duplicate code out into helpers and refactoring.
             //Also, there are some equations that can be simplified, will slowly fix them up.
@@ -146,8 +151,7 @@ module trains.play {
             var remainingSpeed = 0;
 
             //Lets go vertical
-            if (cell.direction === trains.play.Direction.Vertical) {
-                this.lastCell = cell;
+            if (this.directionToUse === trains.play.Direction.Vertical) {
                 //Compare our previous & current Y using magicBullshit to find direction,
                 // multiply it by our speed, and add it to our current Y pos to find our biggest move
                 var targetY = coords.currentY + (speed * this.magicBullshitCompareTo(coords.previousY, coords.currentY));
@@ -179,8 +183,7 @@ module trains.play {
                     remainingSpeed: remainingSpeed
                 };
             }
-            else if (cell.direction === trains.play.Direction.Horizontal) {
-                this.lastCell = cell;
+            else if (this.directionToUse === trains.play.Direction.Horizontal) {
                 //This is the same as vertical, just modifying X instead.
                 var targetX = coords.currentX + (speed * this.magicBullshitCompareTo(coords.previousX, coords.currentX));
                 if (targetX < cell.x) {
@@ -199,8 +202,7 @@ module trains.play {
                     remainingSpeed: remainingSpeed
                 };
             }
-            else if (cell.direction === trains.play.Direction.Cross) {
-                this.lastCell = cell;
+            else if (this.directionToUse === trains.play.Direction.Cross) {
                 //Dirty rewrite, but it works, basically the same as horizontal/vertical
                 // Find our change in X/Y
                 var deltaX = Math.abs(coords.currentX - coords.previousX);
@@ -254,34 +256,6 @@ module trains.play {
             //  For LeftDown, the centre of the circle is 0,gridSize
             //  For RightUp, the centre is gridSize,0
             //  For RightDown, the centre is gridSize,gridSize
-          
-            if (this.lastCell !== cell) {
-                this.directionToUse = cell.direction;
-                var flip = (Math.random() > 0.5);
-                if (this.directionToUse === Direction.LeftUpLeftDown) {
-                    if (this.lastCell !== undefined && (this.lastCell.isConnectedDown() || this.lastCell.isConnectedUp())) {
-                        flip = this.coords.previousY < this.coords.currentY;
-                    }
-                    this.directionToUse = flip ? Direction.LeftUp : Direction.LeftDown;
-                } else if (this.directionToUse === Direction.LeftUpRightUp) {
-                    if (this.lastCell !== undefined && (this.lastCell.isConnectedLeft() || this.lastCell.isConnectedRight())) {
-                        flip = this.coords.previousX < this.coords.currentX;
-                    }
-                    this.directionToUse = flip ? Direction.LeftUp : Direction.RightUp;
-                } else if (this.directionToUse === Direction.RightDownLeftDown) {
-                    if (this.lastCell !== undefined && (this.lastCell.isConnectedLeft() || this.lastCell.isConnectedRight())) {
-                        flip = this.coords.previousX > this.coords.currentX;
-                    }
-                    this.directionToUse = flip ? Direction.RightDown : Direction.LeftDown;
-                } else if (this.directionToUse === Direction.RightDownRightUp) {
-                    if (this.lastCell !== undefined && (this.lastCell.isConnectedDown() || this.lastCell.isConnectedUp())) {
-                        flip = this.coords.previousY > this.coords.currentY;
-                    }
-                    this.directionToUse = flip ? Direction.RightDown : Direction.RightUp;
-                }
-                this.lastCell = cell;
-            }
-
             var yOffset = (this.directionToUse === trains.play.Direction.LeftDown || this.directionToUse === trains.play.Direction.RightDown) ? trains.play.gridSize : 0;
             var xOffset = (this.directionToUse === trains.play.Direction.RightUp || this.directionToUse === trains.play.Direction.RightDown) ? trains.play.gridSize : 0;
 
