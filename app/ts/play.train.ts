@@ -11,22 +11,25 @@ module trains.play {
 
         public defaultSpeed = 2;
 
-        public coords:trains.play.TrainCoords;
+        public coords: trains.play.TrainCoords;
 
-        public trainColourIndex:number;
+        private lastCell: Cell;
+        private directionToUse: Direction;
 
-        public name:string;
+        public trainColourIndex: number;
 
-        public trainSpeed:number = this.defaultSpeed;
-        public imageReverse:number = 1;
+        public name: string;
 
-        public carriage:trains.play.TrainCarriage;
+        public trainSpeed: number = this.defaultSpeed;
+        public imageReverse: number = 1;
 
-        public carriagePadding:number = 5;
+        public carriage: trains.play.TrainCarriage;
+
+        public carriagePadding: number = 5;
 
         public nextSmoke = 0;
 
-        constructor(public id:number, cell:Cell) {
+        constructor(public id: number, cell: Cell) {
             if (cell !== undefined) {
                 this.coords = {
                     currentX: cell.x + (trains.play.gridSize / 2),
@@ -45,32 +48,31 @@ module trains.play {
             }
         }
 
-        public spawnCarriage():void
-        {
-            if(this.carriage !== undefined) {
+        public spawnCarriage(): void {
+            if (this.carriage !== undefined) {
                 this.carriage.spawnCarriage();
-            }else {
+            } else {
                 this.carriage = new TrainCarriage(-1, undefined);
                 this.carriage.coords = {
                     currentX: this.coords.currentX,
                     currentY: this.coords.currentY,
                     previousX: this.coords.currentX + (-10 * this.magicBullshitCompareTo(this.coords.currentX, this.coords.previousX)),
                     previousY: this.coords.currentY + (-10 * this.magicBullshitCompareTo(this.coords.currentY, this.coords.previousY))
-                    };
+                };
                 this.carriage.trainColourIndex = this.trainColourIndex;
-                this.carriage.chooChooMotherFucker(this.carriagePadding + (trains.play.gridSize/2),false);
+                this.carriage.chooChooMotherFucker(this.carriagePadding + (trains.play.gridSize / 2), false);
                 this.carriage.coords.previousX = this.carriage.coords.currentX + (-10 * this.magicBullshitCompareTo(this.carriage.coords.currentX, this.carriage.coords.previousX));
                 this.carriage.coords.previousY = this.carriage.coords.currentY + (-10 * this.magicBullshitCompareTo(this.carriage.coords.currentY, this.carriage.coords.previousY));
             }
         }
 
-        public chooChooMotherFucker(speed:number, checkCollision:boolean = true):void {
+        public chooChooMotherFucker(speed: number, checkCollision: boolean = true): void {
             if (this.trainSpeed === 0) return;
             var baseSpeed = speed;
             speed *= this.trainSpeed;
             //Super small speeds cause MAJOR problems with the game loop.
             // First occurrence of this bug, speed was 1.13e-14!!!!!
-            while (Math.abs(speed)>0.00001) {
+            while (Math.abs(speed) > 0.00001) {
                 var column = GameBoard.getGridCoord(this.coords.currentX);
                 var row = GameBoard.getGridCoord(this.coords.currentY);
                 var cell = GameBoard.getCell(column, row);
@@ -79,55 +81,55 @@ module trains.play {
                     this.coords = result.coords;
                     speed = result.remainingSpeed;
                 }
-                else{
+                else {
                     break;
                 }
             }
-            if(this.carriage!==undefined){
+            if (this.carriage !== undefined) {
                 this.carriage.trainSpeed = this.trainSpeed;
                 this.carriage.chooChooMotherFucker(baseSpeed, false);
             }
-            if(checkCollision) {
+            if (checkCollision) {
                 this.wreckYourself();
             }
-            if(checkCollision &&(this.nextSmoke < GameBoard.gameLoop.gameTimeElapsed)){
+            if (checkCollision && (this.nextSmoke < GameBoard.gameLoop.gameTimeElapsed)) {
                 var p = new ParticleSmoke();
                 p.x = this.coords.currentX;
                 p.y = this.coords.currentY;
                 GameBoard.smokeParticleSystem.push(p);
-                this.nextSmoke = GameBoard.gameLoop.gameTimeElapsed + (Math.random()*100) + 325;
+                this.nextSmoke = GameBoard.gameLoop.gameTimeElapsed + (Math.random() * 100) + 325;
             }
         }
 
-        public slowYourRoll():void {
+        public slowYourRoll(): void {
             this.trainSpeed--;
-            if (this.trainSpeed < (-1*play.gridSize)) {
-                this.trainSpeed = (-1*play.gridSize);
+            if (this.trainSpeed < (-1 * play.gridSize)) {
+                this.trainSpeed = (-1 * play.gridSize);
             }
         }
 
-        public fasterFasterFaster():void {
+        public fasterFasterFaster(): void {
             this.trainSpeed++;
             if (this.trainSpeed > (play.gridSize)) {
                 this.trainSpeed = (play.gridSize);
             }
         }
 
-        public hammerTime():void {
+        public hammerTime(): void {
             this.trainSpeed = 0;
         }
 
-        public wakeMeUp():void {
+        public wakeMeUp(): void {
             this.trainSpeed = this.defaultSpeed;
         }
 
-        magicBullshitCompareTo(pen:number, sword:number):number {
+        magicBullshitCompareTo(pen: number, sword: number): number {
             if (pen === sword) return 0;
             if (pen > sword) return -1;
             return 1;
         }
 
-        getNewCoordsForTrain(cell:Cell, coords:trains.play.TrainCoords, speed:number):TrainCoordsResult {
+        getNewCoordsForTrain(cell: Cell, coords: trains.play.TrainCoords, speed: number): TrainCoordsResult {
             //So, here it goes, some notes on how this all works.
             //This needs a MAJOR rewrite, moving duplicate code out into helpers and refactoring.
             //Also, there are some equations that can be simplified, will slowly fix them up.
@@ -137,7 +139,7 @@ module trains.play {
 
             //Lets go vertical
             if (cell.direction === trains.play.Direction.Vertical) {
-
+                this.lastCell = cell;
                 //Compare our previous & current Y using magicBullshit to find direction,
                 // multiply it by our speed, and add it to our current Y pos to find our biggest move
                 var targetY = coords.currentY + (speed * this.magicBullshitCompareTo(coords.previousY, coords.currentY));
@@ -155,7 +157,7 @@ module trains.play {
                 }
 
                 //Set out remaining 'speed' to be our speed minus what we used
-                remainingSpeed = speed + (((speed>0)?-1:1)* Math.abs(coords.currentY-targetY));
+                remainingSpeed = speed + (((speed > 0) ? -1 : 1) * Math.abs(coords.currentY - targetY));
 
                 //Return our payload, the new coords, and if we couldn't use the whole 'speed', what is remaining
                 return {
@@ -170,7 +172,7 @@ module trains.play {
                 };
             }
             else if (cell.direction === trains.play.Direction.Horizontal) {
-
+                this.lastCell = cell;
                 //This is the same as vertical, just modifying X instead.
                 var targetX = coords.currentX + (speed * this.magicBullshitCompareTo(coords.previousX, coords.currentX));
                 if (targetX < cell.x) {
@@ -178,7 +180,7 @@ module trains.play {
                 } else if (targetX > (cell.x + trains.play.gridSize)) {
                     targetX = cell.x + trains.play.gridSize + 0.001;
                 }
-                remainingSpeed = speed + (((speed>0)?-1:1)* Math.abs(coords.currentX-targetX));
+                remainingSpeed = speed + (((speed > 0) ? -1 : 1) * Math.abs(coords.currentX - targetX));
                 return {
                     coords: {
                         currentX: targetX,
@@ -190,7 +192,7 @@ module trains.play {
                 };
             }
             else if (cell.direction === trains.play.Direction.Cross) {
-
+                this.lastCell = cell;
                 //Dirty rewrite, but it works, basically the same as horizontal/vertical
                 // Find our change in X/Y
                 var deltaX = Math.abs(coords.currentX - coords.previousX);
@@ -212,7 +214,7 @@ module trains.play {
                         x = cell.x + trains.play.gridSize + 0.001;
                     }
 
-                    remainingSpeed = speed + (((speed>0)?-1:1)* Math.abs(coords.currentX-x));;
+                    remainingSpeed = speed + (((speed > 0) ? -1 : 1) * Math.abs(coords.currentX - x));;
                 }
                 else {
 
@@ -223,7 +225,7 @@ module trains.play {
                     } else if (y > cell.y + trains.play.gridSize) {
                         y = cell.y + trains.play.gridSize + 0.001;
                     }
-                    remainingSpeed = speed + (((speed>0)?-1:1)* Math.abs(coords.currentY-y));
+                    remainingSpeed = speed + (((speed > 0) ? -1 : 1) * Math.abs(coords.currentY - y));
                 }
                 return {
                     coords: {
@@ -244,18 +246,46 @@ module trains.play {
             //  For LeftDown, the centre of the circle is 0,gridSize
             //  For RightUp, the centre is gridSize,0
             //  For RightDown, the centre is gridSize,gridSize
-            var yOffset = (cell.direction === trains.play.Direction.LeftDown || cell.direction === trains.play.Direction.RightDown) ? trains.play.gridSize : 0;
-            var xOffset = (cell.direction === trains.play.Direction.RightUp || cell.direction === trains.play.Direction.RightDown) ? trains.play.gridSize : 0;
+          
+            if (this.lastCell !== cell) {
+                this.directionToUse = cell.direction;
+                var flip = (Math.random() > 0.5);
+                if (this.directionToUse === Direction.LeftUpLeftDown) {
+                    if (this.lastCell !== undefined && this.lastCell.direction === Direction.Vertical) {
+                        flip = this.coords.previousY < this.coords.currentY;
+                    }
+                    this.directionToUse = flip ? Direction.LeftUp : Direction.LeftDown;
+                } else if (this.directionToUse === Direction.LeftUpRightUp) {
+                    if (this.lastCell !== undefined && this.lastCell.direction === Direction.Horizontal) {
+                        flip = this.coords.previousX < this.coords.currentX;
+                    }
+                    this.directionToUse = flip ? Direction.LeftUp : Direction.RightUp;
+                } else if (this.directionToUse === Direction.RightDownLeftDown) {
+                    if (this.lastCell !== undefined && this.lastCell.direction === Direction.Horizontal) {
+                        flip = this.coords.previousX > this.coords.currentX;
+                    }
+                    this.directionToUse = flip ? Direction.RightDown : Direction.LeftDown;
+                } else if (this.directionToUse === Direction.RightDownRightUp) {
+                    if (this.lastCell !== undefined && this.lastCell.direction === Direction.Vertical) {
+                        flip = this.coords.previousY > this.coords.currentY;
+                    }
+                    this.directionToUse = flip ? Direction.RightDown : Direction.RightUp;
+                }
+                this.lastCell = cell;
+            }
+
+            var yOffset = (this.directionToUse === trains.play.Direction.LeftDown || this.directionToUse === trains.play.Direction.RightDown) ? trains.play.gridSize : 0;
+            var xOffset = (this.directionToUse === trains.play.Direction.RightUp || this.directionToUse === trains.play.Direction.RightDown) ? trains.play.gridSize : 0;
 
             //We then calculate the current angle.
             // This is done by firstly finding the distance from center circle (using cell position, current position, and offset)
             // We then call zeroIncrement which adds 0.001 to the value if === 0.
             // Read up on acos/asin/atan and x,y=0, we don't want any infinities here!
             // Finally we cheat and use atan2 to find the angle.
-            var angle = Math.atan2(this.zeroIncrement((coords.currentX - cell.x) - xOffset),this.zeroIncrement((coords.currentY - cell.y) - yOffset));
+            var angle = Math.atan2(this.zeroIncrement((coords.currentX - cell.x) - xOffset), this.zeroIncrement((coords.currentY - cell.y) - yOffset));
 
             //Same thing again to find the last angle
-            var angleLast = Math.atan2(this.zeroIncrement((coords.previousX - cell.x) - xOffset),this.zeroIncrement((coords.previousY - cell.y) - yOffset));
+            var angleLast = Math.atan2(this.zeroIncrement((coords.previousX - cell.x) - xOffset), this.zeroIncrement((coords.previousY - cell.y) - yOffset));
 
             //Using magicBullshit we find the direction.
             // We then multiply by -1 if the difference between the 2 angles in greater than Math.PI
@@ -278,7 +308,7 @@ module trains.play {
                 newAngle = (angleSector + (Math.PI / 2)) + 0.001;
             }
             //Using the relationship lengthOfArc=angle*radius, we can use the change in angle to calculate speed
-            remainingSpeed = speed + (((speed>=0)?-1:1)*(Math.abs(angle-newAngle)*(trains.play.gridSize / 2)));
+            remainingSpeed = speed + (((speed >= 0) ? -1 : 1) * (Math.abs(angle - newAngle) * (trains.play.gridSize / 2)));
 
             //Add 90 degrees because I abused atan2 in a bad way
             //TODO: fix this plx. Tried to fix, failed, this caused the infinity angle bug, reverted.
@@ -299,11 +329,11 @@ module trains.play {
             };
         }
 
-        private zeroIncrement(input:number):number {
+        private zeroIncrement(input: number): number {
             return (input === 0) ? input + 0.001 : input;
         }
 
-        public draw(context:CanvasRenderingContext2D, translate:boolean = true):void {
+        public draw(context: CanvasRenderingContext2D, translate: boolean = true): void {
             var x = this.coords.currentX;
             var y = this.coords.currentY;
             var angle = Math.atan2(this.coords.previousX - x, this.coords.previousY - y);
@@ -312,7 +342,7 @@ module trains.play {
 
             if (translate) {
                 context.translate(x, y);
-                context.rotate((angle * -1) +((this.imageReverse<0)?Math.PI:0));
+                context.rotate((angle * -1) + ((this.imageReverse < 0) ? Math.PI : 0));
             }
             else {
                 context.translate(play.gridSize / 2, play.gridSize / 2);
@@ -322,45 +352,44 @@ module trains.play {
 
             context.restore();
 
-            if((this.carriage !== undefined)&&translate)
-            {
-                this.carriage.draw(context,translate);
+            if ((this.carriage !== undefined) && translate) {
+                this.carriage.draw(context, translate);
                 this.drawLink(context);
             }
         }
 
-        public drawLighting(context:CanvasRenderingContext2D):void {
+        public drawLighting(context: CanvasRenderingContext2D): void {
             var x = this.coords.currentX;
             var y = this.coords.currentY;
             var angle = Math.atan2(this.coords.previousX - x, this.coords.previousY - y);
             context.save();
             context.translate(x, y);
-            context.rotate((angle * -1) +((this.imageReverse<0)?Math.PI:0));
+            context.rotate((angle * -1) + ((this.imageReverse < 0) ? Math.PI : 0));
             trains.play.TrainRenderer.DrawChoochooLights(context);
             context.restore();
         }
 
-        public isTrainHere(column:number, row:number):boolean {
+        public isTrainHere(column: number, row: number): boolean {
             var myColumn = GameBoard.getGridCoord(this.coords.currentX);
             var myRow = GameBoard.getGridCoord(this.coords.currentY);
-            if(this.carriage !== undefined) {
-                return ((column === myColumn && row === myRow) || this.carriage.isTrainHere(column,row));
-            }else{
+            if (this.carriage !== undefined) {
+                return ((column === myColumn && row === myRow) || this.carriage.isTrainHere(column, row));
+            } else {
                 return column === myColumn && row === myRow;
             }
         }
 
-        public wreckYourself():boolean {
+        public wreckYourself(): boolean {
             return GameBoard.trains.some(t => t.clashOfTheTitans(t, this));
         }
-        public drawLink(context:CanvasRenderingContext2D):void{
-            var sp1 = (trains.play.gridSize/2)/Math.sqrt(Math.pow(this.coords.currentX-this.coords.previousX,2)+Math.pow(this.coords.currentY-this.coords.previousY,2));
-            var x1 = this.coords.currentX - ((this.coords.currentX-this.coords.previousX)*sp1*this.imageReverse);
-            var y1 = this.coords.currentY - ((this.coords.currentY-this.coords.previousY)*sp1*this.imageReverse);
+        public drawLink(context: CanvasRenderingContext2D): void {
+            var sp1 = (trains.play.gridSize / 2) / Math.sqrt(Math.pow(this.coords.currentX - this.coords.previousX, 2) + Math.pow(this.coords.currentY - this.coords.previousY, 2));
+            var x1 = this.coords.currentX - ((this.coords.currentX - this.coords.previousX) * sp1 * this.imageReverse);
+            var y1 = this.coords.currentY - ((this.coords.currentY - this.coords.previousY) * sp1 * this.imageReverse);
 
-            var sp2 =(trains.play.gridSize/2)/Math.sqrt(Math.pow(this.carriage.coords.currentX-this.carriage.coords.previousX,2)+Math.pow(this.carriage.coords.currentY-this.carriage.coords.previousY,2));
-            var x2 = this.carriage.coords.currentX + ((this.carriage.coords.currentX-this.carriage.coords.previousX)*sp2*this.imageReverse);
-            var y2 = this.carriage.coords.currentY + ((this.carriage.coords.currentY-this.carriage.coords.previousY)*sp2*this.imageReverse);
+            var sp2 = (trains.play.gridSize / 2) / Math.sqrt(Math.pow(this.carriage.coords.currentX - this.carriage.coords.previousX, 2) + Math.pow(this.carriage.coords.currentY - this.carriage.coords.previousY, 2));
+            var x2 = this.carriage.coords.currentX + ((this.carriage.coords.currentX - this.carriage.coords.previousX) * sp2 * this.imageReverse);
+            var y2 = this.carriage.coords.currentY + ((this.carriage.coords.currentY - this.carriage.coords.previousY) * sp2 * this.imageReverse);
 
 
             context.save();
@@ -386,19 +415,18 @@ module trains.play {
             this.coords.previousY = y1;
             //Woo!
             this.imageReverse *= -1;
-            if(this.carriage !== undefined)
-            {
+            if (this.carriage !== undefined) {
                 this.carriage.turnTheBeatAround();
             }
         }
 
-        public clashOfTheTitans(train1:Train, train2:Train) {
+        public clashOfTheTitans(train1: Train, train2: Train) {
             var myColumn = GameBoard.getGridCoord(train1.coords.currentX);
             var myRow = GameBoard.getGridCoord(train1.coords.currentY);
 
             if (train1 !== train2 && train2.isTrainHere(myColumn, myRow)) {
                 if (train1.trainSpeed === train2.trainSpeed) {
-                    
+
                     train2.turnTheBeatAround();
                     train1.turnTheBeatAround();
                     return true;

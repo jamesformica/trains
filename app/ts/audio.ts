@@ -21,7 +21,7 @@ module trains.audio {
 						break;
 					}
 				}
-				
+
 				if (fileName !== undefined) {
 					var soundToPlay = new Audio(this.basePath + fileName);
 					if (soundToPlay !== undefined) {

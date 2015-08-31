@@ -2,34 +2,34 @@
 
 module trains.play {
     export class ParticleBase {
-        public life:number = 0;
-        public lifetime:number = 100;
+        public life: number = 0;
+        public lifetime: number = 100;
 
-        public startColorRed:number;
-        public startColorGreen:number;
-        public startColorBlue:number;
-        public startAlpha:number;
-        public startScale:number;
-        public startAngle:number;
-        public startVelocity:number;
+        public startColorRed: number;
+        public startColorGreen: number;
+        public startColorBlue: number;
+        public startAlpha: number;
+        public startScale: number;
+        public startAngle: number;
+        public startVelocity: number;
 
-        public endColorRed:number;
-        public endColorGreen:number;
-        public endColorBlue:number;
-        public endAlpha:number;
-        public endScale:number;
-        public endAngle:number;
-        public endVelocity:number;
+        public endColorRed: number;
+        public endColorGreen: number;
+        public endColorBlue: number;
+        public endAlpha: number;
+        public endScale: number;
+        public endAngle: number;
+        public endVelocity: number;
 
-        public x:number = 0;
-        public y:number = 0;
-        public colorRed:number = 0;
-        public colorGreen:number = 0;
-        public colorBlue:number = 0;
-        public alpha:number = 1;
-        public scale:number = 1;
-        public angle:number = 0;
-        public velocity:number = 0;
+        public x: number = 0;
+        public y: number = 0;
+        public colorRed: number = 0;
+        public colorGreen: number = 0;
+        public colorBlue: number = 0;
+        public alpha: number = 1;
+        public scale: number = 1;
+        public angle: number = 0;
+        public velocity: number = 0;
 
         constructor() {
             this.life = 0;
@@ -49,7 +49,7 @@ module trains.play {
             if (this.endVelocity === undefined) this.endVelocity = this.startVelocity;
         }
 
-        public Update(lifeSteps:number):void {
+        public Update(lifeSteps: number): void {
             if (this.IsDead()) {
                 return;
             }
@@ -65,15 +65,15 @@ module trains.play {
             this.y += this.velocity * Math.sin(this.angle);
         }
 
-        public IsDead():boolean {
+        public IsDead(): boolean {
             return (this.life >= this.lifetime);
         }
 
-        public Draw(context:CanvasRenderingContext2D):void {
+        public Draw(context: CanvasRenderingContext2D): void {
             throw new Error("abstract, not the art kind, but the extends kind");
         }
 
-        public GetFillStyleAlpha():string {
+        public GetFillStyleAlpha(): string {
             return 'rgba(' + Math.round(this.colorRed) + ',' + Math.round(this.colorGreen) + ',' + Math.round(this.colorBlue) + ',' + this.alpha.toFixed(3) + ')';
         }
     }

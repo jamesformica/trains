@@ -7,7 +7,7 @@ module trains.play {
     export function InitialisePlay($container: JQuery): void {
         var manager = new trains.play.PlayManager($container);
     }
-    
+
     export var GameBoard: Board;
 
     export class PlayManager {
@@ -30,24 +30,24 @@ module trains.play {
             });
 
             this.AttachEvents();
-            
+
             GameBoard.loadCells();
         }
 
         private AttachEvents(): void {
-            
+
             this.playComponents.$globalButtons.find('.ui-title').click(() => {
                 this.playComponents.$globalButtons.toggleClass("minimised");
             });
-            
+
             this.playComponents.$globalButtons.find('.ui-minimise').click(() => {
                 this.playComponents.$globalButtons.addClass("minimised");
             });
-            
+
             this.playComponents.$globalButtons.find('button').click((event) => {
                 trains.play.GameBoard.globalControlClick(event.currentTarget);
             });
-            
+
             this.playComponents.$trainButtons.find('.ui-close').click(() => {
                 trains.play.GameBoard.hideTrainControls();
             });
@@ -59,10 +59,10 @@ module trains.play {
             this.playComponents.$trackButtons.find('button').click((event) => {
                 trains.play.GameBoard.trackControlClick(event.currentTarget);
             });
-            
+
             this.playComponents.$mute.click(() => {
                 var $mute = this.playComponents.$mute;
-                var mute = trains.util.toBoolean($mute.val()); 
+                var mute = trains.util.toBoolean($mute.val());
                 if (!mute) {
                     $mute.val("true");
                 } else {
@@ -70,16 +70,16 @@ module trains.play {
                 }
                 trains.play.GameBoard.setMuted(!mute);
             });
-            
+
             this.playComponents.$autosave.click(() => {
                 var $autosave = this.playComponents.$autosave;
                 var autosave = trains.util.toBoolean($autosave.val());
-                 if (!autosave) {
+                if (!autosave) {
                     $autosave.val("true");
                 } else {
                     $autosave.val("false");
                 }
-                trains.play.GameBoard.setAutoSave(!autosave); 
+                trains.play.GameBoard.setAutoSave(!autosave);
             });
         }
     }
