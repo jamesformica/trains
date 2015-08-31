@@ -477,7 +477,11 @@ module trains.play {
         RightDown,
         LeftDown,
         LeftUp,
-        Cross
+        Cross,
+        LeftUpLeftDown, 
+        LeftUpRightUp,
+        RightDownRightUp,
+        RightDownLeftDown
     }
 
 }

@@ -70,7 +70,12 @@ module trains.play {
             }
 
             else if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.up !== undefined) {
-                newDirection = trains.play.Direction.LeftUp;
+                if (neighbours.down !== undefined){
+                    newDirection = trains.play.Direction.LeftUpLeftDown;
+                }
+                else{
+                    newDirection = trains.play.Direction.LeftUp;
+                }              
             }
 
             else if (neighbours.left !== undefined && neighbours.right === undefined && neighbours.down !== undefined) {
@@ -78,7 +83,13 @@ module trains.play {
             }
 
             else if (neighbours.left === undefined && neighbours.right !== undefined && neighbours.up !== undefined) {
-                newDirection = trains.play.Direction.RightUp;
+                if (neighbours.down !== undefined){
+                     newDirection = trains.play.Direction.RightDownLeftDown; // last one
+                }
+                else
+                {
+                    newDirection = trains.play.Direction.RightUp;    
+                }
             }
 
             else if (neighbours.left === undefined && neighbours.right !== undefined && neighbours.down !== undefined) {
@@ -86,10 +97,18 @@ module trains.play {
             }
             // greedy vertical and horizontal joins    
             else if (neighbours.up !== undefined && neighbours.down !== undefined) {
-                newDirection = trains.play.Direction.Vertical;
+                newDirection = trains.play.Direction.Vertical;    
             }
             else if (neighbours.left !== undefined && neighbours.right !== undefined) {
-                newDirection = trains.play.Direction.Horizontal;
+                if (neighbours.up !== undefined){
+                    newDirection = trains.play.Direction.LeftUpRightUp;
+                }
+                else if (neighbours.down !== undefined){
+                     newDirection = trains.play.Direction.RightDownRightUp; 
+                }
+                else {
+                    newDirection = trains.play.Direction.Horizontal;    
+                }
             }
             // now less fussy vertical and horizontal joins    
             else if (neighbours.up !== undefined || neighbours.down !== undefined) {

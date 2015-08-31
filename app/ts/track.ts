@@ -53,10 +53,52 @@ module trains.play {
                     trains.play.CellRenderer.drawStraightTrack(context, false, false);
                     break;
                 }
+                case trains.play.Direction.LeftUpLeftDown: {
+                    this.leftUp(context);
+                    this.leftDown(context);
+                    break;
+                }
+                case trains.play.Direction.LeftUpRightUp: {
+                    this.leftUp(context);
+                    this.rightUp(context);
+                    break;   
+                }
+                case trains.play.Direction.RightDownRightUp: {
+                    this.rightDown(context);
+                    this.rightUp(context);
+                    break;
+                }
+                case trains.play.Direction.RightDownLeftDown: {
+                    this.rightDown(context);
+                    this.leftDown(context);
+                    break;
+                }
             }
-
             context.restore();
         }
+        
+        rightDown(context: CanvasRenderingContext2D): void{
+            context.translate(trains.play.gridSize, trains.play.gridSize);
+            context.rotate(Math.PI);
+            trains.play.CellRenderer.drawCurvedTrack(context);
+        }
+        
+        rightUp(context: CanvasRenderingContext2D): void{
+            context.translate(trains.play.gridSize, 0);
+            context.rotate(Math.PI / 2);
+            trains.play.CellRenderer.drawCurvedTrack(context);
+        }
+        
+        leftUp(context: CanvasRenderingContext2D): void{
+            trains.play.CellRenderer.drawCurvedTrack(context);
+        }
+        
+        leftDown(context: CanvasRenderingContext2D): void{
+            context.translate(0, trains.play.gridSize);
+            context.rotate(Math.PI * 1.5);
+            trains.play.CellRenderer.drawCurvedTrack(context);
+        }
+        
 
         turnAroundBrightEyes(): void {
             if (this.direction === trains.play.Direction.Cross) {
