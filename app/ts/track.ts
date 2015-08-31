@@ -13,12 +13,12 @@ module trains.play {
 
             switch (this.direction) {
                 case trains.play.Direction.Horizontal: {
-                    var neighbours = this.board.getNeighbouringCells(this.column, this.row);
+                    var neighbours = GameBoard.getNeighbouringCells(this.column, this.row);
                     trains.play.CellRenderer.drawStraightTrack(context, neighbours.left === undefined, neighbours.right === undefined);
                     break;
                 }
                 case trains.play.Direction.Vertical: {
-                    var neighbours = this.board.getNeighbouringCells(this.column, this.row);
+                    var neighbours = GameBoard.getNeighbouringCells(this.column, this.row);
                     context.translate(trains.play.gridSize, 0);
                     context.rotate(Math.PI / 2);
                     trains.play.CellRenderer.drawStraightTrack(context, neighbours.up === undefined, neighbours.down === undefined);
@@ -106,10 +106,10 @@ module trains.play {
             } else {
                 this.direction = this.direction + 1;
             }
-            this.draw(this.board.trackContext);
-            var neighbours = this.board.getNeighbouringCells(this.column, this.row, true);
+            this.draw(GameBoard.trackContext);
+            var neighbours = GameBoard.getNeighbouringCells(this.column, this.row, true);
             neighbours.all.forEach((neighbour) => {
-                neighbour.draw(this.board.trackContext);
+                neighbour.draw(GameBoard.trackContext);
             });
         }
     }

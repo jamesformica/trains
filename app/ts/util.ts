@@ -11,7 +11,19 @@ module trains.util {
 		"Overland",
 		"Underground",
 		"Western",
-		"Golden"
+		"Golden",
+		"Awkward",
+		"Livid",
+		"Courageous",
+		"Timid",
+		"Nervous",
+		"Emotional",
+		"Ferocious",
+		"Moronic",
+		"Cynical",
+		"Sassy",
+		"Reluctant",
+		"Majestic"
 	];
 
 	var names: Array<string> = [

@@ -8,6 +8,7 @@
 /// <reference path="play.loop.game.ts" />
 /// <reference path="play.loop.render.ts" />
 /// <reference path="audio.ts" />
+/// <reference path="play.particle.smoke.ts" />
 
 module trains.play {
 
@@ -34,6 +35,9 @@ module trains.play {
         private trainLogoCanvas: HTMLCanvasElement;
         public trainLogoContext: CanvasRenderingContext2D;
 
+        public lightingBufferCanvas: HTMLCanvasElement;
+        public lightingBufferContext: CanvasRenderingContext2D;
+
         public canvasWidth: number;
         public canvasHeight: number;
         
@@ -45,13 +49,16 @@ module trains.play {
         
         private trainIDCounter = 0;
         public trains = new Array<trains.play.Train>();
+        public smokeParticleSystem = new Array<ParticleSmoke>();
         public selectedTrain: trains.play.Train;
         private gameRunningState = true;
         private player: trains.audio.Player;
 
         public gameLoop: trains.play.GameLoop;
         public renderLoop: trains.play.RenderLoop;
-        public showDiagnostics = true;
+        public showDiagnostics = false;
+
+        public cheat_alwaysNight = false;
         
         constructor(public playComponents: trains.play.PlayComponents) {
 
@@ -99,6 +106,12 @@ module trains.play {
                     ev.preventDefault();
                     return false; }, false);
             });
+
+            //Hidden canvas buffer
+            this.lightingBufferCanvas = <HTMLCanvasElement>document.createElement('canvas');
+            this.lightingBufferCanvas.width = this.canvasWidth;
+            this.lightingBufferCanvas.height = this.canvasHeight;
+            this.lightingBufferContext = this.lightingBufferCanvas.getContext("2d");
             
             this.gameLoop = new GameLoop(this);
             this.renderLoop = new RenderLoop(this);
@@ -107,9 +120,28 @@ module trains.play {
             this.renderLoop.startLoop();
             this.player = new trains.audio.Player();
             
+            this.setMuted(util.toBoolean(localStorage.getItem("muted")));
+            this.setAutoSave(util.toBoolean(localStorage.getItem("autosave")));
+            
             setTimeout(() => {
                 this.setTool(trains.play.Tool.Track);
             }, 100);
+        }
+        
+        public loadCells(): void {
+            var savedCells = JSON.parse(localStorage.getItem("cells"));
+            if (savedCells !== undefined) {
+                for (var id in savedCells) {
+                    if (savedCells.hasOwnProperty(id)) {
+                        var theCell = <Cell>savedCells[id];
+                        var newCell = new trains.play.Track(theCell.id, theCell.column, theCell.row);
+                        newCell.direction = theCell.direction;
+                        newCell.happy = theCell.happy;
+                        this.cells[newCell.id] = newCell;
+                    }
+                }
+            }
+            this.redraw();
         }
 
         public startGame(): void {
@@ -224,7 +256,7 @@ module trains.play {
                     var cellID = this.getCellID(column, row);
 
                     if (this.cells[cellID] !== undefined) {
-                        var t = new Train(this.trainIDCounter++, this, this.cells[cellID]);
+                        var t = new Train(this.trainIDCounter++, this.cells[cellID]);
                         //Pre-move train to stop rendering at an odd angle.
                         t.chooChooMotherFucker(0.1);
                         this.trains.push(t);
@@ -249,6 +281,7 @@ module trains.play {
                 trains.play.BoardRenderer.clearCells(this.trackContext, this.canvasWidth, this.canvasHeight);
                 trains.play.BoardRenderer.clearCells(this.trainContext, this.canvasWidth, this.canvasHeight);
                 this.cells = {};
+                localStorage.removeItem("cells");
             });
         }
         
@@ -258,6 +291,7 @@ module trains.play {
             if (cell !== undefined) {
                 cell.turnAroundBrightEyes();
             }
+            this.saveTrack();
         }
 
         private newTrack(column: number, row: number): void {
@@ -266,13 +300,15 @@ module trains.play {
             if (this.cells[cellID] === undefined) {
                 
                 this.player.playSound(trains.audio.Sound.click);
-                var newCell = new trains.play.Track(this, cellID, column, row);
+                var newCell = new trains.play.Track(cellID, column, row);
                 
                 this.cells[newCell.id] = newCell;
 
                 if (!newCell.crossTheRoad()) {
                     newCell.checkYourself();
-                } 
+                }
+                
+                this.saveTrack();
             }
         }
 
@@ -282,6 +318,7 @@ module trains.play {
             var cell = this.cells[cellID];            
             if (cell !== undefined) {
                 delete this.cells[cellID];
+                this.saveTrack();
                 cell.destroy().done(() => {
                     var neighbours = this.getNeighbouringCells(column, row, true);
 
@@ -293,6 +330,12 @@ module trains.play {
                     
                     neighbours.all.forEach(n => n.checkYourself()); 
                 });
+            }
+        }
+        
+        private saveTrack(): void {
+            if (util.toBoolean(localStorage.getItem("autosave"))) {
+                localStorage.setItem("cells", JSON.stringify(this.cells));
             }
         }
         
@@ -417,6 +460,10 @@ module trains.play {
                         }
                         break;
                     }
+                    case "spawncarriage": {
+                        this.selectedTrain.spawnCarriage();
+                        break;
+                    }
                     case "turnaround": {
                         this.selectedTrain.turnTheBeatAround();
                         break;
@@ -424,6 +471,20 @@ module trains.play {
                 }
             } else {
                 this.hideTrainControls();
+            }
+        }
+        
+        globalControlClick(option: EventTarget): void {
+            var $option = $(option);
+            switch ($option.data("action").toLowerCase()) {
+                case "play": {
+                    this.gameLoop.startLoop();
+                    break;
+                }
+                case "pause": {
+                    this.gameLoop.stopLoop();
+                    break;
+                }
             }
         }
         
@@ -445,7 +506,23 @@ module trains.play {
         }
         
         setMuted(mute: boolean): void {
+            localStorage.setItem("muted", mute.toString());
+            if (mute) {
+                this.playComponents.$mute.removeClass("fa-volume-up").addClass("fa-volume-off");
+            } else {
+                this.playComponents.$mute.removeClass("fa-volume-off").addClass("fa-volume-up");
+            }
             this.player.setMuted(mute);
+        }
+        
+        setAutoSave(autosave: boolean): void {
+            localStorage.setItem("autosave", autosave.toString());
+            if (autosave) {
+                this.playComponents.$autosave.css("color", "green");
+            } else {
+                localStorage.removeItem("cells");
+                this.playComponents.$autosave.css("color", "black");
+            }
         }
     }
 

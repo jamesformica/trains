@@ -1,5 +1,6 @@
 == container "trains.play.InitialisePlay" do
 
+    i class="autosave ui-autosave fa fa-floppy-o" value="true"
     i class="mute ui-mute fa fa-volume-up" value="false"
 
     div class="track-buttons ui-track-buttons"
@@ -23,15 +24,30 @@
             li
                 button data-action="bomb"
                     i class="fa fa-bomb"
+                    
+    div class="game-control-centre ui-game-buttons minimised animated"
+        
+        i class="fa fa-minus close ui-minimise"
+        
+        span class="title ui-title"
+            | Global Controls
+        
+        ul class="horizontal-icon-buttons"
+            li
+                button data-action="play"
+                    i class="fa fa-play"
+          
+            li
+                button data-action="pause"
+                    i class="fa fa-pause"
     
     div class="train-control-centre ui-train-buttons animated"
         
         i class="fa fa-times close ui-close"
     
         span class="handle ui-handle"
-            | ::::::::::
     
-        div
+        div class="train-info"
             canvas class="ui-train-logo-canvas train-logo-canvas"
 
             span class="ui-train-name train-name"
@@ -56,7 +72,11 @@
                     
             li
                 button data-action="turnaround"
-                    i class="fa fa-refresh" 
+                    i class="fa fa-refresh"
+
+            li
+                button data-action="spawncarriage"
+                    i class="fa fa-plus-square"
                                        
             li
                 button data-action="delete"

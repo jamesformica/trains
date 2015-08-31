@@ -43,9 +43,29 @@ module trains.play.TrainRenderer {
 	var bumperLength = 3;
 	var bumperOffset = 3;
 
+    var lightAngleInDegrees = 60;
+    var lightDistance = 80;
+    var lightFalloffDistance = 30;
+
 	export function GetRandomShaftColour(): number {
 		return Math.floor(Math.random() * trains.play.TrainRenderer.trainColours.length);
 	}
+
+    export function DrawChoochooLights(context: CanvasRenderingContext2D): void {
+        var xOffset = lightDistance * Math.tan(lightAngleInDegrees * (180 / Math.PI)) / 2;
+
+        context.beginPath();
+        var leftLightGradient = context.createRadialGradient(leftX, frontY - bumperPoke, lightFalloffDistance, leftX, frontY - bumperPoke, lightDistance);
+        leftLightGradient.addColorStop(0, "#BBBBBB");
+        leftLightGradient.addColorStop(1, 'rgba(187,187,187,0)');
+        context.fillStyle = leftLightGradient;
+        context.moveTo(0, frontY - bumperPoke);
+        context.lineTo(0 - xOffset, (frontY - bumperPoke) - lightDistance);
+        //Need to implement circle tip here instead of flat
+        context.lineTo(0 + xOffset, (frontY - bumperPoke) - lightDistance);
+        context.lineTo(0, frontY - bumperPoke);
+        context.fill();
+    }
 
 	export function DrawChoochoo(context: CanvasRenderingContext2D, shaftColourIndex: number): void {
 
@@ -74,6 +94,19 @@ module trains.play.TrainRenderer {
 		DrawBumpers(context, true);
 		DrawBumpers(context, false);
 	}
+
+    export function DrawCarriage(context: CanvasRenderingContext2D, shaftColourIndex: number): void {
+
+        var shaftColour = trainColours[shaftColourIndex];
+        if (shaftColourIndex === -1) {
+            shaftColour = trainColours[GetRandomShaftColour()];
+        }
+        context.fillStyle = baseColour;
+        context.fillRect(leftX, frontY, trainWidth, trainLength);
+
+        context.fillStyle = GetShaftFillStyle(context, shaftColour[0], shaftColour[1]);
+        context.fillRect(shaftX, shaftY, shaftWidth, shaftLength-shaftPadding);
+    }
 
 	function GetRoofFillStyle(context: CanvasRenderingContext2D, firstColour: string, secondColour: string): CanvasGradient {
 		var x2 = roofX + roofWidth;
