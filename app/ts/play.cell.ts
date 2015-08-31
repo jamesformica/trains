@@ -132,28 +132,40 @@ module trains.play {
             return this.direction === Direction.Vertical ||
                 this.direction === Direction.LeftUp ||
                 this.direction === Direction.RightUp ||
-                this.direction === Direction.Cross;
+                this.direction === Direction.Cross ||
+                this.direction === Direction.LeftUpLeftDown ||
+                this.direction === Direction.LeftUpRightUp ||
+                this.direction === Direction.RightDownRightUp;
         }
 
         isConnectedDown(): boolean {
             return this.direction === Direction.Vertical ||
                 this.direction === Direction.LeftDown ||
                 this.direction === Direction.RightDown ||
-                this.direction === Direction.Cross;
+                this.direction === Direction.Cross ||
+                this.direction === Direction.LeftUpLeftDown ||
+                this.direction === Direction.RightDownLeftDown ||
+                this.direction === Direction.RightDownRightUp;
         }
 
         isConnectedLeft(): boolean {
             return this.direction === Direction.Horizontal ||
                 this.direction === Direction.LeftUp ||
                 this.direction === Direction.LeftDown ||
-                this.direction === Direction.Cross;
+                this.direction === Direction.Cross ||
+                this.direction === Direction.LeftUpLeftDown ||
+                this.direction === Direction.LeftUpRightUp ||
+                this.direction === Direction.RightDownLeftDown;
         }
 
         isConnectedRight(): boolean {
             return this.direction === Direction.Horizontal ||
                 this.direction === Direction.RightDown ||
                 this.direction === Direction.RightUp ||
-                this.direction === Direction.Cross;
+                this.direction === Direction.Cross ||
+                this.direction === Direction.RightDownLeftDown ||
+                this.direction === Direction.LeftUpRightUp ||
+                this.direction === Direction.RightDownRightUp;
         }
 
         destroy(): JQueryDeferred<{}> {
