@@ -197,7 +197,7 @@ module trains.play {
         }
         
         private cellMoveOver(event: MouseEvent): void {
-            if (event.buttons === 1 && this.tool !== Tool.Train) {
+            if (event.buttons === 1 && this.tool !== Tool.Train && this.tool !== Tool.Rotate) {
                 this.cellClick(event);
             }
         }
@@ -304,7 +304,7 @@ module trains.play {
                 
                 this.cells[newCell.id] = newCell;
 
-                if (!newCell.crossTheRoad()) {
+                if (!newCell.crossTheRoad() && !newCell.haveAThreeWay()) {
                     newCell.checkYourself();
                 }
                 
