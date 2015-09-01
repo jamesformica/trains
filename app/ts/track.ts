@@ -25,19 +25,19 @@ module trains.play {
                     break;
                 }
                 case trains.play.Direction.LeftUp: {
-                    this.leftUp(context);
+                    this.leftUp(context, true);
                     break;
                 }
                 case trains.play.Direction.LeftDown: {
-                    this.leftDown(context);
+                    this.leftDown(context, true);
                     break;
                 }
                 case trains.play.Direction.RightUp: {
-                    this.rightUp(context);
+                    this.rightUp(context, true);
                     break;
                 }
                 case trains.play.Direction.RightDown: {
-                    this.rightDown(context);
+                    this.rightDown(context, true);
                     break;
                 }
                 case trains.play.Direction.Cross: {
@@ -49,33 +49,33 @@ module trains.play {
                 }
                 case trains.play.Direction.LeftUpLeftDown: {
                     context.save();
-                    this.leftUp(context);
+                    this.leftUp(context, this.switchState);
                     context.restore();
-                    this.leftDown(context);
+                    this.leftDown(context, !this.switchState);
                     context.restore();
                     break;
                 }
                 case trains.play.Direction.LeftUpRightUp: {
                     context.save();
-                    this.leftUp(context);
+                    this.leftUp(context, this.switchState);
                     context.restore();
-                    this.rightUp(context);
+                    this.rightUp(context, !this.switchState);
                     context.restore();
                     break;   
                 }
                 case trains.play.Direction.RightDownRightUp: {
                     context.save();
-                    this.rightDown(context);
+                    this.rightDown(context, !this.switchState);
                     context.restore();
-                    this.rightUp(context);
+                    this.rightUp(context, this.switchState);
                     context.restore();
                     break;
                 }
                 case trains.play.Direction.RightDownLeftDown: {
                     context.save();
-                    this.rightDown(context);
+                    this.rightDown(context, !this.switchState);
                     context.restore();
-                    this.leftDown(context);
+                    this.leftDown(context, this.switchState);
                     context.restore();
                     break;
                 }
@@ -83,26 +83,26 @@ module trains.play {
             context.restore();
         }
         
-        rightDown(context: CanvasRenderingContext2D): void{
+        rightDown(context: CanvasRenderingContext2D, drawPlanks: boolean): void{
             context.translate(trains.play.gridSize, trains.play.gridSize);
             context.rotate(Math.PI);
-            trains.play.CellRenderer.drawCurvedTrack(context);
+            trains.play.CellRenderer.drawCurvedTrack(context, drawPlanks);
         }
         
-        rightUp(context: CanvasRenderingContext2D): void{
+        rightUp(context: CanvasRenderingContext2D, drawPlanks: boolean): void{
             context.translate(trains.play.gridSize, 0);
             context.rotate(Math.PI / 2);
-            trains.play.CellRenderer.drawCurvedTrack(context);
+            trains.play.CellRenderer.drawCurvedTrack(context, drawPlanks);
         }
         
-        leftUp(context: CanvasRenderingContext2D): void{
-            trains.play.CellRenderer.drawCurvedTrack(context);
+        leftUp(context: CanvasRenderingContext2D, drawPlanks: boolean): void{
+            trains.play.CellRenderer.drawCurvedTrack(context, drawPlanks);
         }
         
-        leftDown(context: CanvasRenderingContext2D): void{
+        leftDown(context: CanvasRenderingContext2D, drawPlanks: boolean): void{
             context.translate(0, trains.play.gridSize);
             context.rotate(Math.PI * 1.5);
-            trains.play.CellRenderer.drawCurvedTrack(context);
+            trains.play.CellRenderer.drawCurvedTrack(context, drawPlanks);
         }
         
 
