@@ -5,6 +5,7 @@ module trains.play {
 
     export class Cell {
 
+        public switchState: boolean;
         public happy: boolean;
         public x: number;
         public y: number;
@@ -57,7 +58,7 @@ module trains.play {
                 myNeighbours.all.forEach(c2 => c2.checkYourself());
 
                 return true;
-            });    
+            });
         }
 
         haveAThreeWay(): boolean {
@@ -88,6 +89,14 @@ module trains.play {
                 return true;
             }
             return false;
+        }
+
+        switchTrack(): void {
+            if (this.direction === Direction.LeftUpLeftDown || this.direction === Direction.LeftUpRightUp ||
+                this.direction === Direction.RightDownLeftDown || this.direction === Direction.RightDownRightUp) {
+                this.switchState = !this.switchState;
+                this.draw(GameBoard.trackContext);
+            }
         }
 
         determineDirection(neighbours: trains.play.NeighbouringCells): boolean {
@@ -225,7 +234,7 @@ module trains.play {
 
         public getDirectionToUse(lastCell: Cell): Direction {
             if (lastCell !== undefined) {
-                var flip = (Math.random() > 0.5); // flip a coin, or TODO use the set value of the switch on this cell
+                var flip = this.switchState;
                 var neighbours = GameBoard.getNeighbouringCells(lastCell.column, lastCell.row);
                 if (this.direction === Direction.LeftUpLeftDown) {
                     if (lastCell !== undefined && lastCell.isConnectedDown() && neighbours.down === this) {

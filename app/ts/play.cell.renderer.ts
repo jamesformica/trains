@@ -59,14 +59,14 @@ module trains.play.CellRenderer {
         context.stroke();
     }
 
-    export function drawCurvedTrack(context: CanvasRenderingContext2D): void {
+    export function drawCurvedTrack(context: CanvasRenderingContext2D, drawPlanks: boolean): void {
 
-
-        drawCurvedPlank(context, 20 * Math.PI / 180);
-        drawCurvedPlank(context, 45 * Math.PI / 180);
-
-        drawCurvedPlank(context, 70 * Math.PI / 180);
-
+        if (drawPlanks) {
+            drawCurvedPlank(context, 20 * Math.PI / 180);
+            drawCurvedPlank(context, 45 * Math.PI / 180);
+            drawCurvedPlank(context, 70 * Math.PI / 180);
+        }
+        
         context.lineWidth = 1;
         context.strokeStyle = trackColour;
 

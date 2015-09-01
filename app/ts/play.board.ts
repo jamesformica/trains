@@ -137,6 +137,7 @@ module trains.play {
                         var newCell = new trains.play.Track(theCell.id, theCell.column, theCell.row);
                         newCell.direction = theCell.direction;
                         newCell.happy = theCell.happy;
+                        newCell.switchState = theCell.switchState;
                         this.cells[newCell.id] = newCell;
                     }
                 }
@@ -340,11 +341,21 @@ module trains.play {
         }
         
         private pointAtThing(column: number, row: number): void {
-            this.trains.forEach((train) => {
+            if (!this.trains.some((train) => {
                 if (train.isTrainHere(column, row)) {
                     this.showTrainControls(train);
+                    return true;
                 }
-            });
+                return false;
+            })) {
+                // change points?
+                var cellID = this.getCellID(column, row);
+                var cell = this.cells[cellID];
+                if (cell !== undefined) {
+                    cell.switchTrack();
+                }
+                this.saveTrack();
+            }
         }
         
         showChooChoo(): void {
