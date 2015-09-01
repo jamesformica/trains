@@ -3,6 +3,7 @@
 /// <reference path="play.board.renderer.ts" />
 /// <reference path="play.train.renderer.ts" />
 /// <reference path="util.ts" />
+/// <reference path="event.ts" />
 /// <reference path="play.trainCarriage.ts" />
 
 module trains.play {
@@ -20,7 +21,7 @@ module trains.play {
 
         public name:string;
 
-        public trainSpeed:number = this.defaultSpeed;
+        private trainSpeed:number = this.defaultSpeed;
         public imageReverse:number = 1;
 
         public carriage:trains.play.TrainCarriage;
@@ -108,27 +109,26 @@ module trains.play {
                 this.nextSmoke = GameBoard.gameLoop.gameTimeElapsed + (Math.random() * 100) + 325;
             }
         }
+        
+        public setTrainSpeed(speed: number) {
+            this.trainSpeed = speed;
+            trains.event.Emit("speedchanged", this.id, this.trainSpeed);
+        }
 
         public slowYourRoll():void {
-            this.trainSpeed--;
-            if (this.trainSpeed < 1) {
-                this.trainSpeed = 1;
-            }
+            this.setTrainSpeed(Math.max(this.trainSpeed - 1, 1));
         }
 
         public fasterFasterFaster():void {
-            this.trainSpeed++;
-            if (this.trainSpeed > (play.gridSize)) {
-                this.trainSpeed = (play.gridSize);
-            }
+            this.setTrainSpeed(Math.min(this.trainSpeed + 1, play.gridSize * 2));
         }
 
         public hammerTime():void {
-            this.trainSpeed = 0;
+            this.setTrainSpeed(0);
         }
 
         public wakeMeUp():void {
-            this.trainSpeed = this.defaultSpeed;
+            this.setTrainSpeed(this.defaultSpeed);
         }
 
         magicBullshitCompareTo(pen:number, sword:number):number {
@@ -350,17 +350,17 @@ module trains.play {
                     train2.turnTheBeatAround();
 
                     if ((train1.trainSpeed + speedDiff) > (play.gridSize / 2)) {
-                        train1.trainSpeed = (play.gridSize / 2);
+                        train1.setTrainSpeed(play.gridSize / 2);
                     }
                     else {
-                        train1.trainSpeed += speedDiff;
+                        train1.setTrainSpeed(train1.trainSpeed + speedDiff);
                     }
 
                     if ((train2.trainSpeed - speedDiff) < 1) {
-                        train2.trainSpeed = 1
+                        train2.setTrainSpeed(1);
                     }
                     else {
-                        train2.trainSpeed -= speedDiff;
+                        train2.setTrainSpeed(train2.trainSpeed - speedDiff);
                     }
                 }
                 return true;

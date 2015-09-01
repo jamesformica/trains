@@ -1,6 +1,7 @@
 /// <reference path="../types/jqueryui.d.ts" />
 /// <reference path="play.board.ts" />
 /// <reference path="util.ts" />
+/// <reference path="event.ts" />
 
 module trains.play {
 
@@ -84,6 +85,12 @@ module trains.play {
                     $autosave.val("false");
                 }
                 trains.play.GameBoard.setAutoSave(!autosave);
+            });
+            
+            trains.event.On("speedchanged", (event, trainID: number, speed: number) => {
+                if (trainID === trains.play.GameBoard.selectedTrain.id) {
+                    //alert("CHANGING: " + speed);
+                }
             });
         }
     }
