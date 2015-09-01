@@ -40,7 +40,6 @@ module trains.play {
 
         crossTheRoad(): boolean {
             var neighbours = GameBoard.getNeighbouringCells(this.column, this.row, true);
-
             return neighbours.all.some(c => {
                 var myNeighbours = GameBoard.getNeighbouringCells(c.column, c.row, true);
                 if (myNeighbours.all.length < 4) return false;
@@ -58,41 +57,37 @@ module trains.play {
                 myNeighbours.all.forEach(c2 => c2.checkYourself());
 
                 return true;
-            });
+            });    
         }
 
         haveAThreeWay(): boolean {
-            var neighbours = GameBoard.getNeighbouringCells(this.column, this.row, true);
+            var myNeighbours = GameBoard.getNeighbouringCells(this.column, this.row, true);
+            if (myNeighbours.all.length < 3) return false;
 
-            return neighbours.all.some(c => {
-                var myNeighbours = GameBoard.getNeighbouringCells(c.column, c.row, true);
-                if (myNeighbours.all.length < 3) return false;
+            if (myNeighbours.up !== undefined && !myNeighbours.up.isConnectedDown() && myNeighbours.up.happy) return false;
+            if (myNeighbours.down !== undefined && !myNeighbours.down.isConnectedUp() && myNeighbours.down.happy) return false;
+            if (myNeighbours.left !== undefined && !myNeighbours.left.isConnectedRight() && myNeighbours.left.happy) return false;
+            if (myNeighbours.right !== undefined && !myNeighbours.right.isConnectedLeft() && myNeighbours.right.happy) return false;
 
-                if (myNeighbours.up !== undefined && !myNeighbours.up.isConnectedDown() && myNeighbours.up.happy) return false;
-                if (myNeighbours.down !== undefined && !myNeighbours.down.isConnectedUp() && myNeighbours.down.happy) return false;
-                if (myNeighbours.left !== undefined && !myNeighbours.left.isConnectedRight() && myNeighbours.left.happy) return false;
-                if (myNeighbours.right !== undefined && !myNeighbours.right.isConnectedLeft() && myNeighbours.right.happy) return false;
-
-                if ([myNeighbours.up, myNeighbours.right, myNeighbours.down, myNeighbours.left].filter(n => n !== undefined).length === 3) {
-                    if (myNeighbours.up === undefined) {
-                        c.direction = Direction.RightDownLeftDown;
-                    } else if (myNeighbours.down === undefined) {
-                        c.direction = Direction.LeftUpRightUp;
-                    } else if (myNeighbours.left === undefined) {
-                        c.direction = Direction.RightDownRightUp;
-                    } else if (myNeighbours.right === undefined) {
-                        c.direction = Direction.LeftUpLeftDown;
-                    }
-                    
-                    // if we got here, we should be a three way
-                    c.happy = true;
-                    c.draw(GameBoard.trackContext);
-                    myNeighbours = GameBoard.getNeighbouringCells(c.column, c.row);
-                    myNeighbours.all.forEach(c2 => c2.checkYourself());
-                    return true;
+            if ([myNeighbours.up, myNeighbours.right, myNeighbours.down, myNeighbours.left].filter(n => n !== undefined).length === 3) {
+                if (myNeighbours.up === undefined) {
+                    this.direction = Direction.RightDownLeftDown;
+                } else if (myNeighbours.down === undefined) {
+                    this.direction = Direction.LeftUpRightUp;
+                } else if (myNeighbours.left === undefined) {
+                    this.direction = Direction.RightDownRightUp;
+                } else if (myNeighbours.right === undefined) {
+                    this.direction = Direction.LeftUpLeftDown;
                 }
-                return false;
-            });
+                    
+                // if we got here, we should be a three way
+                this.happy = true;
+                this.draw(GameBoard.trackContext);
+                myNeighbours = GameBoard.getNeighbouringCells(this.column, this.row);
+                myNeighbours.all.forEach(c2 => c2.checkYourself());
+                return true;
+            }
+            return false;
         }
 
         determineDirection(neighbours: trains.play.NeighbouringCells): boolean {

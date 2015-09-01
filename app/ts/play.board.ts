@@ -298,18 +298,18 @@ module trains.play {
             var cellID = this.getCellID(column, row);
 
             if (this.cells[cellID] === undefined) {
-                
                 this.player.playSound(trains.audio.Sound.click);
                 var newCell = new trains.play.Track(cellID, column, row);
-                
+
                 this.cells[newCell.id] = newCell;
 
-                if (!newCell.crossTheRoad() && !newCell.haveAThreeWay()) {
+                if (!newCell.crossTheRoad()) {
                     newCell.checkYourself();
-                }
-                
-                this.saveTrack();
+                }    
+            } else {
+                this.cells[cellID].haveAThreeWay();
             }
+            this.saveTrack();
         }
 
         private eraseTrack(column: number, row: number): void {
