@@ -234,42 +234,35 @@ module trains.play {
 
         public getDirectionToUse(lastCell: Cell): Direction {
             if (lastCell !== undefined) {
-                var flip = this.switchState;
                 var neighbours = GameBoard.getNeighbouringCells(lastCell.column, lastCell.row);
                 if (this.direction === Direction.LeftUpLeftDown) {
                     if (lastCell !== undefined && lastCell.isConnectedDown() && neighbours.down === this) {
-                        return Direction.LeftUp;
+                        if (!this.switchState) this.switchTrack();
                     } else if (lastCell !== undefined && lastCell.isConnectedUp() && neighbours.up === this) {
-                        return Direction.LeftDown;
+                        if (this.switchState) this.switchTrack();
                     }
-                    else {
-                        return flip ? Direction.LeftUp : Direction.LeftDown;
-                    }
+                    return this.switchState ? Direction.LeftUp : Direction.LeftDown;
                 } else if (this.direction === Direction.LeftUpRightUp) {
                     if (lastCell !== undefined && lastCell.isConnectedLeft() && neighbours.left === this) {
-                        return Direction.RightUp;
+                        if (this.switchState) this.switchTrack();
                     } else if (lastCell !== undefined && lastCell.isConnectedRight() && neighbours.right === this) {
-                        return Direction.LeftUp;
-                    } else {
-                        return flip ? Direction.LeftUp : Direction.RightUp;
+                        if (!this.switchState) this.switchTrack();
                     }
+                    return this.switchState ? Direction.LeftUp : Direction.RightUp;
                 } else if (this.direction === Direction.RightDownLeftDown) {
                     if (lastCell !== undefined && lastCell.isConnectedLeft() && neighbours.left === this) {
-                        return Direction.RightDown;
+                        if (this.switchState) this.switchTrack();
                     } else if (lastCell !== undefined && lastCell.isConnectedRight() && neighbours.right === this) {
-                        return Direction.LeftDown;
-                    } else {
-                        return flip ? Direction.LeftDown : Direction.RightDown;
+                        if (!this.switchState) this.switchTrack();
                     }
+                    return this.switchState ? Direction.LeftDown : Direction.RightDown;
                 } else if (this.direction === Direction.RightDownRightUp) {
                     if (lastCell !== undefined && lastCell.isConnectedDown() && neighbours.down === this) {
-                        return Direction.RightUp;
+                        if (!this.switchState) this.switchTrack();
                     } else if (lastCell !== undefined && lastCell.isConnectedUp() && neighbours.up === this) {
-                        return Direction.RightDown;
+                        if (this.switchState) this.switchTrack();
                     }
-                    else {
-                        return flip ? Direction.RightUp : Direction.RightDown;
-                    }
+                    return this.switchState ? Direction.RightUp : Direction.RightDown;
                 }
             }
             return this.direction;

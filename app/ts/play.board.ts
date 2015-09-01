@@ -198,7 +198,7 @@ module trains.play {
         }
         
         private cellMoveOver(event: MouseEvent): void {
-            if (event.buttons === 1 && this.tool !== Tool.Train && this.tool !== Tool.Rotate) {
+            if (event.buttons === 1 && this.tool !== Tool.Train && this.tool !== Tool.Rotate && this.tool !== Tool.Pointer) {
                 this.cellClick(event);
             }
         }
