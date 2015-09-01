@@ -65,12 +65,12 @@ module trains.play {
             var myNeighbours = GameBoard.getNeighbouringCells(this.column, this.row, true);
             if (myNeighbours.all.length < 3) return false;
 
-            if (myNeighbours.up !== undefined && !myNeighbours.up.isConnectedDown() && myNeighbours.up.happy) return false;
-            if (myNeighbours.down !== undefined && !myNeighbours.down.isConnectedUp() && myNeighbours.down.happy) return false;
-            if (myNeighbours.left !== undefined && !myNeighbours.left.isConnectedRight() && myNeighbours.left.happy) return false;
-            if (myNeighbours.right !== undefined && !myNeighbours.right.isConnectedLeft() && myNeighbours.right.happy) return false;
-
             if ([myNeighbours.up, myNeighbours.right, myNeighbours.down, myNeighbours.left].filter(n => n !== undefined).length === 3) {
+                if (myNeighbours.up !== undefined && !myNeighbours.up.isConnectedDown() && myNeighbours.up.happy) return false;
+                if (myNeighbours.down !== undefined && !myNeighbours.down.isConnectedUp() && myNeighbours.down.happy) return false;
+                if (myNeighbours.left !== undefined && !myNeighbours.left.isConnectedRight() && myNeighbours.left.happy) return false;
+                if (myNeighbours.right !== undefined && !myNeighbours.right.isConnectedLeft() && myNeighbours.right.happy) return false;
+
                 if (myNeighbours.up === undefined) {
                     this.direction = Direction.RightDownLeftDown;
                 } else if (myNeighbours.down === undefined) {
@@ -79,16 +79,29 @@ module trains.play {
                     this.direction = Direction.RightDownRightUp;
                 } else if (myNeighbours.right === undefined) {
                     this.direction = Direction.LeftUpLeftDown;
+                } else {
+                    return false;
                 }
-                    
-                // if we got here, we should be a three way
-                this.happy = true;
-                this.draw(GameBoard.trackContext);
-                myNeighbours = GameBoard.getNeighbouringCells(this.column, this.row);
-                myNeighbours.all.forEach(c2 => c2.checkYourself());
-                return true;
+            } else {
+                if (myNeighbours.up.isConnectedDown() && myNeighbours.down.isConnectedUp() && myNeighbours.right.isConnectedLeft()) {
+                    this.direction = Direction.RightDownRightUp;
+                } else if (myNeighbours.up.isConnectedDown() && myNeighbours.down.isConnectedUp() && myNeighbours.left.isConnectedRight()) {
+                    this.direction = Direction.LeftUpLeftDown;
+                } else if (myNeighbours.left.isConnectedRight() && myNeighbours.down.isConnectedUp() && myNeighbours.right.isConnectedLeft()) {
+                    this.direction = Direction.RightDownLeftDown;
+                } else if (myNeighbours.up.isConnectedDown() && myNeighbours.left.isConnectedRight() && myNeighbours.right.isConnectedLeft()) {
+                    this.direction = Direction.LeftUpRightUp;
+                } else {
+                    return false;
+                }
             }
-            return false;
+            
+            // if we got here, we should be a three way
+            this.happy = true;
+            this.draw(GameBoard.trackContext);
+            myNeighbours = GameBoard.getNeighbouringCells(this.column, this.row);
+            myNeighbours.all.forEach(c2 => c2.checkYourself());
+            return true;
         }
 
         switchTrack(): void {
