@@ -505,19 +505,12 @@ module trains.play {
         
         showTrainControls(train: trains.play.Train): void {
             this.selectedTrain = train;
-            this.playComponents.$trainName.text(train.name);
-            this.playComponents.$trainButtons.addClass("flipInX").show();
-            this.playComponents.$trainButtons.one(trains.play.animationEndEventString, () => {
-                this.playComponents.$trainButtons.removeClass("flipInX");
-            });
+            trains.event.Emit("showtraincontrols", this.selectedTrain);
         }
         
         hideTrainControls(): void {
             this.selectedTrain = undefined;
-            this.playComponents.$trainButtons.addClass("flipOutX");
-            this.playComponents.$trainButtons.one(trains.play.animationEndEventString, () => {
-                this.playComponents.$trainButtons.removeClass("flipOutX").hide();
-            });
+            trains.event.Emit("hidetraincontrols");
         }
         
         setMuted(mute: boolean): void {

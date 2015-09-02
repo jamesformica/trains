@@ -98,9 +98,29 @@ module trains.play {
                 }
 
                 if (setTrainSpeed) {
-                    this.playComponents.$trainButtons.find('.ui-speed').text((speed * 10).toString() + " kms/h");
+                    this.DisplayTrainSpeed(speed);
                 }
             });
+
+            trains.event.On("showtraincontrols", (event, train: trains.play.Train) => {
+                this.playComponents.$trainName.text(train.name);
+                this.playComponents.$trainButtons.addClass("flipInX").show();
+                this.playComponents.$trainButtons.one(trains.play.animationEndEventString, () => {
+                    this.playComponents.$trainButtons.removeClass("flipInX");
+                });
+                this.DisplayTrainSpeed(train.getTrainSpeed());
+            });
+
+            trains.event.On("hidetraincontrols", (event) => {
+                this.playComponents.$trainButtons.addClass("flipOutX");
+                this.playComponents.$trainButtons.one(trains.play.animationEndEventString, () => {
+                    this.playComponents.$trainButtons.removeClass("flipOutX").hide();
+                });
+            });
+        }
+
+        DisplayTrainSpeed(speed: number) {
+            this.playComponents.$trainButtons.find('.ui-speed').text((speed * 10).toString() + " kms/h");
         }
     }
 

@@ -111,6 +111,10 @@ module trains.play {
             }
         }
         
+        public getTrainSpeed(): number {
+            return this.trainSpeed;
+        }
+        
         public setTrainSpeed(speed: number) {
             this.trainSpeed = speed;
             trains.event.Emit("speedchanged", this.id, this.trainSpeed);
