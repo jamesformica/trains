@@ -500,6 +500,14 @@ module trains.play {
                     this.gameLoop.stopLoop();
                     break;
                 }
+                case "forward": {
+                    this.trains.forEach(t => t.fasterFasterFaster());
+                    break;
+                }
+                case "backward": {
+                    this.trains.forEach(t => t.slowYourRoll());
+                    break;
+                }
             }
         }
         
