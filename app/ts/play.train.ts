@@ -21,7 +21,7 @@ module trains.play {
 
         public name:string;
 
-        private trainSpeed:number = this.defaultSpeed;
+        private trainSpeed:number;
         public imageReverse:number = 1;
 
         public carriage:trains.play.TrainCarriage;
@@ -46,6 +46,7 @@ module trains.play {
                 }
 
                 this.name = trains.util.getRandomName();
+                this.setTrainSpeed(this.defaultSpeed);
             }
         }
 
