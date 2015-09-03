@@ -46,12 +46,15 @@ module trains.play {
                 }
 
                 this.name = trains.util.getRandomName();
+                if(Math.random()<0.7){
+                    this.spawnCarriage(Math.ceil(Math.random()*5));
+                }
             }
         }
 
-        public spawnCarriage():void {
+        public spawnCarriage(count: number = 1):void {
             if (this.carriage !== undefined) {
-                this.carriage.spawnCarriage();
+                this.carriage.spawnCarriage(count);
             } else {
                 this.carriage = new TrainCarriage(-1, undefined);
                 this.carriage.coords = {
@@ -64,6 +67,9 @@ module trains.play {
                 this.carriage.chooChooMotherFucker(this.carriagePadding + (trains.play.gridSize / 2), false);
                 this.carriage.coords.previousX = this.carriage.coords.currentX + (-10 * this.magicBullshitCompareTo(this.carriage.coords.currentX, this.carriage.coords.previousX));
                 this.carriage.coords.previousY = this.carriage.coords.currentY + (-10 * this.magicBullshitCompareTo(this.carriage.coords.currentY, this.carriage.coords.previousY));
+                if((--count)>0){
+                    this.carriage.spawnCarriage(count);
+                }
             }
         }
 
