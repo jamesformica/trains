@@ -21,7 +21,7 @@ module trains.play {
 
             var top = ($(window).height() - trains.play.GameBoard.canvasHeight) / 2;
             var left = ($(window).width() - trains.play.GameBoard.canvasWidth) / 2;
-            
+
             $('body').height($(window).height());
             this.playComponents.$trackButtons.css("top", top);
             this.playComponents.$trainButtons.css("top", 15).css("right", 15);
@@ -86,12 +86,41 @@ module trains.play {
                 }
                 trains.play.GameBoard.setAutoSave(!autosave);
             });
-            
+
             trains.event.On("speedchanged", (event, trainID: number, speed: number) => {
-                if (trainID === trains.play.GameBoard.selectedTrain.id) {
-                    //alert("CHANGING: " + speed);
+                var setTrainSpeed = false;
+                if (trains.play.GameBoard.selectedTrain !== undefined) {
+                    if (trainID === trains.play.GameBoard.selectedTrain.id) {
+                        setTrainSpeed = true;
+                    }
+                } else {
+                    setTrainSpeed = true;
+                }
+
+                if (setTrainSpeed) {
+                    this.DisplayTrainSpeed(speed);
                 }
             });
+
+            trains.event.On("showtraincontrols", (event, train: trains.play.Train) => {
+                this.playComponents.$trainName.text(train.name);
+                this.playComponents.$trainButtons.addClass("flipInX").show();
+                this.playComponents.$trainButtons.one(trains.play.animationEndEventString, () => {
+                    this.playComponents.$trainButtons.removeClass("flipInX");
+                });
+                this.DisplayTrainSpeed(train.getTrainSpeed());
+            });
+
+            trains.event.On("hidetraincontrols", (event) => {
+                this.playComponents.$trainButtons.addClass("flipOutX");
+                this.playComponents.$trainButtons.one(trains.play.animationEndEventString, () => {
+                    this.playComponents.$trainButtons.removeClass("flipOutX").hide();
+                });
+            });
+        }
+
+        DisplayTrainSpeed(speed: number) {
+            this.playComponents.$trainButtons.find('.ui-speed').text((speed * 10).toString() + " kms/h");
         }
     }
 

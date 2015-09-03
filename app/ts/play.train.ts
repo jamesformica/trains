@@ -12,25 +12,25 @@ module trains.play {
 
         public defaultSpeed = 2;
 
-        public coords:trains.play.TrainCoords;
+        public coords: trains.play.TrainCoords;
 
-        private lastCell:Cell;
-        private directionToUse:Direction;
+        private lastCell: Cell;
+        private directionToUse: Direction;
 
-        public trainColourIndex:number;
+        public trainColourIndex: number;
 
-        public name:string;
+        public name: string;
 
-        private trainSpeed:number = this.defaultSpeed;
-        public imageReverse:number = 1;
+        private trainSpeed: number;
+        public imageReverse: number = 1;
 
-        public carriage:trains.play.TrainCarriage;
+        public carriage: trains.play.TrainCarriage;
 
-        public carriagePadding:number = 5;
+        public carriagePadding: number = 5;
 
         public nextSmoke = 0;
 
-        constructor(public id:number, cell:Cell) {
+        constructor(public id: number, cell: Cell) {
             if (cell !== undefined) {
                 this.coords = {
                     currentX: cell.x + (trains.play.gridSize / 2),
@@ -50,8 +50,9 @@ module trains.play {
                     this.spawnCarriage(Math.ceil(Math.random()*5));
                 }
             }
+            this.setTrainSpeed(this.defaultSpeed);
         }
-
+        
         public spawnCarriage(count: number = 1):void {
             if (this.carriage !== undefined) {
                 this.carriage.spawnCarriage(count);
@@ -73,7 +74,7 @@ module trains.play {
             }
         }
 
-        public removeEndCarriage(parent:trains.play.Train):void {
+        public removeEndCarriage(parent: trains.play.Train): void {
             if (this.carriage !== undefined) {
                 return this.carriage.removeEndCarriage(this);
             } else {
@@ -81,7 +82,7 @@ module trains.play {
             }
         }
 
-        public chooChooMotherFucker(speed:number, checkCollision:boolean = true):void {
+        public chooChooMotherFucker(speed: number, checkCollision: boolean = true): void {
             if (this.trainSpeed === 0) return;
             var baseSpeed = speed;
             speed *= this.trainSpeed;
@@ -115,35 +116,39 @@ module trains.play {
                 this.nextSmoke = GameBoard.gameLoop.gameTimeElapsed + (Math.random() * 100) + 325;
             }
         }
-        
+
+        public getTrainSpeed(): number {
+            return this.trainSpeed;
+        }
+
         public setTrainSpeed(speed: number) {
             this.trainSpeed = speed;
             trains.event.Emit("speedchanged", this.id, this.trainSpeed);
         }
 
-        public slowYourRoll():void {
+        public slowYourRoll(): void {
             this.setTrainSpeed(Math.max(this.trainSpeed - 1, 1));
         }
 
-        public fasterFasterFaster():void {
+        public fasterFasterFaster(): void {
             this.setTrainSpeed(Math.min(this.trainSpeed + 1, play.gridSize * 2));
         }
 
-        public hammerTime():void {
+        public hammerTime(): void {
             this.setTrainSpeed(0);
         }
 
-        public wakeMeUp():void {
+        public wakeMeUp(): void {
             this.setTrainSpeed(this.defaultSpeed);
         }
 
-        magicBullshitCompareTo(pen:number, sword:number):number {
+        magicBullshitCompareTo(pen: number, sword: number): number {
             if (pen === sword) return 0;
             if (pen > sword) return -1;
             return 1;
         }
 
-        straightTrackCalculate(cell:Cell, coords:trains.play.TrainCoords, speed:number, swapAxis:boolean = false):TrainCoordsResult {
+        straightTrackCalculate(cell: Cell, coords: trains.play.TrainCoords, speed: number, swapAxis: boolean = false): TrainCoordsResult {
             var cellX = swapAxis ? cell.y : cell.x;
             var cellY = swapAxis ? cell.x : cell.y;
             var currentY = swapAxis ? coords.currentX : coords.currentY;
@@ -165,7 +170,7 @@ module trains.play {
             };
         }
 
-        getNewCoordsForTrain(cell:Cell, coords:trains.play.TrainCoords, speed:number):TrainCoordsResult {
+        getNewCoordsForTrain(cell: Cell, coords: trains.play.TrainCoords, speed: number): TrainCoordsResult {
             if (this.lastCell !== cell) {
                 this.directionToUse = cell.getDirectionToUse(this.lastCell);
                 this.lastCell = cell;
@@ -247,11 +252,11 @@ module trains.play {
             };
         }
 
-        private zeroIncrement(input:number):number {
+        private zeroIncrement(input: number): number {
             return (input === 0) ? input + 0.001 : input;
         }
 
-        public draw(context:CanvasRenderingContext2D, translate:boolean = true):void {
+        public draw(context: CanvasRenderingContext2D, translate: boolean = true): void {
             var x = this.coords.currentX;
             var y = this.coords.currentY;
             var angle = Math.atan2(this.coords.previousX - x, this.coords.previousY - y);
@@ -276,7 +281,7 @@ module trains.play {
             }
         }
 
-        public drawLighting(context:CanvasRenderingContext2D):void {
+        public drawLighting(context: CanvasRenderingContext2D): void {
             var x = this.coords.currentX;
             var y = this.coords.currentY;
             var angle = Math.atan2(this.coords.previousX - x, this.coords.previousY - y);
@@ -287,7 +292,7 @@ module trains.play {
             context.restore();
         }
 
-        public isTrainHere(column:number, row:number):boolean {
+        public isTrainHere(column: number, row: number): boolean {
             var myColumn = GameBoard.getGridCoord(this.coords.currentX);
             var myRow = GameBoard.getGridCoord(this.coords.currentY);
             if (this.carriage !== undefined) {
@@ -297,11 +302,11 @@ module trains.play {
             }
         }
 
-        public wreckYourself():boolean {
+        public wreckYourself(): boolean {
             return GameBoard.trains.some(t => t.clashOfTheTitans(t, this));
         }
 
-        public drawLink(context:CanvasRenderingContext2D):void {
+        public drawLink(context: CanvasRenderingContext2D): void {
             var sp1 = (trains.play.gridSize / 2) / Math.sqrt(Math.pow(this.coords.currentX - this.coords.previousX, 2) + Math.pow(this.coords.currentY - this.coords.previousY, 2));
             var x1 = this.coords.currentX - ((this.coords.currentX - this.coords.previousX) * sp1 * this.imageReverse);
             var y1 = this.coords.currentY - ((this.coords.currentY - this.coords.previousY) * sp1 * this.imageReverse);
@@ -323,7 +328,7 @@ module trains.play {
             context.restore();
         }
 
-        public turnTheBeatAround():void {
+        public turnTheBeatAround(): void {
             var x1 = this.coords.currentX;
             var y1 = this.coords.currentY;
 
@@ -339,7 +344,7 @@ module trains.play {
             }
         }
 
-        public clashOfTheTitans(train1:Train, train2:Train) {
+        public clashOfTheTitans(train1: Train, train2: Train) {
             var myColumn = GameBoard.getGridCoord(train1.coords.currentX);
             var myRow = GameBoard.getGridCoord(train1.coords.currentY);
 
