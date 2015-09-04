@@ -49,11 +49,12 @@ module trains.play {
                 if (Math.random() < 0.7) {
                     this.spawnCarriage(Math.ceil(Math.random() * 5));
                 }
-                if (Math.random() < 0.7) {
-                    this.setTrainSpeed(Math.ceil(Math.random() * 5));
-                }
             }
-            this.setTrainSpeed(this.defaultSpeed);
+            if (Math.random() < 0.7) {
+                this.setTrainSpeed(Math.ceil(Math.random() * 5));
+            } else {
+                this.setTrainSpeed(this.defaultSpeed);
+            }        
         }
 
         public spawnCarriage(count:number = 1):void {
