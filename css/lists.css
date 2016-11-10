@@ -1,0 +1,29 @@
+ul.horizontal-icon-buttons, ul.vertical-icon-buttons {
+  margin: 0;
+  padding: 0;
+  display: inline-block; }
+  ul.horizontal-icon-buttons li, ul.vertical-icon-buttons li {
+    margin: 0;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    float: left; }
+    ul.horizontal-icon-buttons li.text, ul.vertical-icon-buttons li.text {
+      width: auto;
+      margin: 0 4px;
+      font-size: 14px; }
+    ul.horizontal-icon-buttons li button, ul.vertical-icon-buttons li button {
+      margin: 0;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      border: none;
+      border-radius: 0; }
+
+ul.vertical-icon-buttons {
+  width: 40px; }
+
+ul.horizontal-icon-buttons {
+  height: 40px; }

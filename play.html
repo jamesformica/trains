@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!-- saved from url=(0026)http://localhost:9292/play -->
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Trains</title>
+	<link rel="stylesheet" href="css/vendor/font-awesome.min.css">
+	<link rel="stylesheet" href="css/vendor/animate.css">
+	<link rel="stylesheet" href="css/vendor/jquery-ui.min.css">
+	<link rel="stylesheet" href="css/vendor/tufte.css">
+	<link rel="stylesheet" href="css/body.css">
+	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/lists.css">
+	<link rel="stylesheet" href="css/play.css">
+	<link rel="stylesheet" href="css/train_logo.css">
+
+	<script src="scripts/jquery-1.11.2.min.js"></script>
+	<script src="scripts/jquery-ui.min.js"></script>
+	<script src="scripts/jquery.awesome-cursor.min.js"></script>
+
+	<script src="js/audio.js"></script>
+	<script src="js/event.js"></script>
+	<script src="js/logo.js"></script>
+	<script src="js/play.baseloop.js"></script>
+	<script src="js/play.board.js"></script>
+	<script src="js/play.board.renderer.js"></script>
+	<script src="js/play.cell.js"></script>
+	<script src="js/play.cell.renderer.js"></script>
+	<script src="js/play.js"></script>
+	<script src="js/play.loop.game.js"></script>
+	<script src="js/play.loop.render.js"></script>
+	<script src="js/play.particle.base.js"></script>
+	<script src="js/play.particle.smoke.js"></script>
+	<script src="js/play.train.js"></script>
+	<script src="js/play.train.renderer.js"></script>
+	<script src="js/play.trainCarriage.js"></script>
+	<script src="js/track.js"></script>
+	<script src="js/util.js"></script>
+	<meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport">
+</head>
+
+<body>
+	<div id="6109c617-1b44-427e-9040-fbbbac6ee834"><i class="autosave ui-autosave fa fa-floppy-o" value="true" style="color: rgb(0, 0, 0); width: 40px;"></i><i class="mute ui-mute fa fa-volume-off"
+			value="false" style="width: 40px;"></i>
+		<div class="track-buttons ui-track-buttons" style="top: 23px;">
+			<ul class="vertical-icon-buttons">
+				<li><button data-action="pointer"><i class="fa fa-hand-pointer-o"></i></button></li>
+				<li><button data-action="pencil"><i class="fa fa-pencil"></i></button></li>
+				<li><button data-action="eraser"><i class="fa fa-eraser"></i></button></li>
+				<li><button data-action="train"><i class="fa fa-train"></i></button></li>
+				<li><button data-action="rotate"><i class="fa fa-refresh"></i></button></li>
+				<li><button data-action="bomb"><i class="fa fa-bomb"></i></button></li>
+			</ul>
+		</div>
+		<div class="game-control-centre ui-game-buttons minimised animated"><i class="fa fa-minus close ui-minimise"></i><span class="title ui-title">Global Controls</span>
+			<ul class="horizontal-icon-buttons">
+				<li><button data-action="play"><i class="fa fa-play"></i></button></li>
+				<li><button data-action="pause"><i class="fa fa-pause"></i></button></li>
+				<li><button data-action="backward"><i class="fa fa-backward"></i></button></li>
+				<li><button data-action="forward"><i class="fa fa-forward"></i></button></li>
+			</ul>
+		</div>
+		<div class="train-control-centre ui-train-buttons animated ui-draggable" style="top: 15px; right: 15px;"><i class="fa fa-times close ui-close"></i><span class="handle ui-handle ui-draggable-handle"></span>
+			<div class="train-info">
+				<canvas class="ui-train-logo-canvas train-logo-canvas" width="40" height="40" style="width: 40px; height: 40px;"></canvas><span class="ui-train-name train-name">Train</span></div>
+			<ul class="horizontal-icon-buttons">
+				<li><button data-action="backward"><i class="fa fa-backward"></i></button></li>
+				<li><button data-action="play"><i class="fa fa-play"></i></button></li>
+				<li><button data-action="pause"><i class="fa fa-pause"></i></button></li>
+				<li><button data-action="forward"><i class="fa fa-forward"></i></button></li>
+				<li><button data-action="turnaround"><i class="fa fa-exchange"></i></button></li>
+				<li><button data-action="delete"><i class="fa fa-trash"></i></button></li>
+			</ul><br>
+			<ul class="horizontal-icon-buttons">
+				<li><button data-action="removecarriage"><i class="fa fa-minus-square"></i></button></li>
+				<li class="text"><span>Carriages</span></li>
+				<li><button data-action="spawncarriage"><i class="fa fa-plus-square"></i></button></li>
+				<li class="text ui-speed"></li>
+			</ul>
+		</div>
+		<canvas class="ui-grid-canvas grid-canvas" width="1200" height="560" style="width: 1200px; top: 23px; left: 40px;"></canvas>
+		<canvas class="ui-track-canvas track-canvas" width="1200" height="560" style="width: 1200px; top: 23px; left: 40px;"></canvas>
+		<canvas class="ui-train-canvas train-canvas" width="1200" height="560" style="width: 1200px; top: 23px; left: 40px;"></canvas>
+	</div><script type="text/javascript">$(function () {
+    if (trains.play.InitialisePlay) {
+        var $container = $("#" + "6109c617-1b44-427e-9040-fbbbac6ee834");
+        trains.play.InitialisePlay
+        ($container);
+    } else {
+        alert("trains.play.InitialisePlay: not found");
+    }
+});</script></body>
+
+</html>

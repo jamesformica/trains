@@ -1,0 +1,84 @@
+.mute {
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  font-size: 30px;
+  text-align: center;
+  cursor: pointer; }
+
+.autosave {
+  position: absolute;
+  bottom: 34px;
+  left: 0;
+  font-size: 30px;
+  text-align: center;
+  cursor: pointer;
+  color: green; }
+
+.track-buttons {
+  position: absolute;
+  display: inline-block;
+  left: 0; }
+
+.game-control-centre {
+  display: block;
+  bottom: 0;
+  right: 0; }
+  .game-control-centre > .title {
+    display: block;
+    padding: 0 30px;
+    cursor: pointer; }
+  .game-control-centre.minimised > .close {
+    display: none; }
+  .game-control-centre.minimised > ul {
+    display: none; }
+
+.train-control-centre {
+  display: none; }
+  .train-control-centre > .train-info {
+    margin-bottom: 10px; }
+    .train-control-centre > .train-info > span.train-name {
+      font-family: Helvetica;
+      font-size: 12px;
+      margin-top: 20px; }
+
+.train-control-centre, .game-control-centre {
+  position: absolute;
+  text-align: center;
+  border: 3px double #111;
+  background-color: #fffff8;
+  z-index: 1000;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4); }
+  .train-control-centre > .close, .game-control-centre > .close {
+    position: absolute;
+    top: 0px;
+    right: 1px;
+    cursor: pointer; }
+  .train-control-centre > .handle, .game-control-centre > .handle {
+    cursor: move;
+    float: left;
+    width: 100%; }
+    .train-control-centre > .handle:before, .game-control-centre > .handle:before {
+      content: "::::::::::"; }
+  .train-control-centre > ul, .game-control-centre > ul {
+    float: left; }
+
+canvas.track-canvas, canvas.grid-canvas, canvas.train-canvas {
+  position: absolute;
+  display: block;
+  margin: 0 auto;
+  touch-action: none; }
+
+canvas.track-canvas, canvas.train-canvas {
+  border: 3px double #111;
+  border-color: transparent; }
+
+canvas.grid-canvas {
+  border: 3px double #111; }
+
+canvas.train-logo-canvas {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  left: 0;
+  top: 5px; }

@@ -1,0 +1,24 @@
+body {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+button, a {
+  font-family: ETBembo, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+  background: #fffff8;
+  border-radius: 1px;
+  outline: 0;
+  cursor: pointer;
+  transition: 0.1s;
+  border: 3px double #111; }
+  button:hover, button.selected, a:hover, a.selected {
+    background: #111;
+    color: #fffff8;
+    border: 3px double #fffff8; }
+  button:active, a:active {
+    transform: scale(1.03); }

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)http://localhost:9292/ -->
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Trains</title>
+	<link rel="stylesheet" href="css/vendor/font-awesome.min.css">
+	<link rel="stylesheet" href="css/vendor/animate.css">
+	<link rel="stylesheet" href="css/vendor/jquery-ui.min.css">
+	<link rel="stylesheet" href="css/vendor/tufte.css">
+	<link rel="stylesheet" href="css/body.css">
+	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/lists.css">
+	<link rel="stylesheet" href="css/play.css">
+	<link rel="stylesheet" href="css/train_logo.css">
+
+	<script src="scripts/jquery-1.11.2.min.js"></script>
+	<script src="scripts/jquery-ui.min.js"></script>
+	<script src="scripts/jquery.awesome-cursor.min.js"></script>
+
+	<script src="js/audio.js"></script>
+	<script src="js/event.js"></script>
+	<script src="js/logo.js"></script>
+	<script src="js/play.baseloop.js"></script>
+	<script src="js/play.board.js"></script>
+	<script src="js/play.board.renderer.js"></script>
+	<script src="js/play.cell.js"></script>
+	<script src="js/play.cell.renderer.js"></script>
+	<script src="js/play.js"></script>
+	<script src="js/play.loop.game.js"></script>
+	<script src="js/play.loop.render.js"></script>
+	<script src="js/play.particle.base.js"></script>
+	<script src="js/play.particle.smoke.js"></script>
+	<script src="js/play.train.js"></script>
+	<script src="js/play.train.renderer.js"></script>
+	<script src="js/play.trainCarriage.js"></script>
+	<script src="js/track.js"></script>
+	<script src="js/util.js"></script>
+	<meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport">
+</head>
+
+<body cz-shortcut-listen="true">
+	<div class="train-logo-container">
+		<div id="00ccfa4d-91af-4dce-9669-ce6709c12f87">
+			<pre class="ascii-logo ui-ascii-logo animated">
+   o o o ~~  ~~ ~
+  o     _____
+.][_mm__|[]| ,===___
+>(_______|__|_|_GBRR_]
+_/oo-OOOO-oo' !oo!!oo!
+            </pre>
+		</div>
+        <script type="text/javascript">
+            $(function () {
+                if (trains.logo.InitialiseLogo) {
+                    var $container = $("#" + "00ccfa4d-91af-4dce-9669-ce6709c12f87");
+                    trains.logo.InitialiseLogo($container);
+                } else {
+                    alert("trains.logo.InitialiseLogo: not found");
+                }
+            });
+        </script>
+		<div class="text">
+			<h1>trains</h1>
+		</div><a class="btn-play" href="play.html" type="button">play</a></div>
+</body>
+
+</html>
